@@ -1,0 +1,97 @@
+App Name: Kynetik Electric
+Tech Stack: Flask (Python), SQLite, HTML/CSS (Bootstrap 5+), OpenAI API for AI assistant
+Deployment Target: Web app, mobile-responsive
+Design Theme: Dark mode preferred with industrial styling (blues, oranges, grays)
+Logo Placeholder: Include a header section with an empty <img> tag or file upload space for user to drop in final logo
+
+🧱 Core Features to Build:
+1. 🧰 Services Dashboard
+List out categories of work (e.g., Industrial Installs, 3D LiDAR Scans, Troubleshooting)
+
+Include images or icons
+
+Each service has a “Request a Bid” CTA
+
+2. 💬 Smart Bid Request Form
+Collect name, contact info, job type, project size, and location
+
+Allow image/video uploads
+
+Add Toolie AI to assist with autofill and clarification via chat or dropdowns
+
+3. 📽 Training Video Hub
+Public video viewer (embed YouTube or self-host)
+
+Optional login to access premium video content
+
+Stripe integration for payment (premium content unlock)
+
+4. 🛒 eCommerce Store
+Sell digital (PDFs, videos, forms) and physical goods (kits, stickers, tools)
+
+Include pricing, images, Stripe checkout integration
+
+Tag products as “Digital” or “Physical” in admin dashboard
+
+5. 🤖 Toolie AI Assistant (chatbot)
+Embedded on every page
+
+Can switch between customer-facing and solo-operator mode
+
+Pulls context (e.g., "create a quick quote" or “explain conduit fill”)
+
+📈 Bonus Tools (Optional in MVP if time allows)
+6. ⚡ Quick Quote Estimator
+Input-based tool for customers to get rough electrical quotes
+
+Use logic for SqFt, device count, labor type, etc.
+
+Output estimate + “Submit for Formal Bid” button
+
+7. 🧾 Smart Form Library
+Downloadable forms: Megger test sheet, panel schedule, job walk sheet
+
+PDF export of completed forms with form builder logic
+
+Voice-enabled inputs (Toolie support)
+
+8. 📍 Service Area Map
+Google Maps embed showing job radius
+
+“Book a Nearby Job” CTA
+
+9. 🧠 Troubleshooting Wizard
+Simple flowchart logic
+
+“What's wrong?” → “Here’s what you can check”
+
+Suggests service if issue can't be resolved
+
+10. 📣 Testimonial Page
+Quote blocks or video embeds
+
+“Before and After” install gallery with caption and CTA
+
+11. 🧠 Affiliate Tools Page
+Grid of tools with affiliate links
+
+Title, image, description
+
+Optional “Kynetik Loadout” label
+
+🔐 Admin Dashboard (Basic)
+Upload training content
+
+Manage products (digital & physical)
+
+View and export form submissions
+
+🔄 Future-Proof Notes:
+All features should be modular for reuse in Hardhat Ops later
+
+Toolie should be callable from a shared Python module or microservice
+
+Use a single /static/logo or similar folder where user can drop in the finished logo
+
+Prepare for possible offline mode or PWA conversion in Phase 2
+
