@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}Purchase Successful - Kynetik Electric{% endblock %}
+
+{% block content %}
+<!-- Success Header -->
+<section class="py-5 bg-success">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="success-icon mb-4">
+                    <i class="fas fa-check-circle fa-5x text-white"></i>
+                </div>
+                <h1 class="display-4 text-white mb-4">Payment Successful!</h1>
+                <p class="lead text-white-50">
+                    Thank you for your purchase. Your order has been processed successfully.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Order Details -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-receipt me-2"></i>
+                            Order Confirmation
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="order-info">
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h5 class="text-primary">Order Information</h5>
+                                    <p class="mb-1">
+                                        <strong>Session ID:</strong> 
+                                        <code>{{ session_id if session_id else 'N/A' }}</code>
+                                    </p>
+                                    <p class="mb-1">
+                                        <strong>Date:</strong> 
+                                        {{ moment().format('MMMM DD, YYYY [at] h:mm A') }}
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Status:</strong> 
+                                        <span class="badge bg-success">Completed</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5 class="text-primary">What's Next?</h5>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-envelope text-success me-2"></i>
+                                            Confirmation email sent
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-download text-primary me-2"></i>
+                                            Download links provided
+                                        </li>
+                                        <li class="mb-0">
+                                            <i class="fas fa-headset text-info me-2"></i>
+                                            Support available 24/7
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Digital Product Instructions -->
+                            <div class="alert alert-info">
+                                <h5 class="alert-heading">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Digital Products
+                                </h5>
+                                <p class="mb-0">
+                                    If you purchased digital products, download links have been sent to your email address. 
+                                    You can also access your downloads through your customer portal at any time.
+                                </p>
+                            </div>
+                            
+                            <!-- Physical Product Instructions -->
+                            <div class="alert alert-warning">
+                                <h5 class="alert-heading">
+                                    <i class="fas fa-shipping-fast me-2"></i>
+                                    Physical Products
+                                </h5>
+                                <p class="mb-0">
+                                    Physical products will be processed within 1-2 business days. 
+                                    You'll receive tracking information via email once your order ships.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="text-center mt-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{{ url_for('store') }}" class="btn btn-primary btn-lg me-md-3">
+                            <i class="fas fa-store me-2"></i>
+                            Continue Shopping
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>
+                            Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 2rem;">
+                    <!-- Support Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-headset me-2"></i>
+                                Need Help?
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                Our AI assistant Toolie is here to help with any questions about your purchase or products.
+                            </p>
+                            <button class="btn btn-outline-primary w-100 mb-3" onclick="toolieChat.openChat()">
+                                <i class="fas fa-robot me-2"></i>
+                                Chat with Toolie AI
+                            </button>
+                            
+                            <hr>
+                            
+                            <p class="small text-muted mb-3">
+                                <strong>Human Support:</strong><br>
+                                For complex issues, reach out to our support team.
+                            </p>
+                            <a href="{{ url_for('bid_request') }}?subject=order_support" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-envelope me-2"></i>
+                                Contact Support
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Card -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-question-circle me-2"></i>
+                                Common Questions
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="faq-item mb-3">
+                                <h6 class="text-primary">How do I download my files?</h6>
+                                <p class="small text-muted mb-0">
+                                    Check your email for download links. Files are also available in your customer portal.
+                                </p>
+                            </div>
+                            
+                            <div class="faq-item mb-3">
+                                <h6 class="text-primary">Can I get a refund?</h6>
+                                <p class="small text-muted mb-0">
+                                    Yes! We offer a 30-day satisfaction guarantee on all purchases.
+                                </p>
+                            </div>
+                            
+                            <div class="faq-item mb-0">
+                                <h6 class="text-primary">Lost my download link?</h6>
+                                <p class="small text-muted mb-0">
+                                    Contact our support team and we'll resend your download links immediately.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recommendations -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-star me-2"></i>
+                                You Might Also Like
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="recommendation-item mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="recommendation-icon me-3">
+                                        <i class="fas fa-video text-success"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Training Videos</h6>
+                                        <p class="small text-muted mb-0">Learn from industry experts</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="recommendation-item mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="recommendation-icon me-3">
+                                        <i class="fas fa-calculator text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Quote Calculator</h6>
+                                        <p class="small text-muted mb-0">Estimate project costs</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="recommendation-item mb-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="recommendation-icon me-3">
+                                        <i class="fas fa-tools text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Professional Tools</h6>
+                                        <p class="small text-muted mb-0">Expand your toolkit</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <a href="{{ url_for('store') }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye me-1"></i>
+                                    View All
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Signup -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mx-auto text-center">
+                <h2 class="mb-4">Stay Updated</h2>
+                <p class="lead mb-4">
+                    Get notified about new products, training content, and exclusive offers.
+                </p>
+                
+                <form class="newsletter-form">
+                    <div class="input-group input-group-lg">
+                        <input type="email" class="form-control" placeholder="Enter your email address" required>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            Subscribe
+                        </button>
+                    </div>
+                    <small class="form-text text-muted mt-2">
+                        We respect your privacy. Unsubscribe at any time.
+                    </small>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional CSS -->
+<style>
+.success-icon {
+    animation: successPulse 2s ease-in-out;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.order-info {
+    background: var(--surface-light);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.faq-item {
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.recommendation-item {
+    padding: 10px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.recommendation-item:hover {
+    background: var(--surface-light);
+}
+
+.recommendation-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--surface-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.newsletter-form .input-group {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, var(--surface-dark) 0%, var(--background-dark) 100%);
+}
+
+code {
+    background: var(--surface-light);
+    color: var(--primary-blue);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+</style>
+
+{% block extra_scripts %}
+<script>
+// Auto-suggestion to chat with Toolie about the purchase
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (window.toolieChat) {
+            toolieChat.addMessage("Congratulations on your purchase! I'm here if you have any questions about your new products or need help with electrical projects.", 'bot');
+        }
+    }, 3000);
+    
+    // Newsletter form handling
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            
+            // Simple validation
+            if (email) {
+                // In a real app, you'd send this to your backend
+                alert('Thank you for subscribing! You\'ll receive updates about new products and training content.');
+                this.querySelector('input[type="email"]').value = '';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

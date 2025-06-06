@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Successful - Kynetik Electric{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <!-- Success Icon -->
+                <div class="success-icon mb-4">
+                    <i class="fas fa-check-circle display-1 text-success"></i>
+                </div>
+                
+                <!-- Success Message -->
+                <h1 class="display-4 fw-bold text-success mb-3">Payment Successful!</h1>
+                <p class="lead text-muted mb-4">
+                    Thank you for your purchase. Your payment has been processed successfully.
+                </p>
+                
+                <!-- Order Details -->
+                <div class="order-details mb-5">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-receipt me-2"></i> Order Confirmation
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% if session_id %}
+                            <p class="mb-2">
+                                <strong>Transaction ID:</strong> 
+                                <code>{{ session_id }}</code>
+                            </p>
+                            {% endif %}
+                            <p class="mb-2">
+                                <strong>Date:</strong> {{ moment().format('MMMM Do YYYY, h:mm:ss a') if moment else 'Just now' }}
+                            </p>
+                            <p class="mb-0">
+                                <strong>Status:</strong> 
+                                <span class="badge bg-success">Completed</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Next Steps -->
+                <div class="next-steps mb-5">
+                    <h4 class="mb-3">What's Next?</h4>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="step-card">
+                                <div class="step-icon">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                </div>
+                                <h6>Check Your Email</h6>
+                                <p class="text-muted small">
+                                    You'll receive a confirmation email with your purchase details and download links (if applicable).
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="step-card">
+                                <div class="step-icon">
+                                    <i class="fas fa-download text-success"></i>
+                                </div>
+                                <h6>Access Your Content</h6>
+                                <p class="text-muted small">
+                                    For digital products, download links are available immediately. Physical items will be shipped soon.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="step-card">
+                                <div class="step-icon">
+                                    <i class="fas fa-headset text-info"></i>
+                                </div>
+                                <h6>Get Support</h6>
+                                <p class="text-muted small">
+                                    Need help? Contact our support team or chat with Toolie AI for instant assistance.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="{{ url_for('store') }}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-store me-2"></i> Continue Shopping
+                    </a>
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-home me-2"></i> Back to Home
+                    </a>
+                </div>
+                
+                <!-- Contact Information -->
+                <div class="contact-info mt-5">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="fas fa-question-circle me-2"></i> Need Help?
+                            </h6>
+                            <p class="card-text">
+                                If you have any questions about your purchase or need technical support, 
+                                we're here to help.
+                            </p>
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <i class="fas fa-phone text-primary"></i>
+                                    <br><small>(555) 123-VOLT</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                    <br><small>support@kynetikelectric.com</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <i class="fas fa-robot text-primary"></i>
+                                    <br><small>Chat with Toolie AI</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Products -->
+<section class="py-5 bg-dark-subtle">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h3>You Might Also Like</h3>
+            <p class="text-muted">Explore more professional electrical resources</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="product-suggestion-card">
+                    <div class="suggestion-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h6>Training Videos</h6>
+                    <p class="text-muted small">Expand your electrical knowledge</p>
+                    <a href="{{ url_for('training') }}" class="btn btn-outline-primary btn-sm">View Training</a>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="product-suggestion-card">
+                    <div class="suggestion-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h6>Professional Forms</h6>
+                    <p class="text-muted small">Essential electrical documentation</p>
+                    <a href="{{ url_for('store') }}" class="btn btn-outline-primary btn-sm">Browse Forms</a>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="product-suggestion-card">
+                    <div class="suggestion-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h6>Quote Estimator</h6>
+                    <p class="text-muted small">Get instant project estimates</p>
+                    <a href="{{ url_for('quote_estimator') }}" class="btn btn-outline-primary btn-sm">Try Calculator</a>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="product-suggestion-card">
+                    <div class="suggestion-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h6>Professional Services</h6>
+                    <p class="text-muted small">Expert electrical contracting</p>
+                    <a href="{{ url_for('services') }}" class="btn btn-outline-primary btn-sm">View Services</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add some celebration animation
+    const successIcon = document.querySelector('.success-icon i');
+    if (successIcon) {
+        successIcon.style.animation = 'pulse 2s infinite';
+    }
+    
+    // Auto-scroll to top on page load
+    window.scrollTo(0, 0);
+    
+    // Track successful purchase (analytics)
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'purchase', {
+            'event_category': 'ecommerce',
+            'event_label': 'successful_payment'
+        });
+    }
+});
+</script>
+
+<style>
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.step-card {
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 100%;
+}
+
+.step-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.product-suggestion-card {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 100%;
+}
+
+.suggestion-icon {
+    font-size: 2.5rem;
+    color: var(--bs-primary);
+    margin-bottom: 1rem;
+}
+
+.order-details .card {
+    max-width: 500px;
+    margin: 0 auto;
+}
+</style>
+{% endblock %}

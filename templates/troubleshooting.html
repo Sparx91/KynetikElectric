@@ -1,0 +1,890 @@
+{% extends "base.html" %}
+
+{% block title %}Electrical Troubleshooting Guide - Kynetik Electric{% endblock %}
+
+{% block meta_description %}AI-powered electrical troubleshooting tool. Diagnose electrical problems, get safety guidance, and know when to call a professional electrician.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 mb-4">
+                    <i class="fas fa-search text-warning me-3"></i>
+                    Electrical Troubleshooting
+                </h1>
+                <p class="lead">
+                    Diagnose electrical problems with our AI-powered troubleshooting guide. 
+                    Get step-by-step guidance and safety recommendations.
+                </p>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Safety First:</strong> If you smell burning, see sparks, or suspect immediate danger, 
+                    turn off power and call an electrician immediately.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Troubleshooting Form -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-tools me-2"></i>
+                            Describe Your Electrical Issue
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="troubleshooting-form" method="POST" class="needs-validation" novalidate>
+                            <!-- Issue Description -->
+                            <div class="mb-4">
+                                <label for="issue_description" class="form-label">
+                                    <i class="fas fa-comment-alt me-2"></i>
+                                    What's happening? Describe the problem in detail.
+                                </label>
+                                <textarea class="form-control" id="issue_description" name="issue_description" 
+                                          rows="4" required placeholder="Example: The lights in my kitchen keep flickering, especially when I turn on the microwave. This started happening last week after a thunderstorm."></textarea>
+                                <div class="form-text">
+                                    <small class="text-muted">
+                                        Be as specific as possible. Include when it started, what triggers it, and any recent changes.
+                                    </small>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please describe the electrical issue you're experiencing.
+                                </div>
+                            </div>
+                            
+                            <!-- Symptoms Checklist -->
+                            <div class="mb-4">
+                                <h5 class="text-primary mb-3">
+                                    <i class="fas fa-list-check me-2"></i>
+                                    Select all symptoms you're experiencing:
+                                </h5>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="symptom-group mb-3">
+                                            <h6 class="text-secondary">Power Issues</h6>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="no_power" name="symptoms" value="no_power">
+                                                <label class="form-check-label" for="no_power">
+                                                    Complete loss of power
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="partial_power" name="symptoms" value="partial_power">
+                                                <label class="form-check-label" for="partial_power">
+                                                    Some outlets/lights not working
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="flickering" name="symptoms" value="flickering">
+                                                <label class="form-check-label" for="flickering">
+                                                    Flickering lights
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="dimming" name="symptoms" value="dimming">
+                                                <label class="form-check-label" for="dimming">
+                                                    Lights dimming when appliances start
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="symptom-group mb-3">
+                                            <h6 class="text-secondary">Circuit Breaker Issues</h6>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="breaker_tripping" name="symptoms" value="breaker_tripping">
+                                                <label class="form-check-label" for="breaker_tripping">
+                                                    Circuit breaker keeps tripping
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="gfci_tripping" name="symptoms" value="gfci_tripping">
+                                                <label class="form-check-label" for="gfci_tripping">
+                                                    GFCI outlet keeps tripping
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="fuse_blowing" name="symptoms" value="fuse_blowing">
+                                                <label class="form-check-label" for="fuse_blowing">
+                                                    Fuses keep blowing
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="symptom-group mb-3">
+                                            <h6 class="text-secondary">Safety Concerns</h6>
+                                            <div class="form-check danger">
+                                                <input class="form-check-input" type="checkbox" id="burning_smell" name="symptoms" value="burning_smell">
+                                                <label class="form-check-label" for="burning_smell">
+                                                    <i class="fas fa-exclamation-triangle text-danger me-1"></i>
+                                                    Burning smell
+                                                </label>
+                                            </div>
+                                            <div class="form-check danger">
+                                                <input class="form-check-input" type="checkbox" id="sparks" name="symptoms" value="sparks">
+                                                <label class="form-check-label" for="sparks">
+                                                    <i class="fas fa-exclamation-triangle text-danger me-1"></i>
+                                                    Visible sparks
+                                                </label>
+                                            </div>
+                                            <div class="form-check danger">
+                                                <input class="form-check-input" type="checkbox" id="hot_outlets" name="symptoms" value="hot_outlets">
+                                                <label class="form-check-label" for="hot_outlets">
+                                                    <i class="fas fa-exclamation-triangle text-danger me-1"></i>
+                                                    Hot outlets or switches
+                                                </label>
+                                            </div>
+                                            <div class="form-check danger">
+                                                <input class="form-check-input" type="checkbox" id="shocking" name="symptoms" value="shocking">
+                                                <label class="form-check-label" for="shocking">
+                                                    <i class="fas fa-exclamation-triangle text-danger me-1"></i>
+                                                    Getting shocked by appliances
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="symptom-group mb-3">
+                                            <h6 class="text-secondary">Other Issues</h6>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="buzzing_sounds" name="symptoms" value="buzzing_sounds">
+                                                <label class="form-check-label" for="buzzing_sounds">
+                                                    Buzzing or crackling sounds
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="appliance_issues" name="symptoms" value="appliance_issues">
+                                                <label class="form-check-label" for="appliance_issues">
+                                                    Appliances not working properly
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="high_bills" name="symptoms" value="high_bills">
+                                                <label class="form-check-label" for="high_bills">
+                                                    Unusually high electric bills
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Location and Context -->
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label for="location" class="form-label">Where is the problem occurring?</label>
+                                    <select class="form-select" id="location" name="location">
+                                        <option value="">Select Location</option>
+                                        <option value="kitchen">Kitchen</option>
+                                        <option value="bathroom">Bathroom</option>
+                                        <option value="living_room">Living Room</option>
+                                        <option value="bedroom">Bedroom</option>
+                                        <option value="basement">Basement</option>
+                                        <option value="garage">Garage</option>
+                                        <option value="outdoor">Outdoor</option>
+                                        <option value="whole_house">Whole House</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="building_age" class="form-label">Building Age (approximate)</label>
+                                    <select class="form-select" id="building_age" name="building_age">
+                                        <option value="">Select Age</option>
+                                        <option value="new">Less than 10 years</option>
+                                        <option value="recent">10-25 years</option>
+                                        <option value="older">25-50 years</option>
+                                        <option value="old">50+ years</option>
+                                        <option value="unknown">Unknown</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-warning btn-lg" id="diagnose-btn">
+                                    <i class="fas fa-search me-2"></i>
+                                    Diagnose Problem
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- Analysis Results -->
+                        <div id="analysis-results" class="mt-4">
+                            {% if analysis %}
+                            <div class="troubleshooting-result urgency-{{ analysis.urgency_level }} fade-in">
+                                <div class="analysis-header text-center mb-4">
+                                    <h3 class="text-primary">
+                                        <i class="fas fa-lightbulb me-2"></i>
+                                        Diagnostic Analysis
+                                    </h3>
+                                    <div class="urgency-badge">
+                                        <span class="badge bg-{{ 'danger' if analysis.urgency_level == 'high' else 'warning' if analysis.urgency_level == 'medium' else 'success' }} fs-6">
+                                            <i class="fas fa-{{ 'exclamation-triangle' if analysis.urgency_level == 'high' else 'clock' if analysis.urgency_level == 'medium' else 'check-circle' }} me-1"></i>
+                                            {{ analysis.urgency_level.title() }} Priority
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Safety Warnings -->
+                                {% if analysis.safety_warnings %}
+                                <div class="safety-warning">
+                                    <h5 class="text-danger mb-3">
+                                        <i class="fas fa-shield-alt safety-warning-icon"></i>
+                                        Safety Warnings
+                                    </h5>
+                                    <ul class="list-unstyled">
+                                        {% for warning in analysis.safety_warnings %}
+                                        <li class="mb-2">
+                                            <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                                            {{ warning }}
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Likely Causes -->
+                                <div class="analysis-section">
+                                    <h5 class="text-primary mb-3">
+                                        <i class="fas fa-search me-2"></i>
+                                        Likely Causes
+                                    </h5>
+                                    <ul class="causes-list">
+                                        {% for cause in analysis.likely_causes %}
+                                        <li>{{ cause }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                
+                                <!-- DIY Steps -->
+                                {% if analysis.diy_steps %}
+                                <div class="analysis-section">
+                                    <h5 class="text-success mb-3">
+                                        <i class="fas fa-wrench me-2"></i>
+                                        Safe DIY Steps to Try
+                                    </h5>
+                                    <ol class="diy-steps">
+                                        {% for step in analysis.diy_steps %}
+                                        <li>{{ step }}</li>
+                                        {% endfor %}
+                                    </ol>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- When to Call Professional -->
+                                <div class="analysis-section call-pro-section">
+                                    <h5 class="text-warning mb-3">
+                                        <i class="fas fa-phone me-2"></i>
+                                        When to Call a Professional
+                                    </h5>
+                                    <p>{{ analysis.when_to_call_pro }}</p>
+                                    
+                                    <div class="text-center mt-4">
+                                        <a href="{{ url_for('bid_request') }}?service=troubleshooting" class="btn btn-primary btn-lg me-3">
+                                            <i class="fas fa-file-alt me-2"></i>
+                                            Request Professional Help
+                                        </a>
+                                        <a href="tel:555-123-3532" class="btn btn-danger btn-lg">
+                                            <i class="fas fa-phone me-2"></i>
+                                            Emergency: (555) 123-ELEC
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 2rem;">
+                    <!-- Safety Tips -->
+                    <div class="card bg-danger mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0 text-white">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                Electrical Safety
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled text-white mb-0">
+                                <li class="mb-2">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Turn off power at the breaker before inspection
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-hand-paper me-2"></i>
+                                    Never touch electrical components with wet hands
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-tools me-2"></i>
+                                    Use insulated tools when working with electricity
+                                </li>
+                                <li class="mb-0">
+                                    <i class="fas fa-phone me-2"></i>
+                                    Call professionals for any unsafe conditions
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Emergency Contacts -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Emergency Situations
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                If you experience any of these, turn off power immediately and call for help:
+                            </p>
+                            <ul class="list-unstyled">
+                                <li class="mb-2 text-danger">
+                                    <i class="fas fa-fire me-2"></i>
+                                    Burning smell or smoke
+                                </li>
+                                <li class="mb-2 text-danger">
+                                    <i class="fas fa-bolt me-2"></i>
+                                    Visible sparks or arcing
+                                </li>
+                                <li class="mb-2 text-danger">
+                                    <i class="fas fa-thermometer-full me-2"></i>
+                                    Hot outlets or panels
+                                </li>
+                                <li class="mb-0 text-danger">
+                                    <i class="fas fa-zap me-2"></i>
+                                    Electric shocks
+                                </li>
+                            </ul>
+                            <div class="text-center mt-3">
+                                <a href="tel:555-123-3532" class="btn btn-danger w-100">
+                                    <i class="fas fa-phone me-2"></i>
+                                    Call Emergency Line
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Related Resources -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-book me-2"></i>
+                                Helpful Resources
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('training') }}" class="btn btn-outline-success">
+                                    <i class="fas fa-graduation-cap me-2"></i>
+                                    Safety Training Videos
+                                </a>
+                                <a href="{{ url_for('quote_estimator') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-calculator me-2"></i>
+                                    Repair Cost Estimator
+                                </a>
+                                <a href="{{ url_for('store') }}" class="btn btn-outline-warning">
+                                    <i class="fas fa-tools me-2"></i>
+                                    Professional Tools
+                                </a>
+                                <a href="{{ url_for('bid_request') }}" class="btn btn-outline-info">
+                                    <i class="fas fa-file-alt me-2"></i>
+                                    Request Service Call
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional CSS -->
+<style>
+.bg-gradient {
+    background: linear-gradient(135deg, var(--surface-dark) 0%, var(--background-dark) 100%);
+}
+
+.symptom-group {
+    background: var(--surface-light);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.symptom-group h6 {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-check {
+    background: var(--surface-dark);
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.form-check:hover {
+    border-color: var(--primary-blue);
+    background: rgba(26, 140, 255, 0.05);
+}
+
+.form-check.danger {
+    border-color: var(--danger);
+    background: rgba(220, 53, 69, 0.05);
+}
+
+.form-check.danger:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.troubleshooting-result {
+    background: var(--surface-dark);
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 30px;
+}
+
+.urgency-high {
+    border-left: 6px solid var(--danger);
+    background: rgba(220, 53, 69, 0.05);
+}
+
+.urgency-medium {
+    border-left: 6px solid var(--warning);
+    background: rgba(255, 193, 7, 0.05);
+}
+
+.urgency-low {
+    border-left: 6px solid var(--success);
+    background: rgba(76, 175, 80, 0.05);
+}
+
+.urgency-badge {
+    margin-top: 15px;
+}
+
+.safety-warning {
+    background: rgba(220, 53, 69, 0.1);
+    border: 2px solid var(--danger);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.safety-warning-icon {
+    font-size: 1.5rem;
+    vertical-align: middle;
+}
+
+.analysis-section {
+    background: var(--surface-light);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.analysis-section h5 {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.causes-list {
+    list-style: none;
+    padding: 0;
+}
+
+.causes-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    padding-left: 30px;
+}
+
+.causes-list li:last-child {
+    border-bottom: none;
+}
+
+.causes-list li::before {
+    content: '\f0eb';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--warning);
+    position: absolute;
+    left: 0;
+    top: 10px;
+}
+
+.diy-steps {
+    counter-reset: step-counter;
+    list-style: none;
+    padding: 0;
+}
+
+.diy-steps li {
+    counter-increment: step-counter;
+    padding: 15px 0 15px 50px;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+}
+
+.diy-steps li:last-child {
+    border-bottom: none;
+}
+
+.diy-steps li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 15px;
+    width: 30px;
+    height: 30px;
+    background: var(--success);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.call-pro-section {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 152, 0, 0.1));
+    border: 2px solid var(--warning);
+}
+
+.analysis-header {
+    margin-bottom: 30px;
+}
+
+.analysis-header h3 {
+    margin-bottom: 15px;
+}
+
+#diagnose-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+</style>
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('troubleshooting-form');
+    const diagnoseBtn = document.getElementById('diagnose-btn');
+    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+    const dangerSymptoms = ['burning_smell', 'sparks', 'hot_outlets', 'shocking'];
+    
+    // Check for immediate danger symptoms
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (dangerSymptoms.includes(this.value) && this.checked) {
+                showEmergencyAlert();
+            }
+            updateDiagnoseButton();
+        });
+    });
+    
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        performDiagnosis();
+    });
+    
+    function showEmergencyAlert() {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+        alertDiv.innerHTML = `
+            <h5 class="alert-heading">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                SAFETY WARNING!
+            </h5>
+            <p>The symptoms you've selected indicate a potentially dangerous electrical condition. 
+            Turn off power at the main breaker immediately and contact an electrician.</p>
+            <hr>
+            <div class="text-center">
+                <a href="tel:555-123-3532" class="btn btn-light btn-lg">
+                    <i class="fas fa-phone me-2"></i>
+                    Call Emergency Line Now
+                </a>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        form.insertBefore(alertDiv, form.firstChild);
+        alertDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    
+    function updateDiagnoseButton() {
+        const checkedBoxes = form.querySelectorAll('input[type="checkbox"]:checked');
+        const issueDescription = form.querySelector('#issue_description').value.trim();
+        
+        diagnoseBtn.disabled = checkedBoxes.length === 0 && issueDescription.length < 10;
+    }
+    
+    function performDiagnosis() {
+        const resultsDiv = document.getElementById('analysis-results');
+        const formData = new FormData(form);
+        
+        // Show loading state
+        resultsDiv.innerHTML = `
+            <div class="text-center py-5">
+                <div class="loading-spinner"></div>
+                <h5 class="mt-3 text-primary">Analyzing your electrical issue...</h5>
+                <p class="text-muted">Our AI is reviewing symptoms and generating recommendations.</p>
+            </div>
+        `;
+        
+        // Simulate AI analysis (in real app, this would be a POST to the server)
+        setTimeout(() => {
+            const analysis = generateAnalysis(formData);
+            displayAnalysis(analysis);
+        }, 3000);
+    }
+    
+    function generateAnalysis(formData) {
+        const symptoms = formData.getAll('symptoms');
+        const description = formData.get('issue_description');
+        const location = formData.get('location');
+        const buildingAge = formData.get('building_age');
+        
+        let urgencyLevel = 'low';
+        let likelihyCauses = [];
+        let safetyWarnings = [];
+        let diySteps = [];
+        let whenToCallPro = '';
+        
+        // Check for emergency symptoms
+        const emergencySymptoms = symptoms.filter(s => dangerSymptoms.includes(s));
+        if (emergencySymptoms.length > 0) {
+            urgencyLevel = 'high';
+            safetyWarnings.push('Turn off power at the main breaker immediately');
+            safetyWarnings.push('Do not attempt DIY repairs with these symptoms');
+            safetyWarnings.push('Contact an electrician immediately');
+            whenToCallPro = 'Call a professional electrician immediately. These symptoms indicate potentially dangerous conditions that require immediate attention.';
+        } else {
+            // Analyze based on symptoms
+            if (symptoms.includes('no_power')) {
+                urgencyLevel = 'medium';
+                likelihyCauses.push('Tripped main breaker or blown main fuse');
+                likelihyCauses.push('Utility power outage');
+                likelihyCauses.push('Service disconnect issue');
+                diySteps.push('Check if neighbors have power to rule out utility outage');
+                diySteps.push('Check main breaker in electrical panel');
+                diySteps.push('Look for any obviously damaged wiring or equipment');
+            }
+            
+            if (symptoms.includes('partial_power')) {
+                likelihyCauses.push('Tripped circuit breaker');
+                likelihyCauses.push('Blown fuse');
+                likelihyCauses.push('Loose wire connection');
+                diySteps.push('Check circuit breakers for tripped positions');
+                diySteps.push('Test GFCI outlets and reset if needed');
+                diySteps.push('Check for loose plugs in outlets');
+            }
+            
+            if (symptoms.includes('flickering')) {
+                likelihyCauses.push('Loose wire connections');
+                likelihyCauses.push('Overloaded circuit');
+                likelihyCauses.push('Voltage fluctuations');
+                if (location === 'whole_house') {
+                    urgencyLevel = 'medium';
+                    likelihyCauses.push('Main electrical service issues');
+                }
+            }
+            
+            if (symptoms.includes('breaker_tripping')) {
+                likelihyCauses.push('Circuit overload');
+                likelihyCauses.push('Short circuit');
+                likelihyCauses.push('Ground fault');
+                likelihyCauses.push('Faulty appliance or device');
+                diySteps.push('Unplug all devices on the affected circuit');
+                diySteps.push('Reset the breaker');
+                diySteps.push('Plug devices back in one at a time to identify the culprit');
+            }
+            
+            if (symptoms.includes('gfci_tripping')) {
+                likelihyCauses.push('Ground fault detected (normal GFCI operation)');
+                likelihyCauses.push('Moisture in electrical components');
+                likelihyCauses.push('Faulty appliance with ground fault');
+                diySteps.push('Unplug all devices from GFCI-protected outlets');
+                diySteps.push('Press the RESET button on the GFCI outlet');
+                diySteps.push('Plug devices back in one at a time');
+            }
+            
+            // Safety warnings for non-emergency situations
+            safetyWarnings.push('Always turn off power at the breaker before inspecting electrical components');
+            safetyWarnings.push('Use insulated tools when working with electrical systems');
+            safetyWarnings.push('Never work on electrical systems in wet conditions');
+            
+            // When to call professional
+            if (urgencyLevel === 'medium') {
+                whenToCallPro = 'Contact a professional if DIY steps don\'t resolve the issue, or if you\'re uncomfortable performing any electrical work. Complex wiring issues require professional diagnosis.';
+            } else {
+                whenToCallPro = 'Consider calling a professional if the problem persists after basic troubleshooting, or if you discover any damaged wiring or components.';
+            }
+        }
+        
+        // Building age considerations
+        if (buildingAge === 'old') {
+            likelihyCauses.push('Aging electrical system components');
+            safetyWarnings.push('Older electrical systems may not meet current safety standards');
+        }
+        
+        return {
+            urgency_level: urgencyLevel,
+            likely_causes: likelihyCauses,
+            safety_warnings: safetyWarnings,
+            diy_steps: diySteps,
+            when_to_call_pro: whenToCallPro
+        };
+    }
+    
+    function displayAnalysis(analysis) {
+        const resultsDiv = document.getElementById('analysis-results');
+        
+        const urgencyClass = analysis.urgency_level === 'high' ? 'danger' : 
+                           analysis.urgency_level === 'medium' ? 'warning' : 'success';
+        const urgencyIcon = analysis.urgency_level === 'high' ? 'exclamation-triangle' : 
+                          analysis.urgency_level === 'medium' ? 'clock' : 'check-circle';
+        
+        let html = `
+            <div class="troubleshooting-result urgency-${analysis.urgency_level} fade-in">
+                <div class="analysis-header text-center mb-4">
+                    <h3 class="text-primary">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Diagnostic Analysis
+                    </h3>
+                    <div class="urgency-badge">
+                        <span class="badge bg-${urgencyClass} fs-6">
+                            <i class="fas fa-${urgencyIcon} me-1"></i>
+                            ${analysis.urgency_level.charAt(0).toUpperCase() + analysis.urgency_level.slice(1)} Priority
+                        </span>
+                    </div>
+                </div>
+        `;
+        
+        // Safety warnings
+        if (analysis.safety_warnings.length > 0) {
+            html += `
+                <div class="safety-warning">
+                    <h5 class="text-danger mb-3">
+                        <i class="fas fa-shield-alt safety-warning-icon"></i>
+                        Safety Warnings
+                    </h5>
+                    <ul class="list-unstyled">
+            `;
+            analysis.safety_warnings.forEach(warning => {
+                html += `
+                    <li class="mb-2">
+                        <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                        ${warning}
+                    </li>
+                `;
+            });
+            html += `</ul></div>`;
+        }
+        
+        // Likely causes
+        if (analysis.likely_causes.length > 0) {
+            html += `
+                <div class="analysis-section">
+                    <h5 class="text-primary mb-3">
+                        <i class="fas fa-search me-2"></i>
+                        Likely Causes
+                    </h5>
+                    <ul class="causes-list">
+            `;
+            analysis.likely_causes.forEach(cause => {
+                html += `<li>${cause}</li>`;
+            });
+            html += `</ul></div>`;
+        }
+        
+        // DIY steps
+        if (analysis.diy_steps.length > 0) {
+            html += `
+                <div class="analysis-section">
+                    <h5 class="text-success mb-3">
+                        <i class="fas fa-wrench me-2"></i>
+                        Safe DIY Steps to Try
+                    </h5>
+                    <ol class="diy-steps">
+            `;
+            analysis.diy_steps.forEach(step => {
+                html += `<li>${step}</li>`;
+            });
+            html += `</ol></div>`;
+        }
+        
+        // When to call professional
+        html += `
+            <div class="analysis-section call-pro-section">
+                <h5 class="text-warning mb-3">
+                    <i class="fas fa-phone me-2"></i>
+                    When to Call a Professional
+                </h5>
+                <p>${analysis.when_to_call_pro}</p>
+                
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('bid_request') }}?service=troubleshooting" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-file-alt me-2"></i>
+                        Request Professional Help
+                    </a>
+                    <a href="tel:555-123-3532" class="btn btn-danger btn-lg">
+                        <i class="fas fa-phone me-2"></i>
+                        Emergency: (555) 123-ELEC
+                    </a>
+                </div>
+            </div>
+        `;
+        
+        html += `</div>`;
+        resultsDiv.innerHTML = html;
+        
+        // Scroll to results
+        resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Auto-suggest Toolie chat for complex issues
+        if (analysis.urgency_level !== 'low') {
+            setTimeout(() => {
+                if (window.toolieChat) {
+                    toolieChat.addMessage("I see you're troubleshooting an electrical issue. I can provide additional guidance or help you understand when to call a professional. Feel free to ask me any questions!", 'bot');
+                }
+            }, 2000);
+        }
+    }
+    
+    // Initial button state
+    updateDiagnoseButton();
+});
+</script>
+{% endblock %}
+{% endblock %}

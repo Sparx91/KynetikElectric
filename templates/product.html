@@ -1,0 +1,588 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Kynetik Electric Store{% endblock %}
+
+{% block meta_description %}{{ product.description[:160] }}{% endblock %}
+
+{% block content %}
+<!-- Product Details -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Product Image -->
+            <div class="col-lg-6">
+                <div class="product-image-container">
+                    {% if product.image_url %}
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid rounded">
+                    {% else %}
+                        <div class="product-placeholder">
+                            {% if product.product_type == 'digital' %}
+                                <i class="fas fa-file-pdf fa-5x text-primary"></i>
+                            {% else %}
+                                <i class="fas fa-tools fa-5x text-warning"></i>
+                            {% endif %}
+                            <h4 class="mt-3 text-muted">{{ product.name }}</h4>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="product-badges mt-3">
+                        {% if product.product_type == 'digital' %}
+                            <span class="badge bg-primary fs-6 me-2">
+                                <i class="fas fa-download me-1"></i>Digital Download
+                            </span>
+                            <span class="badge bg-success fs-6">
+                                <i class="fas fa-bolt me-1"></i>Instant Access
+                            </span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark fs-6 me-2">
+                                <i class="fas fa-shipping-fast me-1"></i>Physical Product
+                            </span>
+                            <span class="badge bg-info fs-6">
+                                <i class="fas fa-globe me-1"></i>Ships Worldwide
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product Information -->
+            <div class="col-lg-6">
+                <div class="product-info">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="mb-3">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url_for('store') }}">Store</a></li>
+                            <li class="breadcrumb-item active">{{ product.name }}</li>
+                        </ol>
+                    </nav>
+                    
+                    <h1 class="product-title">{{ product.name }}</h1>
+                    
+                    <div class="product-price-container mb-4">
+                        <span class="product-price">${{ "%.2f"|format(product.price) }}</span>
+                        {% if product.product_type == 'digital' %}
+                            <small class="text-muted ms-2">One-time purchase</small>
+                        {% else %}
+                            <small class="text-muted ms-2">+ shipping</small>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-description mb-4">
+                        <h5 class="mb-3">Description</h5>
+                        <p>{{ product.description }}</p>
+                    </div>
+                    
+                    <!-- Product Features -->
+                    <div class="product-features mb-4">
+                        <h5 class="mb-3">Features</h5>
+                        {% if product.product_type == 'digital' %}
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Instant download after purchase
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    High-quality PDF format
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Printable and editable
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Lifetime access
+                                </li>
+                                {% if 'form' in product.name.lower() %}
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Fillable form fields
+                                </li>
+                                {% endif %}
+                            </ul>
+                        {% else %}
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Professional quality materials
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Fast shipping available
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Satisfaction guaranteed
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Industry tested and approved
+                                </li>
+                            </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Purchase Section -->
+                    <div class="purchase-section">
+                        {% if product.stripe_price_id %}
+                            <form method="POST" action="{{ url_for('create_checkout_session') }}">
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                                    <i class="fas fa-shopping-cart me-2"></i>
+                                    {% if product.product_type == 'digital' %}
+                                        Buy & Download Now
+                                    {% else %}
+                                        Add to Cart
+                                    {% endif %}
+                                </button>
+                            </form>
+                        {% else %}
+                            <button class="btn btn-outline-primary btn-lg w-100 mb-3" disabled>
+                                <i class="fas fa-clock me-2"></i>
+                                Coming Soon
+                            </button>
+                        {% endif %}
+                        
+                        <div class="security-info text-center">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt text-success me-1"></i>
+                                Secure checkout powered by Stripe
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product Details Tabs -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-pills nav-fill mb-4" id="productTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="details-tab" data-bs-toggle="pill" data-bs-target="#details" type="button" role="tab">
+                            <i class="fas fa-info-circle me-2"></i>Details
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="specs-tab" data-bs-toggle="pill" data-bs-target="#specs" type="button" role="tab">
+                            <i class="fas fa-list me-2"></i>Specifications
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="support-tab" data-bs-toggle="pill" data-bs-target="#support" type="button" role="tab">
+                            <i class="fas fa-headset me-2"></i>Support
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="productTabContent">
+                    <!-- Details Tab -->
+                    <div class="tab-pane fade show active" id="details" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4">Product Details</h5>
+                                
+                                {% if product.product_type == 'digital' %}
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6 class="text-primary">File Information</h6>
+                                            <ul class="list-unstyled">
+                                                <li><strong>Format:</strong> PDF</li>
+                                                <li><strong>Compatibility:</strong> All devices</li>
+                                                <li><strong>Size:</strong> Optimized for print and digital</li>
+                                                <li><strong>Language:</strong> English</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 class="text-primary">Usage Rights</h6>
+                                            <ul class="list-unstyled">
+                                                <li><strong>License:</strong> Single user</li>
+                                                <li><strong>Printing:</strong> Unlimited</li>
+                                                <li><strong>Sharing:</strong> Not permitted</li>
+                                                <li><strong>Updates:</strong> Free for 1 year</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6 class="text-primary">Product Information</h6>
+                                            <ul class="list-unstyled">
+                                                <li><strong>Brand:</strong> Kynetik Electric</li>
+                                                <li><strong>Quality:</strong> Professional grade</li>
+                                                <li><strong>Warranty:</strong> 1 year manufacturer</li>
+                                                <li><strong>Origin:</strong> USA</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 class="text-primary">Shipping Information</h6>
+                                            <ul class="list-unstyled">
+                                                <li><strong>Processing:</strong> 1-2 business days</li>
+                                                <li><strong>Shipping:</strong> 3-7 business days</li>
+                                                <li><strong>International:</strong> 7-14 business days</li>
+                                                <li><strong>Tracking:</strong> Provided with all orders</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="mt-4">
+                                    <h6 class="text-primary">Professional Use</h6>
+                                    <p class="mb-0">
+                                        This product is designed for professional electricians, contractors, and technicians. 
+                                        It meets industry standards and follows best practices for electrical work. 
+                                        Perfect for both experienced professionals and those learning the trade.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Specifications Tab -->
+                    <div class="tab-pane fade" id="specs" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4">Technical Specifications</h5>
+                                
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            {% if product.product_type == 'digital' %}
+                                                <tr>
+                                                    <td><strong>File Format</strong></td>
+                                                    <td>PDF (Portable Document Format)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Page Size</strong></td>
+                                                    <td>8.5" x 11" (Letter)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Resolution</strong></td>
+                                                    <td>300 DPI (Print Quality)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Color</strong></td>
+                                                    <td>Full Color</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Interactive Elements</strong></td>
+                                                    <td>{% if 'form' in product.name.lower() %}Fillable form fields{% else %}Standard PDF{% endif %}</td>
+                                                </tr>
+                                            {% else %}
+                                                <tr>
+                                                    <td><strong>Material</strong></td>
+                                                    <td>Professional Grade</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Dimensions</strong></td>
+                                                    <td>Varies by product</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Weight</strong></td>
+                                                    <td>Optimized for portability</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Certification</strong></td>
+                                                    <td>Industry approved</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Packaging</strong></td>
+                                                    <td>Professional packaging</td>
+                                                </tr>
+                                            {% endif %}
+                                            <tr>
+                                                <td><strong>Product Type</strong></td>
+                                                <td>{{ product.product_type.title() }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>SKU</strong></td>
+                                                <td>KE-{{ product.id }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Support Tab -->
+                    <div class="tab-pane fade" id="support" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4">Customer Support</h5>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="support-section">
+                                            <h6 class="text-primary">
+                                                <i class="fas fa-question-circle me-2"></i>
+                                                Need Help?
+                                            </h6>
+                                            <p>Our AI assistant Toolie is available 24/7 to help with product questions and technical support.</p>
+                                            <button class="btn btn-outline-primary" onclick="toolieChat.openChat()">
+                                                <i class="fas fa-robot me-2"></i>
+                                                Chat with Toolie AI
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="support-section">
+                                            <h6 class="text-primary">
+                                                <i class="fas fa-envelope me-2"></i>
+                                                Contact Support
+                                            </h6>
+                                            <p>For complex issues or custom requests, reach out to our support team.</p>
+                                            <a href="{{ url_for('bid_request') }}?subject=product_support" class="btn btn-outline-primary">
+                                                <i class="fas fa-paper-plane me-2"></i>
+                                                Send Message
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <hr class="my-4">
+                                
+                                <div class="faq-section">
+                                    <h6 class="text-primary mb-3">Frequently Asked Questions</h6>
+                                    
+                                    <div class="accordion" id="faqAccordion">
+                                        {% if product.product_type == 'digital' %}
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                                        How do I download my purchase?
+                                                    </button>
+                                                </h2>
+                                                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                                    <div class="accordion-body">
+                                                        After successful payment, you'll receive an email with download links. You can also access your purchases from your account dashboard.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                                        Can I print this document?
+                                                    </button>
+                                                </h2>
+                                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                                    <div class="accordion-body">
+                                                        Yes! All our digital products are designed for printing. You can print unlimited copies for your personal or business use.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                                        What's included in shipping?
+                                                    </button>
+                                                </h2>
+                                                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                                    <div class="accordion-body">
+                                                        Shipping costs are calculated at checkout based on your location. We offer standard and expedited shipping options.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                                        Do you ship internationally?
+                                                    </button>
+                                                </h2>
+                                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                                    <div class="accordion-body">
+                                                        Yes, we ship worldwide! International shipping times vary by location but typically take 7-14 business days.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                                    What's your refund policy?
+                                                </button>
+                                            </h2>
+                                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                                <div class="accordion-body">
+                                                    We offer a 30-day satisfaction guarantee. If you're not completely satisfied with your purchase, contact our support team for a full refund.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Products -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">You Might Also Like</h2>
+        
+        <div class="row g-4">
+            <!-- This would typically show related products from the database -->
+            <div class="col-lg-4 col-md-6">
+                <div class="text-center py-4">
+                    <i class="fas fa-tools fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">More Products Coming Soon</h5>
+                    <p class="text-muted">We're expanding our catalog with more professional electrical resources.</p>
+                    <a href="{{ url_for('store') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-store me-2"></i>
+                        Browse Store
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional CSS -->
+<style>
+.product-image-container {
+    position: sticky;
+    top: 2rem;
+}
+
+.product-placeholder {
+    height: 400px;
+    background: var(--surface-light);
+    border: 2px dashed var(--border-color);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.product-placeholder img,
+.product-image-container img {
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 15px;
+}
+
+.product-title {
+    color: var(--text-primary);
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.product-price {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--accent-orange);
+}
+
+.product-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.product-features ul li {
+    padding: 8px 0;
+    color: var(--text-secondary);
+}
+
+.security-info {
+    padding: 15px;
+    background: var(--surface-light);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.support-section {
+    background: var(--surface-light);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    height: 100%;
+}
+
+.nav-pills .nav-link {
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    background: var(--surface-light);
+    margin: 0 5px;
+}
+
+.nav-pills .nav-link:hover,
+.nav-pills .nav-link.active {
+    color: white;
+    background: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.accordion-button {
+    background: var(--surface-light);
+    color: var(--text-primary);
+    border: none;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: var(--primary-blue);
+}
+
+.accordion-button:not(.collapsed) {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.accordion-body {
+    background: var(--surface-dark);
+    color: var(--text-secondary);
+}
+
+.breadcrumb {
+    background: none;
+    padding: 0;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-blue);
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: var(--text-muted);
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, var(--surface-dark) 0%, var(--background-dark) 100%);
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > td {
+    background: var(--surface-light);
+}
+
+.table {
+    color: var(--text-secondary);
+}
+
+.table th {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.table td {
+    border-color: var(--border-color);
+}
+</style>
+{% endblock %}

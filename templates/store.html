@@ -1,0 +1,513 @@
+{% extends "base.html" %}
+
+{% block title %}Digital Store - Kynetik Electric{% endblock %}
+
+{% block meta_description %}Professional electrical tools, forms, guides, and equipment. Digital downloads and physical products for electricians and contractors.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 mb-4">Digital Store</h1>
+                <p class="lead">
+                    Professional tools, forms, and resources for electrical contractors and technicians.
+                    Digital downloads and physical products.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Store Navigation -->
+<section class="py-3 border-bottom">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="store-nav">
+                    <ul class="nav nav-pills justify-content-center">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#all" data-filter="all">
+                                <i class="fas fa-th me-2"></i>All Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#digital" data-filter="digital">
+                                <i class="fas fa-download me-2"></i>Digital Downloads
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#physical" data-filter="physical">
+                                <i class="fas fa-box me-2"></i>Physical Products
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Digital Products -->
+{% if digital_products %}
+<section class="py-5" id="digital-section">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-download text-primary me-2"></i>
+                Digital Downloads
+            </h2>
+            <span class="badge bg-primary fs-6">Instant Access</span>
+        </div>
+        
+        <div class="row g-4">
+            {% for product in digital_products %}
+            <div class="col-lg-4 col-md-6 product-item" data-category="digital">
+                <div class="product-card h-100">
+                    <div class="product-image">
+                        {% if product.image_url %}
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid">
+                        {% else %}
+                            <i class="fas fa-file-pdf fa-4x text-primary"></i>
+                        {% endif %}
+                        <div class="product-type-badge">
+                            <span class="badge bg-primary">
+                                <i class="fas fa-download me-1"></i>Digital
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-content">
+                        <h5 class="product-title">{{ product.name }}</h5>
+                        <p class="product-description text-muted">{{ product.description[:100] }}{% if product.description|length > 100 %}...{% endif %}</p>
+                        
+                        <div class="product-features">
+                            {% if 'form' in product.name.lower() or 'sheet' in product.name.lower() %}
+                                <ul class="list-unstyled small">
+                                    <li><i class="fas fa-check text-success me-2"></i>Fillable PDF format</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Professional layout</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Printable & saveable</li>
+                                </ul>
+                            {% elif 'guide' in product.name.lower() or 'manual' in product.name.lower() %}
+                                <ul class="list-unstyled small">
+                                    <li><i class="fas fa-check text-success me-2"></i>Step-by-step instructions</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Illustrated examples</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Industry best practices</li>
+                                </ul>
+                            {% else %}
+                                <ul class="list-unstyled small">
+                                    <li><i class="fas fa-check text-success me-2"></i>High-quality content</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Professional format</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Instant download</li>
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="product-footer">
+                        <div class="product-price">
+                            ${{ "%.2f"|format(product.price) }}
+                        </div>
+                        
+                        {% if product.stripe_price_id %}
+                        <form method="POST" action="{{ url_for('create_checkout_session') }}">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                Buy Now
+                            </button>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-outline-primary w-100" disabled>
+                            <i class="fas fa-clock me-2"></i>
+                            Coming Soon
+                        </button>
+                        {% endif %}
+                        
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-outline-secondary w-100 mt-2">
+                            <i class="fas fa-info-circle me-2"></i>
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Physical Products -->
+{% if physical_products %}
+<section class="py-5 bg-gradient" id="physical-section">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-box text-warning me-2"></i>
+                Physical Products
+            </h2>
+            <span class="badge bg-warning text-dark fs-6">Ships Worldwide</span>
+        </div>
+        
+        <div class="row g-4">
+            {% for product in physical_products %}
+            <div class="col-lg-4 col-md-6 product-item" data-category="physical">
+                <div class="product-card h-100">
+                    <div class="product-image">
+                        {% if product.image_url %}
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid">
+                        {% else %}
+                            <i class="fas fa-tools fa-4x text-warning"></i>
+                        {% endif %}
+                        <div class="product-type-badge">
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-shipping-fast me-1"></i>Physical
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-content">
+                        <h5 class="product-title">{{ product.name }}</h5>
+                        <p class="product-description text-muted">{{ product.description[:100] }}{% if product.description|length > 100 %}...{% endif %}</p>
+                        
+                        <div class="product-features">
+                            {% if 'kit' in product.name.lower() %}
+                                <ul class="list-unstyled small">
+                                    <li><i class="fas fa-check text-success me-2"></i>Complete tool kit</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Professional quality</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Organized case</li>
+                                </ul>
+                            {% elif 'sticker' in product.name.lower() or 'decal' in product.name.lower() %}
+                                <ul class="list-unstyled small">
+                                    <li><i class="fas fa-check text-success me-2"></i>Weather resistant</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>High-quality vinyl</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Professional design</li>
+                                </ul>
+                            {% else %}
+                                <ul class="list-unstyled small">
+                                    <li><i class="fas fa-check text-success me-2"></i>High quality materials</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Fast shipping</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Satisfaction guaranteed</li>
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="product-footer">
+                        <div class="product-price">
+                            ${{ "%.2f"|format(product.price) }}
+                        </div>
+                        
+                        {% if product.stripe_price_id %}
+                        <form method="POST" action="{{ url_for('create_checkout_session') }}">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <button type="submit" class="btn btn-warning w-100">
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                Add to Cart
+                            </button>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-outline-warning w-100" disabled>
+                            <i class="fas fa-clock me-2"></i>
+                            Coming Soon
+                        </button>
+                        {% endif %}
+                        
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-outline-secondary w-100 mt-2">
+                            <i class="fas fa-info-circle me-2"></i>
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Empty State -->
+{% if not digital_products and not physical_products %}
+<section class="py-5">
+    <div class="container">
+        <div class="text-center py-5">
+            <i class="fas fa-store fa-4x text-muted mb-3"></i>
+            <h3 class="text-muted">Store Coming Soon</h3>
+            <p class="lead text-muted">
+                We're preparing an amazing collection of professional electrical tools and resources.
+                Check back soon!
+            </p>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Back to Home
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Categories -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">Product Categories</h2>
+            <p class="lead text-muted">
+                Professional resources designed for electrical contractors and technicians
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="category-highlight">
+                    <div class="category-icon">
+                        <i class="fas fa-file-alt text-primary"></i>
+                    </div>
+                    <h5>Forms & Templates</h5>
+                    <p class="text-muted">
+                        Professional electrical forms, checklists, and documentation templates.
+                    </p>
+                    <ul class="list-unstyled small">
+                        <li>• Megger test sheets</li>
+                        <li>• Panel schedules</li>
+                        <li>• Job walk sheets</li>
+                        <li>• Safety checklists</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="category-highlight">
+                    <div class="category-icon">
+                        <i class="fas fa-book text-success"></i>
+                    </div>
+                    <h5>Guides & Manuals</h5>
+                    <p class="text-muted">
+                        Step-by-step guides and reference manuals for electrical work.
+                    </p>
+                    <ul class="list-unstyled small">
+                        <li>• Installation guides</li>
+                        <li>• Troubleshooting manuals</li>
+                        <li>• Code references</li>
+                        <li>• Best practices</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="category-highlight">
+                    <div class="category-icon">
+                        <i class="fas fa-tools text-warning"></i>
+                    </div>
+                    <h5>Tool Kits</h5>
+                    <p class="text-muted">
+                        Curated tool collections for specific electrical tasks and projects.
+                    </p>
+                    <ul class="list-unstyled small">
+                        <li>• Starter tool kits</li>
+                        <li>• Specialty tools</li>
+                        <li>• Testing equipment</li>
+                        <li>• Safety gear</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="category-highlight">
+                    <div class="category-icon">
+                        <i class="fas fa-certificate text-info"></i>
+                    </div>
+                    <h5>Brand Materials</h5>
+                    <p class="text-muted">
+                        Professional branding materials and promotional items.
+                    </p>
+                    <ul class="list-unstyled small">
+                        <li>• Business stickers</li>
+                        <li>• Vehicle decals</li>
+                        <li>• Branded apparel</li>
+                        <li>• Marketing materials</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional CSS -->
+<style>
+.store-nav .nav-link {
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    margin: 0 5px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.store-nav .nav-link:hover,
+.store-nav .nav-link.active {
+    color: var(--primary-blue);
+    background: rgba(26, 140, 255, 0.1);
+    border-color: var(--primary-blue);
+}
+
+.product-card {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(26, 140, 255, 0.2);
+    border-color: var(--primary-blue);
+}
+
+.product-image {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-light);
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.product-type-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.product-content {
+    padding: 20px;
+    flex: 1;
+}
+
+.product-title {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.product-description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+}
+
+.product-features ul li {
+    padding: 3px 0;
+    font-size: 0.85rem;
+}
+
+.product-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-orange);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.category-highlight {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 30px 20px;
+    text-align: center;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.category-highlight:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(26, 140, 255, 0.2);
+    border-color: var(--primary-blue);
+}
+
+.category-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.category-highlight h5 {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.category-highlight p {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.category-highlight ul {
+    text-align: left;
+}
+
+.category-highlight ul li {
+    padding: 3px 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, var(--surface-dark) 0%, var(--background-dark) 100%);
+}
+
+.product-item {
+    transition: opacity 0.3s ease;
+}
+
+.product-item.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+</style>
+
+{% block extra_scripts %}
+<script>
+// Product filtering
+document.addEventListener('DOMContentLoaded', function() {
+    const filterLinks = document.querySelectorAll('[data-filter]');
+    const productItems = document.querySelectorAll('.product-item');
+    
+    filterLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Update active state
+            filterLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter products
+            const filter = this.getAttribute('data-filter');
+            
+            productItems.forEach(item => {
+                if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

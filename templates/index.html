@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}Kynetik Electric - Professional Electrical Contracting{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="hero-title">Powered by Innovation</h1>
+                    <p class="hero-subtitle">
+                        Professional electrical contracting with cutting-edge 3D LiDAR technology, 
+                        AI-powered assistance, and decades of expertise.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="{{ url_for('bid_request') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-file-alt me-2"></i>Request a Bid
+                        </a>
+                        <a href="{{ url_for('services') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-bolt me-2"></i>View Services
+                        </a>
+                    </div>
+                    
+                    <div class="hero-stats mt-5">
+                        <div class="row">
+                            <div class="col-4 text-center">
+                                <div class="stat-number counter" data-target="500">0</div>
+                                <div class="stat-label text-muted">Projects Completed</div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="stat-number counter" data-target="15">0</div>
+                                <div class="stat-label text-muted">Years Experience</div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="stat-number counter" data-target="24">0</div>
+                                <div class="stat-label text-muted">Hour Service</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image text-center">
+                    <div class="tech-showcase">
+                        <div class="floating-icon" style="animation-delay: 0s;">
+                            <i class="fas fa-bolt fa-3x text-primary"></i>
+                        </div>
+                        <div class="floating-icon" style="animation-delay: 1s;">
+                            <i class="fas fa-camera fa-2x text-warning"></i>
+                        </div>
+                        <div class="floating-icon" style="animation-delay: 2s;">
+                            <i class="fas fa-robot fa-2x text-info"></i>
+                        </div>
+                        <div class="floating-icon" style="animation-delay: 3s;">
+                            <i class="fas fa-tools fa-2x text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Overview -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Our Core Services</h2>
+            <p class="section-subtitle text-muted">
+                Comprehensive electrical solutions powered by innovation and expertise
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            {% for service in services %}
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card animate-on-scroll">
+                    <div class="service-icon">
+                        <i class="{{ service.icon }}"></i>
+                    </div>
+                    <h4 class="service-title">{{ service.name }}</h4>
+                    <p class="service-description">{{ service.description }}</p>
+                    <a href="{{ url_for('bid_request') }}?service={{ service.id }}" class="btn btn-outline-primary">
+                        Request Quote
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('services') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-list me-2"></i>View All Services
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Technology Section -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="mb-4">Advanced Technology</h2>
+                <p class="lead mb-4">
+                    We leverage cutting-edge technology to deliver superior electrical solutions
+                </p>
+                
+                <div class="tech-features">
+                    <div class="tech-feature mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="tech-icon me-3">
+                                <i class="fas fa-camera text-primary"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">3D LiDAR Scanning</h5>
+                                <p class="mb-0 text-muted">Precise 3D documentation and planning</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-feature mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="tech-icon me-3">
+                                <i class="fas fa-robot text-primary"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">AI-Powered Assistant</h5>
+                                <p class="mb-0 text-muted">Toolie AI helps with quotes and troubleshooting</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-feature mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="tech-icon me-3">
+                                <i class="fas fa-mobile-alt text-primary"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Digital Solutions</h5>
+                                <p class="mb-0 text-muted">Mobile-first tools and documentation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="{{ url_for('quote_estimator') }}" class="btn btn-warning mt-4">
+                    <i class="fas fa-calculator me-2"></i>Try Our Quote Calculator
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <div class="tech-visual">
+                    <div class="circuit-pattern">
+                        <!-- SVG circuit pattern would go here -->
+                        <div class="tech-badge">
+                            <i class="fas fa-award fa-4x text-warning"></i>
+                            <h3 class="mt-3">Industry Leading</h3>
+                            <p>Technology & Innovation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Tools Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Quick Tools & Resources</h2>
+            <p class="section-subtitle text-muted">
+                Instant access to electrical tools and information
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="tool-card h-100">
+                    <div class="tool-icon text-center mb-3">
+                        <i class="fas fa-calculator fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="text-center mb-3">Quote Estimator</h5>
+                    <p class="text-center text-muted mb-4">Get instant rough estimates for your electrical projects</p>
+                    <div class="text-center">
+                        <a href="{{ url_for('quote_estimator') }}" class="btn btn-outline-primary">
+                            Calculate Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="tool-card h-100">
+                    <div class="tool-icon text-center mb-3">
+                        <i class="fas fa-tools fa-3x text-warning"></i>
+                    </div>
+                    <h5 class="text-center mb-3">Troubleshooting</h5>
+                    <p class="text-center text-muted mb-4">AI-powered electrical problem diagnosis</p>
+                    <div class="text-center">
+                        <a href="{{ url_for('troubleshooting') }}" class="btn btn-outline-warning">
+                            Start Diagnosis
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="tool-card h-100">
+                    <div class="tool-icon text-center mb-3">
+                        <i class="fas fa-play-circle fa-3x text-success"></i>
+                    </div>
+                    <h5 class="text-center mb-3">Training Videos</h5>
+                    <p class="text-center text-muted mb-4">Learn electrical skills and safety procedures</p>
+                    <div class="text-center">
+                        <a href="{{ url_for('training') }}" class="btn btn-outline-success">
+                            Watch Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="tool-card h-100">
+                    <div class="tool-icon text-center mb-3">
+                        <i class="fas fa-shopping-cart fa-3x text-info"></i>
+                    </div>
+                    <h5 class="text-center mb-3">Digital Store</h5>
+                    <p class="text-center text-muted mb-4">Forms, guides, and professional tools</p>
+                    <div class="text-center">
+                        <a href="{{ url_for('store') }}" class="btn btn-outline-info">
+                            Browse Store
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+{% if testimonials %}
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">What Our Clients Say</h2>
+            <p class="section-subtitle text-muted">
+                Trusted by businesses and homeowners across the region
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            {% for testimonial in testimonials %}
+            <div class="col-lg-4">
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="testimonial-stars">
+                        {% for i in range(testimonial.rating) %}
+                            <i class="fas fa-star"></i>
+                        {% endfor %}
+                    </div>
+                    <p class="testimonial-content">"{{ testimonial.content }}"</p>
+                    <div class="testimonial-author">
+                        <strong>{{ testimonial.client_name }}</strong>
+                        {% if testimonial.project_type %}
+                            <br><small class="text-muted">{{ testimonial.project_type }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('testimonials') }}" class="btn btn-outline-primary">
+                <i class="fas fa-comments me-2"></i>Read More Reviews
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Emergency CTA Section -->
+<section class="py-5 bg-danger">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="text-white mb-2">
+                    <i class="fas fa-exclamation-triangle me-3"></i>
+                    Electrical Emergency?
+                </h2>
+                <p class="text-white-50 mb-0 lead">
+                    24/7 emergency electrical services. Don't wait - electrical problems can be dangerous.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="tel:555-123-3532" class="btn btn-light btn-lg">
+                    <i class="fas fa-phone me-2"></i>Call Now: (555) 123-ELEC
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional CSS for animations -->
+<style>
+.floating-icon {
+    position: absolute;
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-icon:nth-child(1) { top: 20%; left: 10%; }
+.floating-icon:nth-child(2) { top: 60%; right: 10%; }
+.floating-icon:nth-child(3) { bottom: 20%; left: 20%; }
+.floating-icon:nth-child(4) { top: 30%; right: 30%; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.tech-showcase {
+    position: relative;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tool-card {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 30px 20px;
+    transition: all 0.3s ease;
+}
+
+.tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(26, 140, 255, 0.2);
+    border-color: var(--primary-blue);
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, var(--surface-dark) 0%, var(--background-dark) 100%);
+}
+
+.tech-badge {
+    text-align: center;
+    padding: 40px;
+    background: var(--surface-dark);
+    border-radius: 20px;
+    border: 2px solid var(--primary-blue);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-blue);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+</style>
+{% endblock %}

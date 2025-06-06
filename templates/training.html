@@ -1,0 +1,415 @@
+{% extends "base.html" %}
+
+{% block title %}Training Videos - Kynetik Electric{% endblock %}
+
+{% block meta_description %}Professional electrical training videos covering safety, installation techniques, troubleshooting, and industry best practices. Free and premium content available.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 mb-4">Training Videos</h1>
+                <p class="lead">
+                    Learn from industry experts with our comprehensive electrical training library. 
+                    From basic safety to advanced techniques.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Free Training Videos -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-play-circle text-success me-2"></i>
+                Free Training Content
+            </h2>
+            <span class="badge bg-success fs-6">No Registration Required</span>
+        </div>
+        
+        {% if free_videos %}
+        <div class="row g-4">
+            {% for video in free_videos %}
+            <div class="col-lg-6 col-xl-4">
+                <div class="video-card h-100">
+                    <div class="video-thumbnail">
+                        {% if video.youtube_url %}
+                            {% set video_id = video.youtube_url.split('/')[-1].split('=')[-1] %}
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" 
+                                        src="https://www.youtube.com/embed/{{ video_id }}" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        {% else %}
+                            <div class="video-placeholder">
+                                <i class="fas fa-play-circle fa-4x text-muted"></i>
+                                <p class="text-muted mt-2">Video Coming Soon</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="video-content">
+                        <h5 class="video-title">{{ video.title }}</h5>
+                        {% if video.description %}
+                            <p class="video-description text-muted">{{ video.description[:150] }}{% if video.description|length > 150 %}...{% endif %}</p>
+                        {% endif %}
+                        
+                        <div class="video-meta">
+                            <span class="badge bg-success me-2">
+                                <i class="fas fa-unlock me-1"></i>Free
+                            </span>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>
+                                {{ video.created_at.strftime('%B %d, %Y') }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-video fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">No Free Videos Available</h4>
+            <p class="text-muted">Free training content will be added soon. Check back later!</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Premium Training Videos -->
+{% if premium_videos %}
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-crown text-warning me-2"></i>
+                Premium Training Content
+            </h2>
+            <span class="badge bg-warning text-dark fs-6">
+                <i class="fas fa-lock me-1"></i>Premium Access Required
+            </span>
+        </div>
+        
+        <div class="row g-4">
+            {% for video in premium_videos %}
+            <div class="col-lg-6 col-xl-4">
+                <div class="video-card premium h-100">
+                    <div class="video-thumbnail">
+                        <div class="premium-overlay">
+                            <i class="fas fa-lock fa-3x text-warning"></i>
+                            <p class="text-warning mt-2 fw-bold">Premium Content</p>
+                        </div>
+                        {% if video.youtube_url %}
+                            {% set video_id = video.youtube_url.split('/')[-1].split('=')[-1] %}
+                            <div class="embed-responsive embed-responsive-16by9 blurred">
+                                <iframe class="embed-responsive-item" 
+                                        src="https://www.youtube.com/embed/{{ video_id }}" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        {% else %}
+                            <div class="video-placeholder blurred">
+                                <i class="fas fa-play-circle fa-4x text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="video-content">
+                        <h5 class="video-title">{{ video.title }}</h5>
+                        {% if video.description %}
+                            <p class="video-description text-muted">{{ video.description[:150] }}{% if video.description|length > 150 %}...{% endif %}</p>
+                        {% endif %}
+                        
+                        <div class="video-meta mb-3">
+                            <span class="badge bg-warning text-dark me-2">
+                                <i class="fas fa-crown me-1"></i>Premium
+                            </span>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>
+                                {{ video.created_at.strftime('%B %d, %Y') }}
+                            </small>
+                        </div>
+                        
+                        {% if video.stripe_price_id %}
+                        <form method="POST" action="{{ url_for('create_checkout_session') }}">
+                            <input type="hidden" name="video_id" value="{{ video.id }}">
+                            <button type="submit" class="btn btn-warning w-100">
+                                <i class="fas fa-unlock me-2"></i>
+                                Unlock This Video
+                            </button>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-outline-warning w-100" disabled>
+                            <i class="fas fa-clock me-2"></i>
+                            Pricing Coming Soon
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Training Categories -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">Training Categories</h2>
+            <p class="lead text-muted">
+                Comprehensive electrical education covering all aspects of the trade
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-hard-hat text-danger"></i>
+                    </div>
+                    <h5>Safety & OSHA</h5>
+                    <p class="text-muted">
+                        Essential safety protocols, OSHA compliance, and accident prevention techniques.
+                    </p>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-check text-success me-2"></i>Lockout/Tagout procedures</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Arc flash protection</li>
+                        <li><i class="fas fa-check text-success me-2"></i>PPE requirements</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-wrench text-primary"></i>
+                    </div>
+                    <h5>Installation Techniques</h5>
+                    <p class="text-muted">
+                        Proper installation methods for various electrical systems and components.
+                    </p>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-check text-success me-2"></i>Conduit installation</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Panel wiring</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Motor connections</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-search text-warning"></i>
+                    </div>
+                    <h5>Troubleshooting</h5>
+                    <p class="text-muted">
+                        Diagnostic techniques and problem-solving strategies for electrical issues.
+                    </p>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-check text-success me-2"></i>Multimeter usage</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Circuit analysis</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Fault finding</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-book text-info"></i>
+                    </div>
+                    <h5>Code & Standards</h5>
+                    <p class="text-muted">
+                        National Electrical Code (NEC) requirements and industry standards.
+                    </p>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-check text-success me-2"></i>NEC updates</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Code compliance</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Inspection prep</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="text-white mb-2">
+                    <i class="fas fa-graduation-cap me-3"></i>
+                    Need Custom Training?
+                </h2>
+                <p class="text-white-50 mb-0 lead">
+                    We offer custom training programs for your team or organization. Contact us to discuss your specific needs.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{{ url_for('bid_request') }}?service=training" class="btn btn-light btn-lg">
+                    <i class="fas fa-envelope me-2"></i>Request Custom Training
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional CSS -->
+<style>
+.video-card {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(26, 140, 255, 0.2);
+}
+
+.video-card.premium {
+    border-color: var(--accent-orange);
+    position: relative;
+}
+
+.video-card.premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-orange), #ffd700);
+    z-index: 1;
+}
+
+.video-thumbnail {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.video-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-light);
+}
+
+.embed-responsive {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+}
+
+.embed-responsive-item {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.premium-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.blurred {
+    filter: blur(5px);
+}
+
+.video-content {
+    padding: 20px;
+}
+
+.video-title {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.video-description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+}
+
+.video-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.category-card {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 30px 20px;
+    text-align: center;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(26, 140, 255, 0.2);
+    border-color: var(--primary-blue);
+}
+
+.category-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.category-card h5 {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.category-card p {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.category-card ul li {
+    padding: 3px 0;
+    font-size: 0.85rem;
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, var(--surface-dark) 0%, var(--background-dark) 100%);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Cancelled - Kynetik Electric{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <!-- Cancel Icon -->
+                <div class="cancel-icon mb-4">
+                    <i class="fas fa-times-circle display-1 text-warning"></i>
+                </div>
+                
+                <!-- Cancel Message -->
+                <h1 class="display-4 fw-bold text-warning mb-3">Payment Cancelled</h1>
+                <p class="lead text-muted mb-4">
+                    Your payment was cancelled and no charges were made to your account.
+                </p>
+                
+                <!-- Information Card -->
+                <div class="info-card mb-5">
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i> What Happened?
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-3">
+                                You cancelled the payment process before completion. This could have happened because:
+                            </p>
+                            <ul class="list-unstyled text-start">
+                                <li class="mb-2">
+                                    <i class="fas fa-arrow-right text-muted me-2"></i> 
+                                    You clicked the "Cancel" or "Back" button during checkout
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-arrow-right text-muted me-2"></i> 
+                                    You closed the payment window before completing the transaction
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-arrow-right text-muted me-2"></i> 
+                                    There was a technical issue with the payment process
+                                </li>
+                                <li class="mb-0">
+                                    <i class="fas fa-arrow-right text-muted me-2"></i> 
+                                    You decided to review your purchase before proceeding
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- What You Can Do -->
+                <div class="options-section mb-5">
+                    <h4 class="mb-4">What Would You Like To Do?</h4>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="option-card">
+                                <div class="option-icon">
+                                    <i class="fas fa-redo text-primary"></i>
+                                </div>
+                                <h6>Try Again</h6>
+                                <p class="text-muted small">
+                                    Go back to complete your purchase. Your items are still available.
+                                </p>
+                                <a href="{{ url_for('store') }}" class="btn btn-primary btn-sm">
+                                    Return to Store
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="option-card">
+                                <div class="option-icon">
+                                    <i class="fas fa-question-circle text-info"></i>
+                                </div>
+                                <h6>Get Help</h6>
+                                <p class="text-muted small">
+                                    Need assistance with your purchase? Contact our support team.
+                                </p>
+                                <button class="btn btn-info btn-sm" onclick="toggleChat()">
+                                    Chat with Toolie AI
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="option-card">
+                                <div class="option-icon">
+                                    <i class="fas fa-search text-success"></i>
+                                </div>
+                                <h6>Browse More</h6>
+                                <p class="text-muted small">
+                                    Explore our other products and services before making a decision.
+                                </p>
+                                <a href="{{ url_for('index') }}" class="btn btn-success btn-sm">
+                                    Explore More
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Popular Products -->
+                <div class="popular-products mb-5">
+                    <h4 class="mb-4">Popular Products</h4>
+                    <div class="row g-4">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="product-quick-card">
+                                <div class="product-icon">
+                                    <i class="fas fa-file-pdf text-danger"></i>
+                                </div>
+                                <h6>Essential Forms Bundle</h6>
+                                <p class="text-muted small">Complete electrical inspection forms</p>
+                                <div class="price-tag">$29.99</div>
+                                <a href="{{ url_for('store') }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <div class="product-quick-card">
+                                <div class="product-icon">
+                                    <i class="fas fa-graduation-cap text-primary"></i>
+                                </div>
+                                <h6>Training Pro Package</h6>
+                                <p class="text-muted small">Premium training access for 6 months</p>
+                                <div class="price-tag">$199.99</div>
+                                <a href="{{ url_for('training') }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <div class="product-quick-card">
+                                <div class="product-icon">
+                                    <i class="fas fa-hard-hat text-warning"></i>
+                                </div>
+                                <h6>Safety Equipment Kit</h6>
+                                <p class="text-muted small">Essential safety gear for electricians</p>
+                                <div class="price-tag">$149.99</div>
+                                <a href="{{ url_for('store') }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3 col-md-6">
+                            <div class="product-quick-card">
+                                <div class="product-icon">
+                                    <i class="fas fa-calculator text-success"></i>
+                                </div>
+                                <h6>Free Quote Tool</h6>
+                                <p class="text-muted small">Get instant project estimates</p>
+                                <div class="price-tag text-success">Free</div>
+                                <a href="{{ url_for('quote_estimator') }}" class="btn btn-outline-success btn-sm">Try Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Support Information -->
+                <div class="support-section">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="fas fa-headset me-2"></i> Need Assistance?
+                            </h6>
+                            <p class="card-text mb-3">
+                                Our support team is here to help with any questions about our products or services.
+                            </p>
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <i class="fas fa-phone text-primary mb-2"></i>
+                                    <br><small><strong>Call Us</strong></small>
+                                    <br><small>(555) 123-VOLT</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <i class="fas fa-envelope text-primary mb-2"></i>
+                                    <br><small><strong>Email</strong></small>
+                                    <br><small>support@kynetikelectric.com</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <i class="fas fa-robot text-primary mb-2"></i>
+                                    <br><small><strong>AI Assistant</strong></small>
+                                    <br><small>Chat with Toolie AI</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <i class="fas fa-clock text-primary mb-2"></i>
+                                    <br><small><strong>24/7 Support</strong></small>
+                                    <br><small>Always available</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Track cancelled purchase (analytics)
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'purchase_cancelled', {
+            'event_category': 'ecommerce',
+            'event_label': 'payment_cancelled'
+        });
+    }
+    
+    // Auto-scroll to top on page load
+    window.scrollTo(0, 0);
+    
+    // Add subtle animation to the cancel icon
+    const cancelIcon = document.querySelector('.cancel-icon i');
+    if (cancelIcon) {
+        cancelIcon.style.animation = 'shake 1s ease-in-out';
+    }
+});
+</script>
+
+<style>
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.option-card, .product-quick-card {
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 100%;
+    text-align: center;
+}
+
+.option-icon, .product-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.price-tag {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.info-card .card {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.option-card:hover, .product-quick-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

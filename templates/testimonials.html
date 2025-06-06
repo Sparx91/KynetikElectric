@@ -1,0 +1,826 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Testimonials - Kynetik Electric{% endblock %}
+
+{% block meta_description %}Read what our clients say about Kynetik Electric's professional electrical services. Real reviews from satisfied customers across industrial, commercial, and residential projects.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 mb-4">
+                    <i class="fas fa-star text-warning me-3"></i>
+                    Customer Testimonials
+                </h1>
+                <p class="lead">
+                    Don't just take our word for it. See what our clients say about 
+                    Kynetik Electric's professional electrical services and expertise.
+                </p>
+                <div class="stats-bar">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <div class="stat-number counter" data-target="500">0</div>
+                                <div class="stat-label">Happy Clients</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <div class="stat-number">4.9</div>
+                                <div class="stat-label">Average Rating</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <div class="stat-number counter" data-target="15">0</div>
+                                <div class="stat-label">Years Experience</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Testimonials -->
+{% if testimonials %}
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">What Our Clients Say</h2>
+            <p class="lead text-muted">
+                Real feedback from real customers who trust Kynetik Electric for their electrical needs
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            {% for testimonial in testimonials %}
+            <div class="col-lg-4 col-md-6">
+                <div class="testimonial-card-detailed h-100 animate-on-scroll">
+                    <!-- Rating Stars -->
+                    <div class="testimonial-rating">
+                        {% for i in range(5) %}
+                            {% if i < testimonial.rating %}
+                                <i class="fas fa-star text-warning"></i>
+                            {% else %}
+                                <i class="far fa-star text-muted"></i>
+                            {% endif %}
+                        {% endfor %}
+                        <span class="rating-number ms-2">{{ testimonial.rating }}/5</span>
+                    </div>
+                    
+                    <!-- Testimonial Content -->
+                    <blockquote class="testimonial-content">
+                        <i class="fas fa-quote-left quote-icon"></i>
+                        {{ testimonial.content }}
+                        <i class="fas fa-quote-right quote-icon"></i>
+                    </blockquote>
+                    
+                    <!-- Client Info -->
+                    <div class="client-info">
+                        {% if testimonial.image_url %}
+                            <img src="{{ testimonial.image_url }}" alt="{{ testimonial.client_name }}" class="client-image">
+                        {% else %}
+                            <div class="client-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="client-details">
+                            <h6 class="client-name">{{ testimonial.client_name }}</h6>
+                            {% if testimonial.project_type %}
+                                <div class="project-type">
+                                    <span class="badge bg-primary">{{ testimonial.project_type }}</span>
+                                </div>
+                            {% endif %}
+                            <div class="testimonial-date">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    {{ testimonial.created_at.strftime('%B %Y') }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if testimonial.is_featured %}
+                    <div class="featured-badge">
+                        <span class="badge bg-warning text-dark">
+                            <i class="fas fa-crown me-1"></i>Featured Review
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Service Categories Reviews -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">Reviews by Service Type</h2>
+            <p class="lead text-muted">
+                See what clients say about our different electrical services
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="service-review-card">
+                    <div class="service-header">
+                        <i class="fas fa-industry fa-3x text-primary mb-3"></i>
+                        <h4>Industrial Installations</h4>
+                        <div class="service-rating">
+                            <span class="rating-stars">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </span>
+                            <span class="rating-text">5.0 Average</span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-sample">
+                        <p class="review-text">
+                            "Kynetik Electric handled our manufacturing facility upgrade flawlessly. 
+                            Their team's expertise in industrial systems is unmatched."
+                        </p>
+                        <div class="review-author">
+                            <strong>— Manufacturing Plant Manager</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="service-highlights">
+                        <h6 class="text-primary mb-2">What clients appreciate:</h6>
+                        <ul class="list-unstyled small">
+                            <li><i class="fas fa-check text-success me-2"></i>Complex system expertise</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Minimal downtime</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Code compliance</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Professional team</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="service-review-card">
+                    <div class="service-header">
+                        <i class="fas fa-camera fa-3x text-warning mb-3"></i>
+                        <h4>3D LiDAR Scanning</h4>
+                        <div class="service-rating">
+                            <span class="rating-stars">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </span>
+                            <span class="rating-text">4.9 Average</span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-sample">
+                        <p class="review-text">
+                            "The 3D scanning service provided incredibly detailed documentation 
+                            that saved us time and money on our expansion project."
+                        </p>
+                        <div class="review-author">
+                            <strong>— Facilities Director</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="service-highlights">
+                        <h6 class="text-primary mb-2">What clients appreciate:</h6>
+                        <ul class="list-unstyled small">
+                            <li><i class="fas fa-check text-success me-2"></i>Precise measurements</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Detailed documentation</li>
+                            <li><i class="fas fa-check text-success me-2"></i>BIM integration</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Future planning value</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="service-review-card">
+                    <div class="service-header">
+                        <i class="fas fa-tools fa-3x text-success mb-3"></i>
+                        <h4>Troubleshooting</h4>
+                        <div class="service-rating">
+                            <span class="rating-stars">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </span>
+                            <span class="rating-text">4.8 Average</span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-sample">
+                        <p class="review-text">
+                            "Quick response, expert diagnosis, and problem solved efficiently. 
+                            Their troubleshooting skills are outstanding."
+                        </p>
+                        <div class="review-author">
+                            <strong>— Office Building Manager</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="service-highlights">
+                        <h6 class="text-primary mb-2">What clients appreciate:</h6>
+                        <ul class="list-unstyled small">
+                            <li><i class="fas fa-check text-success me-2"></i>Fast response time</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Accurate diagnosis</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Effective solutions</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Fair pricing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Before & After Gallery -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">Project Gallery</h2>
+            <p class="lead text-muted">
+                See the quality of our work through before and after photos
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="project-gallery-item">
+                    <div class="project-image">
+                        <div class="image-placeholder">
+                            <i class="fas fa-industry fa-4x text-muted"></i>
+                            <p class="text-muted mt-2">Industrial Panel Upgrade</p>
+                        </div>
+                        <div class="project-overlay">
+                            <div class="project-info">
+                                <h5>Manufacturing Facility</h5>
+                                <p>Complete electrical panel modernization</p>
+                                <span class="badge bg-success">Completed 2024</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-testimonial">
+                        <div class="rating mb-2">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            "Transformed our outdated electrical system into a modern, 
+                            efficient setup. Zero downtime during the transition."
+                        </p>
+                        <div class="client-name">
+                            <strong>ABC Manufacturing</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="project-gallery-item">
+                    <div class="project-image">
+                        <div class="image-placeholder">
+                            <i class="fas fa-building fa-4x text-muted"></i>
+                            <p class="text-muted mt-2">Office Complex Rewiring</p>
+                        </div>
+                        <div class="project-overlay">
+                            <div class="project-info">
+                                <h5>Commercial Building</h5>
+                                <p>Complete electrical system overhaul</p>
+                                <span class="badge bg-success">Completed 2024</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-testimonial">
+                        <div class="rating mb-2">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            "Professional team, clean work, and excellent project management. 
+                            Our new electrical system is perfect."
+                        </p>
+                        <div class="client-name">
+                            <strong>Downtown Office Complex</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="project-gallery-item">
+                    <div class="project-image">
+                        <div class="image-placeholder">
+                            <i class="fas fa-home fa-4x text-muted"></i>
+                            <p class="text-muted mt-2">Residential Smart Home</p>
+                        </div>
+                        <div class="project-overlay">
+                            <div class="project-info">
+                                <h5>Smart Home Installation</h5>
+                                <p>Advanced home automation system</p>
+                                <span class="badge bg-success">Completed 2024</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-testimonial">
+                        <div class="rating mb-2">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            "Incredible attention to detail and innovative solutions. 
+                            Our smart home system exceeds all expectations."
+                        </p>
+                        <div class="client-name">
+                            <strong>Private Residence</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Review Form CTA -->
+<section class="py-5 bg-primary">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="text-white mb-2">
+                    <i class="fas fa-star me-3"></i>
+                    Share Your Experience
+                </h2>
+                <p class="text-white-50 mb-0 lead">
+                    Had a great experience with Kynetik Electric? We'd love to hear about it! 
+                    Your feedback helps us serve you better.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{{ url_for('bid_request') }}?subject=testimonial" class="btn btn-light btn-lg">
+                    <i class="fas fa-comment me-2"></i>Leave a Review
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trust Indicators -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">Why Clients Trust Us</h2>
+            <p class="lead text-muted">
+                Professional credentials and industry recognition
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="trust-indicator">
+                    <div class="trust-icon">
+                        <i class="fas fa-certificate text-success"></i>
+                    </div>
+                    <h5>Licensed & Insured</h5>
+                    <p class="text-muted">
+                        Fully licensed electrical contractors with comprehensive insurance coverage.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="trust-indicator">
+                    <div class="trust-icon">
+                        <i class="fas fa-award text-warning"></i>
+                    </div>
+                    <h5>Industry Recognition</h5>
+                    <p class="text-muted">
+                        Recognized for excellence in electrical contracting and customer service.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="trust-indicator">
+                    <div class="trust-icon">
+                        <i class="fas fa-handshake text-primary"></i>
+                    </div>
+                    <h5>Satisfaction Guarantee</h5>
+                    <p class="text-muted">
+                        We stand behind our work with a comprehensive satisfaction guarantee.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="trust-indicator">
+                    <div class="trust-icon">
+                        <i class="fas fa-clock text-info"></i>
+                    </div>
+                    <h5>24/7 Emergency Service</h5>
+                    <p class="text-muted">
+                        Round-the-clock emergency electrical services when you need them most.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional CSS -->
+<style>
+.bg-gradient {
+    background: linear-gradient(135deg, var(--surface-dark) 0%, var(--background-dark) 100%);
+}
+
+.stats-bar {
+    background: var(--surface-light);
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-blue);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+.testimonial-card-detailed {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 30px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.testimonial-card-detailed:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(26, 140, 255, 0.2);
+    border-color: var(--primary-blue);
+}
+
+.testimonial-rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.rating-number {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.testimonial-content {
+    font-style: italic;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 20px 0;
+    position: relative;
+    padding: 0 20px;
+}
+
+.quote-icon {
+    color: var(--primary-blue);
+    opacity: 0.3;
+    font-size: 1.5rem;
+}
+
+.quote-icon:first-child {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.quote-icon:last-child {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.client-info {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.client-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.client-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+.client-details {
+    flex: 1;
+}
+
+.client-name {
+    color: var(--text-primary);
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.project-type {
+    margin-bottom: 5px;
+}
+
+.testimonial-date {
+    margin: 0;
+}
+
+.featured-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.service-review-card {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.service-review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(26, 140, 255, 0.2);
+    border-color: var(--primary-blue);
+}
+
+.service-header h4 {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+}
+
+.service-rating {
+    margin-bottom: 25px;
+}
+
+.rating-text {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.review-sample {
+    background: var(--surface-light);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.review-text {
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+}
+
+.review-author {
+    color: var(--primary-blue);
+    font-size: 0.9rem;
+}
+
+.service-highlights h6 {
+    margin-bottom: 15px;
+}
+
+.service-highlights ul li {
+    padding: 3px 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.project-gallery-item {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.project-gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(26, 140, 255, 0.2);
+    border-color: var(--primary-blue);
+}
+
+.project-image {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.image-placeholder {
+    height: 100%;
+    background: var(--surface-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.project-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.project-image:hover .project-overlay {
+    opacity: 1;
+}
+
+.project-info {
+    text-align: center;
+    color: white;
+}
+
+.project-info h5 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.project-info p {
+    margin-bottom: 15px;
+}
+
+.project-testimonial {
+    padding: 25px;
+}
+
+.testimonial-text {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.trust-indicator {
+    text-align: center;
+    padding: 20px;
+}
+
+.trust-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.trust-indicator h5 {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.trust-indicator p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .stats-bar .row {
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .testimonial-content {
+        padding: 0 10px;
+    }
+    
+    .client-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .client-image,
+    .client-avatar {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}
+</style>
+
+{% block extra_scripts %}
+<script>
+// Counter animation for statistics
+document.addEventListener('DOMContentLoaded', function() {
+    const counters = document.querySelectorAll('.counter');
+    
+    const observerOptions = {
+        threshold: 0.5,
+        triggerOnce: true
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    counters.forEach(counter => {
+        observer.observe(counter);
+    });
+    
+    function animateCounter(element) {
+        const target = parseInt(element.getAttribute('data-target'));
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+
+        const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            element.textContent = Math.floor(current);
+        }, 16);
+    }
+    
+    // Auto-suggest Toolie chat for testimonials page
+    setTimeout(() => {
+        if (window.toolieChat) {
+            toolieChat.addMessage("I see you're reading testimonials! Our clients love working with Kynetik Electric. If you have any questions about our services or want to share your own experience, I'm here to help!", 'bot');
+        }
+    }, 3000);
+});
+</script>
+{% endblock %}
+{% endblock %}

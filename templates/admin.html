@@ -1,0 +1,485 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Kynetik Electric{% endblock %}
+
+{% block content %}
+<!-- Admin Header -->
+<section class="py-4 bg-dark">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="h3 text-white mb-0">
+                    <i class="fas fa-cog me-2"></i> Admin Dashboard
+                </h1>
+                <p class="text-muted mb-0">Manage your business operations</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        <i class="fas fa-plus me-1"></i> Add Product
+                    </button>
+                    <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#addVideoModal">
+                        <i class="fas fa-video me-1"></i> Add Video
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard Stats -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-icon bg-primary">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>{{ recent_bids|length }}</h4>
+                        <p class="text-muted mb-0">Pending Bids</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-icon bg-success">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>{{ recent_quotes|length }}</h4>
+                        <p class="text-muted mb-0">Quote Requests</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-icon bg-warning">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>{{ total_products }}</h4>
+                        <p class="text-muted mb-0">Store Products</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-icon bg-info">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h4>{{ total_videos }}</h4>
+                        <p class="text-muted mb-0">Training Videos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Activity -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Recent Bid Requests -->
+            <div class="col-lg-6">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5><i class="fas fa-file-contract me-2"></i> Recent Bid Requests</h5>
+                        <span class="badge bg-primary">{{ recent_bids|length }}</span>
+                    </div>
+                    
+                    <div class="admin-card-body">
+                        {% if recent_bids %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Job Type</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for bid in recent_bids %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ bid.name }}</strong>
+                                            <br><small class="text-muted">{{ bid.email }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">
+                                                {{ bid.job_type.replace('_', ' ').title() }}
+                                            </span>
+                                        </td>
+                                        <td>{{ bid.created_at.strftime('%m/%d/%Y') }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'warning' if bid.status == 'pending' else 'success' }}">
+                                                {{ bid.status.title() }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewBid({{ bid.id }})">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-inbox text-muted display-4"></i>
+                            <p class="text-muted mt-2">No recent bid requests</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Quote Requests -->
+            <div class="col-lg-6">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5><i class="fas fa-calculator me-2"></i> Recent Quote Requests</h5>
+                        <span class="badge bg-success">{{ recent_quotes|length }}</span>
+                    </div>
+                    
+                    <div class="admin-card-body">
+                        {% if recent_quotes %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Estimate</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for quote in recent_quotes %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ quote.name }}</strong>
+                                            <br><small class="text-muted">{{ quote.email }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">
+                                                {{ quote.project_type.title() }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if quote.estimated_cost %}
+                                            ${{ "{:,.0f}"|format(quote.estimated_cost) }}
+                                            {% else %}
+                                            <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ quote.created_at.strftime('%m/%d/%Y') }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewQuote({{ quote.id }})">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-inbox text-muted display-4"></i>
+                            <p class="text-muted mt-2">No recent quote requests</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Management Sections -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Quick Actions -->
+            <div class="col-lg-4">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5><i class="fas fa-bolt me-2"></i> Quick Actions</h5>
+                    </div>
+                    
+                    <div class="admin-card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                                <i class="fas fa-plus me-2"></i> Add New Product
+                            </button>
+                            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#addVideoModal">
+                                <i class="fas fa-video me-2"></i> Add Training Video
+                            </button>
+                            <button class="btn btn-outline-info" onclick="exportData()">
+                                <i class="fas fa-download me-2"></i> Export Data
+                            </button>
+                            <button class="btn btn-outline-warning" onclick="viewAnalytics()">
+                                <i class="fas fa-chart-bar me-2"></i> View Analytics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Status -->
+            <div class="col-lg-4">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5><i class="fas fa-server me-2"></i> System Status</h5>
+                    </div>
+                    
+                    <div class="admin-card-body">
+                        <div class="status-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Database</span>
+                                <span class="status-indicator status-online"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>OpenAI API</span>
+                                <span class="status-indicator status-online"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Stripe Payments</span>
+                                <span class="status-indicator status-online"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="status-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>File Uploads</span>
+                                <span class="status-indicator status-online"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="col-lg-4">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h5><i class="fas fa-clock me-2"></i> Recent Activity</h5>
+                    </div>
+                    
+                    <div class="admin-card-body">
+                        <div class="activity-item">
+                            <div class="activity-icon bg-primary">
+                                <i class="fas fa-file-contract"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="mb-1">New bid request received</p>
+                                <small class="text-muted">2 hours ago</small>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon bg-success">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="mb-1">Product purchased</p>
+                                <small class="text-muted">5 hours ago</small>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon bg-info">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p class="mb-1">Quote estimate generated</p>
+                                <small class="text-muted">1 day ago</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addProductForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" name="price" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Product Type</label>
+                            <select class="form-select" name="product_type" required>
+                                <option value="">Select type...</option>
+                                <option value="digital">Digital</option>
+                                <option value="physical">Physical</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Category</label>
+                            <input type="text" class="form-control" name="category" placeholder="e.g., forms, tools">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Image URL</label>
+                            <input type="url" class="form-control" name="image_url">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Stock Quantity (Physical only)</label>
+                            <input type="number" class="form-control" name="stock_quantity" min="0">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveProduct()">Save Product</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Video Modal -->
+<div class="modal fade" id="addVideoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Training Video</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addVideoForm">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Video Title</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">YouTube Video ID</label>
+                            <input type="text" class="form-control" name="youtube_id" placeholder="e.g., dQw4w9WgXcQ">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Duration</label>
+                            <input type="text" class="form-control" name="duration" placeholder="e.g., 10:30">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Category</label>
+                            <input type="text" class="form-control" name="category" placeholder="e.g., fundamentals">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" name="is_premium" id="isPremium">
+                                <label class="form-check-label" for="isPremium">
+                                    Premium Content
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Thumbnail URL</label>
+                            <input type="url" class="form-control" name="thumbnail_url">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveVideo()">Save Video</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function viewBid(bidId) {
+    // In a real implementation, this would open a detailed view
+    alert(`Viewing bid request #${bidId}`);
+}
+
+function viewQuote(quoteId) {
+    // In a real implementation, this would open a detailed view
+    alert(`Viewing quote request #${quoteId}`);
+}
+
+function saveProduct() {
+    const form = document.getElementById('addProductForm');
+    const formData = new FormData(form);
+    
+    // In a real implementation, this would submit to backend
+    alert('Product would be saved to database');
+    bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
+}
+
+function saveVideo() {
+    const form = document.getElementById('addVideoForm');
+    const formData = new FormData(form);
+    
+    // In a real implementation, this would submit to backend
+    alert('Video would be saved to database');
+    bootstrap.Modal.getInstance(document.getElementById('addVideoModal')).hide();
+}
+
+function exportData() {
+    // In a real implementation, this would generate and download data export
+    alert('Data export would be generated');
+}
+
+function viewAnalytics() {
+    // In a real implementation, this would show analytics dashboard
+    alert('Analytics dashboard would be displayed');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-refresh stats every 30 seconds
+    setInterval(function() {
+        // In a real implementation, this would fetch updated stats
+        console.log('Refreshing dashboard stats...');
+    }, 30000);
+});
+</script>
+{% endblock %}

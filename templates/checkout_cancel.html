@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout Cancelled - Kynetik Electric{% endblock %}
+
+{% block content %}
+<!-- Cancel Header -->
+<section class="py-5 bg-warning">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="cancel-icon mb-4">
+                    <i class="fas fa-times-circle fa-5x text-dark"></i>
+                </div>
+                <h1 class="display-4 text-dark mb-4">Checkout Cancelled</h1>
+                <p class="lead text-dark">
+                    Your payment was cancelled. No charges have been made to your account.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cancel Information -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            What Happened?
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <h5 class="alert-heading">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Payment Cancelled
+                            </h5>
+                            <p>You chose to cancel the payment process. This could happen for several reasons:</p>
+                            <ul class="mb-0">
+                                <li>You clicked the "Cancel" or "Back" button during checkout</li>
+                                <li>You closed the payment window before completing the transaction</li>
+                                <li>You decided not to proceed with the purchase</li>
+                                <li>There was a technical issue during the payment process</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="reassurance-info">
+                            <h5 class="text-success mb-3">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                Your Information is Safe
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            No charges were made
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            No payment information stored
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Your cart items are still available
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Secure checkout process
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            SSL encrypted connection
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fas fa-check text-success me-2"></i>
+                                            Protected by Stripe
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="text-center mt-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{{ url_for('store') }}" class="btn btn-primary btn-lg me-md-3">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            Try Again
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>
+                            Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 2rem;">
+                    <!-- Help Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-question-circle me-2"></i>
+                                Need Help?
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                Having trouble with checkout? Our AI assistant can help troubleshoot payment issues.
+                            </p>
+                            <button class="btn btn-outline-primary w-100 mb-3" onclick="toolieChat.openChat()">
+                                <i class="fas fa-robot me-2"></i>
+                                Chat with Toolie AI
+                            </button>
+                            
+                            <hr>
+                            
+                            <h6 class="text-primary">Common Issues:</h6>
+                            <ul class="list-unstyled small">
+                                <li class="mb-2">
+                                    <i class="fas fa-credit-card text-muted me-2"></i>
+                                    Payment method declined
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-wifi text-muted me-2"></i>
+                                    Internet connection issues
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-browser text-muted me-2"></i>
+                                    Browser compatibility
+                                </li>
+                                <li class="mb-0">
+                                    <i class="fas fa-mobile-alt text-muted me-2"></i>
+                                    Mobile device issues
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Support -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-headset me-2"></i>
+                                Contact Support
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                If you're experiencing technical difficulties, our support team is here to help.
+                            </p>
+                            <a href="{{ url_for('bid_request') }}?subject=checkout_issue" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-envelope me-2"></i>
+                                Report Issue
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Alternative Options -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                Other Options
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="option-item mb-3">
+                                <h6 class="text-primary mb-1">Free Resources</h6>
+                                <p class="small text-muted mb-2">Check out our free training content and tools.</p>
+                                <a href="{{ url_for('training') }}" class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-play me-1"></i>View Training
+                                </a>
+                            </div>
+                            
+                            <div class="option-item mb-3">
+                                <h6 class="text-primary mb-1">Get a Quote</h6>
+                                <p class="small text-muted mb-2">Request a custom quote for your project.</p>
+                                <a href="{{ url_for('bid_request') }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-file-alt me-1"></i>Request Quote
+                                </a>
+                            </div>
+                            
+                            <div class="option-item mb-0">
+                                <h6 class="text-primary mb-1">Use Tools</h6>
+                                <p class="small text-muted mb-2">Try our free electrical calculation tools.</p>
+                                <a href="{{ url_for('quote_estimator') }}" class="btn btn-outline-warning btn-sm">
+                                    <i class="fas fa-calculator me-1"></i>Calculate
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Alternative Products -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">Maybe You'd Prefer...</h2>
+            <p class="lead text-muted">
+                Explore these alternatives while you decide
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="alternative-card">
+                    <div class="alternative-icon">
+                        <i class="fas fa-play-circle text-success"></i>
+                    </div>
+                    <h5>Free Training Videos</h5>
+                    <p class="text-muted">
+                        Learn electrical skills with our free video content. No payment required.
+                    </p>
+                    <a href="{{ url_for('training') }}" class="btn btn-success">
+                        <i class="fas fa-play me-2"></i>
+                        Watch Now
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="alternative-card">
+                    <div class="alternative-icon">
+                        <i class="fas fa-calculator text-primary"></i>
+                    </div>
+                    <h5>Quote Calculator</h5>
+                    <p class="text-muted">
+                        Get instant estimates for electrical projects using our free calculator.
+                    </p>
+                    <a href="{{ url_for('quote_estimator') }}" class="btn btn-primary">
+                        <i class="fas fa-calculator me-2"></i>
+                        Calculate
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="alternative-card">
+                    <div class="alternative-icon">
+                        <i class="fas fa-tools text-warning"></i>
+                    </div>
+                    <h5>Troubleshooting Tool</h5>
+                    <p class="text-muted">
+                        Diagnose electrical problems with our AI-powered troubleshooting guide.
+                    </p>
+                    <a href="{{ url_for('troubleshooting') }}" class="btn btn-warning">
+                        <i class="fas fa-search me-2"></i>
+                        Diagnose
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional CSS -->
+<style>
+.cancel-icon {
+    animation: cancelShake 1s ease-in-out;
+}
+
+@keyframes cancelShake {
+    0%, 20%, 40%, 60%, 80%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+}
+
+.reassurance-info {
+    background: var(--surface-light);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    margin-top: 20px;
+}
+
+.option-item {
+    padding: 15px;
+    background: var(--surface-light);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.option-item:hover {
+    border-color: var(--primary-blue);
+    background: rgba(26, 140, 255, 0.05);
+}
+
+.alternative-card {
+    background: var(--surface-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 30px 20px;
+    text-align: center;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.alternative-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(26, 140, 255, 0.2);
+    border-color: var(--primary-blue);
+}
+
+.alternative-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.alternative-card h5 {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.alternative-card p {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, var(--surface-dark) 0%, var(--background-dark) 100%);
+}
+</style>
+
+{% block extra_scripts %}
+<script>
+// Auto-suggestion to chat with Toolie about checkout issues
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (window.toolieChat) {
+            toolieChat.addMessage("I noticed your checkout was cancelled. I'm here to help if you're experiencing any issues or have questions about our products!", 'bot');
+        }
+    }, 2000);
+});
+</script>
+{% endblock %}
+{% endblock %}
