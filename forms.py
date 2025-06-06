@@ -58,7 +58,7 @@ class TrainingVideoForm(FlaskForm):
 class ObjectDetectionForm(FlaskForm):
     image = FileField('Upload Image', validators=[
         FileRequired(),
-        FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')
+        FileAllowed(['jpg', 'jpeg', 'png'], 'JPG and PNG images only!')
     ])
     comment = TextAreaField('Optional Comment', validators=[Length(max=500)], 
                            description='Add any details about what you see in the image')

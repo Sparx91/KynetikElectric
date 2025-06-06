@@ -26,7 +26,7 @@ toolie = ToolieAI()
 detector = ElectricalYOLODetector()
 
 def allowed_file(filename):
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'avi'}
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}  # JPG/PNG only for object detection
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
