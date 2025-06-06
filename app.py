@@ -39,3 +39,8 @@ with app.app_context():
 
 # Import routes after app creation
 import routes  # noqa: F401
+
+# Initialize default data after everything is set up
+with app.app_context():
+    from routes import create_default_data
+    create_default_data()

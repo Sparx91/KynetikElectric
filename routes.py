@@ -236,7 +236,6 @@ def admin_bids():
     return render_template('admin/bids.html', bids=bids)
 
 # Initialize default data
-@app.before_first_request
 def create_default_data():
     if Service.query.count() == 0:
         default_services = [
