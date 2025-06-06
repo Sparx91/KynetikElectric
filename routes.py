@@ -15,15 +15,15 @@ from app import app, db
 from models import Service, BidRequest, Product, TrainingVideo, Admin, ChatConversation, Testimonial, ObjectDetectionRecord, ElectricalPart
 from forms import BidRequestForm, AdminLoginForm, ProductForm, TrainingVideoForm, ObjectDetectionForm
 from ai_assistant import ToolieAI
-from object_detector import ElectricalObjectDetector
+from yolo_detect import ElectricalYOLODetector, toolie_summarize
 
 # Initialize Stripe
 stripe.api_key = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_your_stripe_key')
 YOUR_DOMAIN = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')
 
-# Initialize Toolie AI and Object Detector
+# Initialize Toolie AI and YOLOv8 Detector
 toolie = ToolieAI()
-detector = ElectricalObjectDetector()
+detector = ElectricalYOLODetector()
 
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'avi'}
@@ -310,37 +310,42 @@ def upload_and_detect():
         upload_path = os.path.join('static/uploads', filename)
         image_file.save(upload_path)
         
-        # Process image with object detection
+        # Process image with YOLOv8-style object detection
         try:
-            results = detector.process_image(upload_path, comment)
+            # Validate file size (10MB max)
+            image_file.seek(0, 2)  # Seek to end
+            file_size = image_file.tell()
+            image_file.seek(0)  # Reset to beginning
             
-            # Generate Toolie summary
-            detected_items = [obj['type'].replace('_', ' ').title() for obj in results['detected_objects']]
-            toolie_prompt = f"I've detected these electrical components in an image: {', '.join(detected_items)}. "
-            if comment:
-                toolie_prompt += f"User comment: {comment}. "
-            toolie_prompt += "Please provide a brief professional summary of what this electrical setup might be and any recommendations."
+            if file_size > 10 * 1024 * 1024:  # 10MB limit
+                flash('File size must be less than 10MB', 'error')
+                return redirect(url_for('object_detect'))
             
-            toolie_summary = toolie.get_response(toolie_prompt, context="customer-facing")
+            # Perform YOLOv8-style object detection
+            detected_objects = detector.detect_objects(upload_path)
+            
+            # Generate output image with bounding boxes
+            output_filename = f"detected_{filename}"
+            output_path = os.path.join('static/uploads', output_filename)
+            detection_success = detector.save_detection_image(upload_path, output_path)
+            
+            # Generate Toolie AI summary
+            toolie_summary = toolie_summarize(detected_objects)
             
             # Save detection record to database
             detection_record = ObjectDetectionRecord(
                 original_filename=image_file.filename,
                 uploaded_image_path=upload_path,
-                detected_image_path=results['processed_image_path'],
-                detected_objects=json.dumps(results['detected_objects']),
+                detected_image_path=output_path if detection_success else upload_path,
+                detected_objects=json.dumps(detected_objects),
                 user_comment=comment,
                 toolie_summary=toolie_summary
             )
             db.session.add(detection_record)
             db.session.commit()
             
-            flash(f'Successfully detected {results["detection_count"]} electrical components!', 'success')
-            return render_template('object_detect/results.html', 
-                                 results=results, 
-                                 toolie_summary=toolie_summary,
-                                 record_id=detection_record.id,
-                                 original_filename=image_file.filename)
+            flash(f'Successfully detected {len(detected_objects)} electrical components!', 'success')
+            return redirect(url_for('object_detect_results', record_id=detection_record.id))
             
         except Exception as e:
             flash(f'Error processing image: {str(e)}', 'error')
