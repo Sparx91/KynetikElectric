@@ -44,6 +44,12 @@ def services():
 def bid_request():
     form = BidRequestForm()
     
+    # Pre-fill form with data from object detection if available
+    if request.method == 'GET' and 'prefill_bid_request' in session:
+        prefill_data = session.pop('prefill_bid_request')
+        form.description.data = prefill_data.get('description', '')
+        form.job_type.data = prefill_data.get('job_type', '')
+    
     if form.validate_on_submit():
         # Handle file uploads
         uploaded_files = []

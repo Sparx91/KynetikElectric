@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Detection History - Kynetik Electric{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 mb-4">
+                    <i class="fas fa-history text-info me-3"></i>
+                    Detection History
+                </h1>
+                <p class="lead">
+                    View your previous object detection analyses and results
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- History List -->
+<section class="py-5">
+    <div class="container">
+        {% if records %}
+            <div class="row g-4">
+                {% for record in records %}
+                <div class="col-lg-6 col-xl-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 text-truncate">{{ record.original_filename }}</h6>
+                            <small class="text-muted">{{ record.created_at.strftime('%m/%d/%Y') }}</small>
+                        </div>
+                        
+                        <div class="card-body">
+                            <!-- Preview Image -->
+                            {% if record.detected_image_path %}
+                            <div class="text-center mb-3">
+                                <img src="{{ url_for('static', filename=record.detected_image_path.replace('static/', '')) }}" 
+                                     class="img-thumbnail" style="max-width: 150px; max-height: 100px;" 
+                                     alt="Detection preview">
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Detection Summary -->
+                            <div class="mb-3">
+                                {% if record.detected_objects %}
+                                    {% set objects = record.detected_objects|from_json %}
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-search text-success me-2"></i>
+                                        <strong>{{ objects|length }} components detected</strong>
+                                    </div>
+                                    
+                                    <div class="component-tags">
+                                        {% for obj in objects[:3] %}
+                                            <span class="badge bg-primary me-1">{{ obj.type.replace('_', ' ').title() }}</span>
+                                        {% endfor %}
+                                        {% if objects|length > 3 %}
+                                            <span class="badge bg-secondary">+{{ objects|length - 3 }} more</span>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <div class="text-muted">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        No components detected
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- User Comment -->
+                            {% if record.user_comment %}
+                            <div class="mb-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-comment me-1"></i>
+                                    "{{ record.user_comment[:50] }}{% if record.user_comment|length > 50 %}...{% endif %}"
+                                </small>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Toolie Summary Preview -->
+                            {% if record.toolie_summary %}
+                            <div class="mb-3">
+                                <small class="text-info">
+                                    <i class="fas fa-robot me-1"></i>
+                                    {{ record.toolie_summary[:80] }}{% if record.toolie_summary|length > 80 %}...{% endif %}
+                                </small>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-footer">
+                            <div class="btn-group w-100" role="group">
+                                <a href="{{ url_for('export_detection_results', record_id=record.id, format='csv') }}" 
+                                   class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-file-csv"></i>
+                                </a>
+                                <a href="{{ url_for('export_detection_results', record_id=record.id, format='pdf') }}" 
+                                   class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-file-pdf"></i>
+                                </a>
+                                <a href="{{ url_for('quote_request_from_detection', record_id=record.id) }}" 
+                                   class="btn btn-outline-warning btn-sm">
+                                    <i class="fas fa-calculator"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination placeholder for future -->
+            <div class="text-center mt-5">
+                <small class="text-muted">
+                    Showing last 20 detections
+                </small>
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-5">
+                <i class="fas fa-camera fa-4x text-muted mb-4"></i>
+                <h3 class="text-muted mb-3">No Detection History</h3>
+                <p class="text-muted mb-4">
+                    You haven't analyzed any images yet. Start by uploading your first electrical component image.
+                </p>
+                <a href="{{ url_for('object_detect') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-upload me-2"></i>
+                    Upload First Image
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
