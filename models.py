@@ -67,3 +67,23 @@ class Testimonial(db.Model):
     image_url = db.Column(db.String(200))
     is_featured = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class ObjectDetectionRecord(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    original_filename = db.Column(db.String(255), nullable=False)
+    uploaded_image_path = db.Column(db.String(255), nullable=False)
+    detected_image_path = db.Column(db.String(255))
+    detected_objects = db.Column(db.Text)  # JSON string of detected objects
+    user_comment = db.Column(db.Text)
+    toolie_summary = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class ElectricalPart(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    part_number = db.Column(db.String(50), nullable=False)
+    vendor = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    category = db.Column(db.String(50))
+    detection_labels = db.Column(db.Text)  # JSON array of detection keywords
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed, MultipleFileField
-from wtforms import StringField, TextAreaField, SelectField, FloatField, BooleanField, PasswordField
+from flask_wtf.file import FileField, FileRequired, FileAllowed
+from wtforms import StringField, TextAreaField, SelectField, FloatField, BooleanField, PasswordField, MultipleFileField
 from wtforms.validators import DataRequired, Email, Length, NumberRange
+from wtforms.widgets import TextArea
 
 class BidRequestForm(FlaskForm):
     name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=100)])
@@ -53,3 +54,11 @@ class TrainingVideoForm(FlaskForm):
     youtube_url = StringField('YouTube URL', validators=[DataRequired()])
     is_premium = BooleanField('Premium Content')
     stripe_price_id = StringField('Stripe Price ID (if premium)')
+
+class ObjectDetectionForm(FlaskForm):
+    image = FileField('Upload Image', validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')
+    ])
+    comment = TextAreaField('Optional Comment', validators=[Length(max=500)], 
+                           description='Add any details about what you see in the image')
