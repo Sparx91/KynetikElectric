@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Detection Results - Kynetik Electric{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 mb-4">
+                    <i class="fas fa-check-circle text-success me-3"></i>
+                    Detection Complete
+                </h1>
+                <p class="lead">
+                    Found {{ results.detection_count }} electrical component(s) in your image
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Detection Results -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Detected Image -->
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-image me-2"></i>
+                            Detected Components
+                        </h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="{{ url_for('static', filename=results.processed_image_path.replace('static/', '')) }}" 
+                             class="img-fluid rounded" alt="Detected components">
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                Original file: {{ original_filename }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Component Matches -->
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Matched Components
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if results.component_matches %}
+                            {% for match in results.component_matches %}
+                            <div class="component-match mb-3 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="text-primary mb-0">{{ match.name }}</h6>
+                                    <span class="badge bg-success">{{ "%.0f"|format(match.confidence * 100) }}%</span>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>Part Numbers:</strong><br>
+                                        <small class="text-muted">
+                                            {% for part_num in match.part_numbers %}
+                                                <span class="badge bg-light text-dark me-1">{{ part_num }}</span>
+                                            {% endfor %}
+                                        </small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Vendor:</strong><br>
+                                        <small class="text-muted">{{ match.vendor }}</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-2">
+                                    <strong>Description:</strong><br>
+                                    <small class="text-muted">{{ match.description }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <i class="fas fa-info-circle fa-3x mb-3"></i>
+                                <p>No components detected in this image. Try uploading a clearer image with electrical components.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Toolie AI Analysis -->
+        {% if toolie_summary %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-robot me-2"></i>
+                            Toolie AI Analysis
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-quote-left me-2"></i>
+                            {{ toolie_summary }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Action Buttons -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-tools me-2"></i>
+                            Next Steps
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <a href="{{ url_for('export_detection_results', record_id=record_id, format='csv') }}" 
+                                   class="btn btn-success w-100">
+                                    <i class="fas fa-file-csv me-2"></i>
+                                    Export CSV
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{{ url_for('export_detection_results', record_id=record_id, format='pdf') }}" 
+                                   class="btn btn-danger w-100">
+                                    <i class="fas fa-file-pdf me-2"></i>
+                                    Export PDF
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{{ url_for('quote_request_from_detection', record_id=record_id) }}" 
+                                   class="btn btn-warning w-100">
+                                    <i class="fas fa-calculator me-2"></i>
+                                    Request Quote
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{{ url_for('object_detect') }}" class="btn btn-primary w-100">
+                                    <i class="fas fa-camera me-2"></i>
+                                    Analyze Another
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Detection Details -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Detection Details
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Components Found:</strong> {{ results.detection_count }}<br>
+                                <strong>Analysis Date:</strong> {{ moment().format('MMMM D, YYYY [at] h:mm A') }}<br>
+                                <strong>Processing Method:</strong> OpenCV Computer Vision
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Detection Types:</strong><br>
+                                {% for obj in results.detected_objects %}
+                                    <span class="badge bg-primary me-1">{{ obj.type.replace('_', ' ').title() }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3 pt-3 border-top">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                This analysis is for informational purposes only. Always consult with a licensed electrician for electrical work.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.component-match {
+    transition: all 0.3s ease;
+}
+
+.component-match:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.badge {
+    font-size: 0.75em;
+}
+</style>
+{% endblock %}

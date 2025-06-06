@@ -1,23 +1,29 @@
 import os
 import json
 import uuid
+import csv
+import io
 from datetime import datetime
-from flask import render_template, request, redirect, url_for, flash, jsonify, session
+from flask import render_template, request, redirect, url_for, flash, jsonify, session, send_file
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import stripe
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
 from app import app, db
-from models import Service, BidRequest, Product, TrainingVideo, Admin, ChatConversation, Testimonial
-from forms import BidRequestForm, AdminLoginForm, ProductForm, TrainingVideoForm
+from models import Service, BidRequest, Product, TrainingVideo, Admin, ChatConversation, Testimonial, ObjectDetectionRecord, ElectricalPart
+from forms import BidRequestForm, AdminLoginForm, ProductForm, TrainingVideoForm, ObjectDetectionForm
 from ai_assistant import ToolieAI
+from object_detector import ElectricalObjectDetector
 
 # Initialize Stripe
 stripe.api_key = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_your_stripe_key')
 YOUR_DOMAIN = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')
 
-# Initialize Toolie AI
+# Initialize Toolie AI and Object Detector
 toolie = ToolieAI()
+detector = ElectricalObjectDetector()
 
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'avi'}
@@ -271,3 +277,212 @@ def create_default_data():
             db.session.add(testimonial)
     
     db.session.commit()
+
+# Object Detection Routes
+@app.route('/object-detect')
+def object_detect():
+    """Object detection landing page"""
+    form = ObjectDetectionForm()
+    return render_template('object_detect/index.html', form=form)
+
+@app.route('/object-detect/upload', methods=['POST'])
+def upload_and_detect():
+    """Handle image upload and perform object detection"""
+    form = ObjectDetectionForm()
+    
+    if form.validate_on_submit():
+        # Save uploaded image
+        image_file = form.image.data
+        comment = form.comment.data or ""
+        
+        # Generate unique filename
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        unique_id = str(uuid.uuid4())[:8]
+        filename = f"upload_{timestamp}_{unique_id}.jpg"
+        
+        # Save to uploads directory
+        upload_path = os.path.join('static/uploads', filename)
+        image_file.save(upload_path)
+        
+        # Process image with object detection
+        try:
+            results = detector.process_image(upload_path, comment)
+            
+            # Generate Toolie summary
+            detected_items = [obj['type'].replace('_', ' ').title() for obj in results['detected_objects']]
+            toolie_prompt = f"I've detected these electrical components in an image: {', '.join(detected_items)}. "
+            if comment:
+                toolie_prompt += f"User comment: {comment}. "
+            toolie_prompt += "Please provide a brief professional summary of what this electrical setup might be and any recommendations."
+            
+            toolie_summary = toolie.get_response(toolie_prompt, context="customer-facing")
+            
+            # Save detection record to database
+            detection_record = ObjectDetectionRecord(
+                original_filename=image_file.filename,
+                uploaded_image_path=upload_path,
+                detected_image_path=results['processed_image_path'],
+                detected_objects=json.dumps(results['detected_objects']),
+                user_comment=comment,
+                toolie_summary=toolie_summary
+            )
+            db.session.add(detection_record)
+            db.session.commit()
+            
+            flash(f'Successfully detected {results["detection_count"]} electrical components!', 'success')
+            return render_template('object_detect/results.html', 
+                                 results=results, 
+                                 toolie_summary=toolie_summary,
+                                 record_id=detection_record.id,
+                                 original_filename=image_file.filename)
+            
+        except Exception as e:
+            flash(f'Error processing image: {str(e)}', 'error')
+            return redirect(url_for('object_detect'))
+    
+    # Form validation failed
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(f'{field}: {error}', 'error')
+    
+    return redirect(url_for('object_detect'))
+
+@app.route('/object-detect/export/<int:record_id>/<format>')
+def export_detection_results(record_id, format):
+    """Export detection results as CSV or PDF"""
+    record = ObjectDetectionRecord.query.get_or_404(record_id)
+    detected_objects = json.loads(record.detected_objects) if record.detected_objects else []
+    component_matches = detector.get_component_matches(detected_objects)
+    
+    if format == 'csv':
+        # Create CSV export
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        # Write headers
+        writer.writerow(['Component Type', 'Part Number', 'Vendor', 'Description', 'Confidence'])
+        
+        # Write data
+        for match in component_matches:
+            part_numbers = ', '.join(match.get('part_numbers', []))
+            writer.writerow([
+                match.get('name', ''),
+                part_numbers,
+                match.get('vendor', ''),
+                match.get('description', ''),
+                f"{match.get('confidence', 0):.0%}"
+            ])
+        
+        output.seek(0)
+        
+        # Create response
+        csv_data = io.BytesIO()
+        csv_data.write(output.getvalue().encode('utf-8'))
+        csv_data.seek(0)
+        
+        return send_file(csv_data, 
+                        mimetype='text/csv',
+                        as_attachment=True,
+                        download_name=f'electrical_components_{record_id}.csv')
+    
+    elif format == 'pdf':
+        # Create PDF export
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter)
+        width, height = letter
+        
+        # Title
+        p.setFont("Helvetica-Bold", 16)
+        p.drawString(50, height - 50, "Electrical Components Detection Report")
+        
+        # Date and file info
+        p.setFont("Helvetica", 12)
+        p.drawString(50, height - 80, f"Date: {record.created_at.strftime('%Y-%m-%d %H:%M')}")
+        p.drawString(50, height - 100, f"Original File: {record.original_filename}")
+        
+        if record.user_comment:
+            p.drawString(50, height - 120, f"Comment: {record.user_comment}")
+        
+        # Components table
+        y_position = height - 160
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(50, y_position, "Detected Components:")
+        
+        y_position -= 30
+        p.setFont("Helvetica", 10)
+        
+        for match in component_matches:
+            if y_position < 100:  # Start new page if needed
+                p.showPage()
+                y_position = height - 50
+            
+            p.drawString(50, y_position, f"• {match.get('name', '')}")
+            y_position -= 15
+            p.drawString(70, y_position, f"Part Numbers: {', '.join(match.get('part_numbers', []))}")
+            y_position -= 15
+            p.drawString(70, y_position, f"Vendor: {match.get('vendor', '')}")
+            y_position -= 15
+            p.drawString(70, y_position, f"Confidence: {match.get('confidence', 0):.0%}")
+            y_position -= 25
+        
+        # Toolie summary
+        if record.toolie_summary:
+            if y_position < 150:
+                p.showPage()
+                y_position = height - 50
+            
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(50, y_position, "Toolie AI Analysis:")
+            y_position -= 20
+            
+            p.setFont("Helvetica", 10)
+            # Wrap text for summary
+            summary_lines = record.toolie_summary.split('. ')
+            for line in summary_lines:
+                if y_position < 50:
+                    p.showPage()
+                    y_position = height - 50
+                p.drawString(50, y_position, line)
+                y_position -= 15
+        
+        p.save()
+        buffer.seek(0)
+        
+        return send_file(buffer,
+                        mimetype='application/pdf',
+                        as_attachment=True,
+                        download_name=f'electrical_components_{record_id}.pdf')
+    
+    else:
+        flash('Invalid export format', 'error')
+        return redirect(url_for('object_detect'))
+
+@app.route('/object-detect/quote-request/<int:record_id>')
+def quote_request_from_detection(record_id):
+    """Pre-fill bid request form with detected components"""
+    record = ObjectDetectionRecord.query.get_or_404(record_id)
+    detected_objects = json.loads(record.detected_objects) if record.detected_objects else []
+    component_matches = detector.get_component_matches(detected_objects)
+    
+    # Create description with detected components
+    components_list = [match.get('name', '') for match in component_matches]
+    description = f"Based on object detection analysis:\n\nDetected components: {', '.join(components_list)}\n\n"
+    if record.user_comment:
+        description += f"Additional notes: {record.user_comment}\n\n"
+    if record.toolie_summary:
+        description += f"AI Analysis: {record.toolie_summary}"
+    
+    # Pre-fill form data in session
+    session['prefill_bid_request'] = {
+        'description': description,
+        'job_type': 'other'  # Default since it's from detection
+    }
+    
+    flash('Bid request form pre-filled with detected components!', 'info')
+    return redirect(url_for('bid_request'))
+
+@app.route('/object-detect/history')
+def detection_history():
+    """View detection history"""
+    records = ObjectDetectionRecord.query.order_by(ObjectDetectionRecord.created_at.desc()).limit(20).all()
+    return render_template('object_detect/history.html', records=records)

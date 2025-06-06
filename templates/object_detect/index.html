@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Object Detection - Kynetik Electric{% endblock %}
+
+{% block meta_description %}AI-powered electrical component detection. Upload photos to identify electrical parts, get component matches, and generate professional quotes.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 mb-4">
+                    <i class="fas fa-camera text-warning me-3"></i>
+                    Object Detection
+                </h1>
+                <p class="lead">
+                    Upload photos of electrical components and let our AI identify parts, 
+                    match them with our database, and provide professional insights.
+                </p>
+                <div class="alert alert-info">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    <strong>AI-Powered Analysis:</strong> Our system can detect conduit, junction boxes, 
+                    panels, wiring, and more. Get instant part matches and Toolie's expert recommendations.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Upload Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-upload me-2"></i>
+                            Upload Electrical Component Image
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('upload_and_detect') }}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                            {{ form.hidden_tag() }}
+                            
+                            <!-- Image Upload -->
+                            <div class="mb-4">
+                                <label for="{{ form.image.id }}" class="form-label">
+                                    <i class="fas fa-image me-2"></i>
+                                    Select Image
+                                </label>
+                                
+                                <!-- Mobile Camera Option -->
+                                <div class="mb-3">
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="file" class="form-control" id="{{ form.image.id }}" name="{{ form.image.name }}" 
+                                               accept="image/*" capture="environment" required>
+                                    </div>
+                                    <div class="form-text">
+                                        <small class="text-muted">
+                                            <i class="fas fa-mobile-alt me-1"></i>
+                                            On mobile: Tap to use camera or choose from gallery
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Preview Area -->
+                                <div id="image-preview" class="text-center mb-3" style="display: none;">
+                                    <img id="preview-image" class="img-thumbnail" style="max-width: 300px; max-height: 200px;">
+                                    <div class="mt-2">
+                                        <small class="text-success">
+                                            <i class="fas fa-check me-1"></i>
+                                            Image ready for analysis
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <div class="invalid-feedback">
+                                    Please select an image file (JPG, PNG, or GIF).
+                                </div>
+                            </div>
+                            
+                            <!-- Comment Field -->
+                            <div class="mb-4">
+                                <label for="{{ form.comment.id }}" class="form-label">
+                                    <i class="fas fa-comment me-2"></i>
+                                    Optional Comment
+                                </label>
+                                {{ form.comment(class="form-control", rows="3", placeholder="Add any details about what you see in the image...") }}
+                                <div class="form-text">
+                                    <small class="text-muted">
+                                        {{ form.comment.description }}
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-warning btn-lg" id="analyze-btn">
+                                    <i class="fas fa-search me-2"></i>
+                                    Analyze Components
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">How Object Detection Works</h2>
+            <p class="lead text-muted">
+                Advanced AI technology for electrical component identification
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-camera fa-3x text-primary"></i>
+                    </div>
+                    <h5>1. Upload Image</h5>
+                    <p class="text-muted">
+                        Take a photo or upload an image of electrical components
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-brain fa-3x text-warning"></i>
+                    </div>
+                    <h5>2. AI Detection</h5>
+                    <p class="text-muted">
+                        Computer vision identifies electrical components with bounding boxes
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-database fa-3x text-success"></i>
+                    </div>
+                    <h5>3. Part Matching</h5>
+                    <p class="text-muted">
+                        Match detected components with our electrical parts database
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-robot fa-3x text-info"></i>
+                    </div>
+                    <h5>4. Toolie Analysis</h5>
+                    <p class="text-muted">
+                        Get professional insights and recommendations from Toolie AI
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Detections -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-history me-2"></i>
+                Recent Detections
+            </h2>
+            <a href="{{ url_for('detection_history') }}" class="btn btn-outline-primary">
+                <i class="fas fa-eye me-2"></i>
+                View All
+            </a>
+        </div>
+        
+        <div class="text-center text-muted">
+            <i class="fas fa-info-circle me-2"></i>
+            Upload your first image to see detection results here
+        </div>
+    </div>
+</section>
+
+<script>
+// Image preview functionality
+document.getElementById('{{ form.image.id }}').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-image').src = e.target.result;
+            document.getElementById('image-preview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %}
