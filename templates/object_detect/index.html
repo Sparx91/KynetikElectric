@@ -46,21 +46,45 @@
                             
                             <!-- Image Upload -->
                             <div class="mb-4">
-                                <label for="{{ form.image.id }}" class="form-label">
+                                <label class="form-label">
                                     <i class="fas fa-image me-2"></i>
-                                    Select Image
+                                    Select Image Source
                                 </label>
                                 
-                                <!-- Mobile Camera Option -->
+                                <!-- Upload Options -->
                                 <div class="mb-3">
-                                    <div class="btn-group w-100" role="group">
-                                        <input type="file" class="form-control" id="{{ form.image.id }}" name="{{ form.image.name }}" 
-                                               accept="image/*" capture="environment" required>
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <label for="camera-input" class="btn btn-primary w-100 mb-2">
+                                                <i class="fas fa-camera me-2"></i>
+                                                Take Photo
+                                            </label>
+                                            <input type="file" class="d-none" id="camera-input" 
+                                                   accept="image/*" capture="environment">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="file-input" class="btn btn-outline-primary w-100 mb-2">
+                                                <i class="fas fa-upload me-2"></i>
+                                                Upload File
+                                            </label>
+                                            <input type="file" class="d-none" id="file-input" 
+                                                   accept="image/*">
+                                        </div>
                                     </div>
+                                    
+                                    <!-- Hidden form input for actual submission -->
+                                    <input type="file" class="d-none" id="{{ form.image.id }}" name="{{ form.image.name }}" 
+                                           accept="image/*" required>
+                                    
+                                    <!-- File selection indicator -->
+                                    <div class="selected-file-info text-center mt-2" style="display: none;">
+                                        <small class="text-success"></small>
+                                    </div>
+                                    
                                     <div class="form-text">
                                         <small class="text-muted">
-                                            <i class="fas fa-mobile-alt me-1"></i>
-                                            On mobile: Tap to use camera or choose from gallery
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Choose to take a new photo or upload an existing image
                                         </small>
                                     </div>
                                 </div>
@@ -194,17 +218,41 @@
 </section>
 
 <script>
-// Image preview functionality
-document.getElementById('{{ form.image.id }}').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
+// Handle file selection and preview
+function handleFileSelection(files) {
+    if (files && files[0]) {
+        const file = files[0];
+        
+        // Transfer file to the actual form input
+        const formInput = document.getElementById('{{ form.image.id }}');
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        formInput.files = dataTransfer.files;
+        
+        // Show preview
         const reader = new FileReader();
         reader.onload = function(e) {
             document.getElementById('preview-image').src = e.target.result;
             document.getElementById('image-preview').style.display = 'block';
         };
         reader.readAsDataURL(file);
+        
+        // Update button text to show file selected
+        const fileName = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+        document.querySelector('.selected-file-info').innerHTML = 
+            '<i class="fas fa-check text-success me-2"></i>Selected: ' + fileName;
+        document.querySelector('.selected-file-info').style.display = 'block';
     }
+}
+
+// Camera button click
+document.getElementById('camera-input').addEventListener('change', function(e) {
+    handleFileSelection(e.target.files);
+});
+
+// File upload button click
+document.getElementById('file-input').addEventListener('change', function(e) {
+    handleFileSelection(e.target.files);
 });
 
 // Form validation
