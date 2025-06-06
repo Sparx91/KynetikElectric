@@ -108,7 +108,7 @@ def create_checkout_session():
         flash(f'Error creating checkout session: {str(e)}', 'error')
         return redirect(url_for('store'))
     
-    return redirect(checkout_session.url, code=303)
+    return redirect(checkout_session.url)
 
 @app.route('/checkout-success')
 def checkout_success():
