@@ -1,0 +1,493 @@
+{% extends "base.html" %}
+
+{% block title %}Field Service Management - Kynetik Electric{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/servicetitan-style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="st-layout">
+    <!-- Sidebar Navigation -->
+    <div class="st-sidebar">
+        <div class="st-sidebar-header">
+            <div class="st-sidebar-logo">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <div>
+                <h1 class="st-sidebar-title">Kynetik</h1>
+                <p style="margin: 0; font-size: 0.75rem; color: #6b7280;">Field Service</p>
+            </div>
+        </div>
+        
+        <nav class="st-sidebar-nav">
+            <div class="st-nav-section">
+                <h3 class="st-nav-section-title">Dashboard</h3>
+                <a href="#" class="st-nav-item active">
+                    <div class="st-nav-icon"><i class="fas fa-chart-line"></i></div>
+                    Overview
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-calendar-alt"></i></div>
+                    Schedule
+                    <span class="st-nav-badge">12</span>
+                </a>
+            </div>
+            
+            <div class="st-nav-section">
+                <h3 class="st-nav-section-title">Service Operations</h3>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-clipboard-list"></i></div>
+                    Service Calls
+                    <span class="st-nav-badge">{{ service_calls|length if service_calls else 0 }}</span>
+                </a>
+                <a href="{{ url_for('create_service_call') }}" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-plus-circle"></i></div>
+                    New Service Call
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-tools"></i></div>
+                    Work Orders
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    Route Planning
+                </a>
+            </div>
+            
+            <div class="st-nav-section">
+                <h3 class="st-nav-section-title">Team Management</h3>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-users"></i></div>
+                    Technicians
+                    <span class="st-nav-badge">{{ workers|length if workers else 5 }}</span>
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-user-clock"></i></div>
+                    Time Tracking
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-chart-bar"></i></div>
+                    Performance
+                </a>
+            </div>
+            
+            <div class="st-nav-section">
+                <h3 class="st-nav-section-title">Business</h3>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                    Invoicing
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-users-cog"></i></div>
+                    Customer Portal
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-chart-pie"></i></div>
+                    Reports
+                </a>
+            </div>
+        </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="st-main">
+        <!-- Header -->
+        <div class="st-header">
+            <div class="st-header-left">
+                <h1 class="st-page-title">Field Service Dashboard</h1>
+                <div class="st-breadcrumb">
+                    <span>Dashboard</span>
+                    <span class="st-breadcrumb-separator">/</span>
+                    <span>Overview</span>
+                </div>
+            </div>
+            
+            <div class="st-header-right">
+                <div class="st-search-box">
+                    <i class="fas fa-search st-search-icon"></i>
+                    <input type="text" class="st-search-input" placeholder="Search jobs, customers, or technicians...">
+                </div>
+                
+                <button class="st-btn st-btn-primary">
+                    <i class="fas fa-plus"></i>
+                    New Service Call
+                </button>
+                
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="st-btn st-btn-secondary">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #00AEEF, #33C1F0); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                        A
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="st-content">
+            <!-- Metrics Grid -->
+            <div class="st-metrics-grid">
+                <div class="st-metric-card" style="background: linear-gradient(135deg, #059669, #10b981);">
+                    <div class="st-metric-header">
+                        <h3 class="st-metric-title">Total Revenue</h3>
+                        <div class="st-metric-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <h2 class="st-metric-value">$127,430</h2>
+                    <div class="st-metric-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +12.5% from last month
+                    </div>
+                </div>
+                
+                <div class="st-metric-card" style="background: linear-gradient(135deg, #1e40af, #3b82f6);">
+                    <div class="st-metric-header">
+                        <h3 class="st-metric-title">Active Jobs</h3>
+                        <div class="st-metric-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                    </div>
+                    <h2 class="st-metric-value">{{ service_calls|length if service_calls else 23 }}</h2>
+                    <div class="st-metric-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +3 new today
+                    </div>
+                </div>
+                
+                <div class="st-metric-card" style="background: linear-gradient(135deg, #d97706, #f59e0b);">
+                    <div class="st-metric-header">
+                        <h3 class="st-metric-title">Technicians</h3>
+                        <div class="st-metric-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <h2 class="st-metric-value">{{ workers|length if workers else 8 }}</h2>
+                    <div class="st-metric-change">
+                        <i class="fas fa-user-check"></i>
+                        All available
+                    </div>
+                </div>
+                
+                <div class="st-metric-card" style="background: linear-gradient(135deg, #7c3aed, #8b5cf6);">
+                    <div class="st-metric-header">
+                        <h3 class="st-metric-title">Completion Rate</h3>
+                        <div class="st-metric-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <h2 class="st-metric-value">94.2%</h2>
+                    <div class="st-metric-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +2.1% this week
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Service Calls Table -->
+            <div class="st-table-container">
+                <div class="st-table-header">
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: #111827;">
+                            <i class="fas fa-clipboard-list" style="margin-right: 8px; color: #00AEEF;"></i>
+                            Active Service Calls
+                        </h2>
+                        <p style="margin: 4px 0 0 0; font-size: 0.875rem; color: #6b7280;">
+                            Manage and track all field service operations
+                        </p>
+                    </div>
+                    
+                    <div class="st-table-tools">
+                        <select class="st-form-select" style="width: auto; margin-right: 12px;">
+                            <option>All Status</option>
+                            <option>Open</option>
+                            <option>In Progress</option>
+                            <option>Completed</option>
+                        </select>
+                        
+                        <button class="st-btn st-btn-secondary st-btn-sm">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                        
+                        <button class="st-btn st-btn-secondary st-btn-sm">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                        
+                        <a href="{{ url_for('create_service_call') }}" class="st-btn st-btn-primary st-btn-sm">
+                            <i class="fas fa-plus"></i>
+                            New Call
+                        </a>
+                    </div>
+                </div>
+                
+                <table class="st-table">
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Customer</th>
+                            <th>Service Type</th>
+                            <th>Technician</th>
+                            <th>Location</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if service_calls %}
+                            {% for call in service_calls %}
+                            <tr>
+                                <td>
+                                    <span style="font-weight: 600; color: #1e40af;">#{{ call.id }}</span>
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #00AEEF, #33C1F0); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.75rem;">
+                                            {{ call.customer_name[0] if call.customer_name else 'C' }}
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 500;">{{ call.customer_name or 'Customer Name' }}</div>
+                                            <div style="font-size: 0.75rem; color: #6b7280;">{{ call.title }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span style="background: #f3f4f6; color: #374151; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 500;">
+                                        Electrical Service
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if call.assigned_to %}
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <div style="width: 24px; height: 24px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.625rem; font-weight: 600;">
+                                                {{ call.assigned_to[0] }}
+                                            </div>
+                                            <span style="font-weight: 500;">{{ call.assigned_to }}</span>
+                                        </div>
+                                    {% else %}
+                                        <span style="color: #6b7280;">Unassigned</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <i class="fas fa-map-marker-alt" style="color: #6b7280; font-size: 0.75rem;"></i>
+                                        <span style="font-size: 0.875rem;">{{ call.location[:30] }}...</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% set priority_class = 'st-priority-medium' %}
+                                    {% if call.priority == 'high' or call.priority == 'urgent' %}
+                                        {% set priority_class = 'st-priority-high' %}
+                                    {% elif call.priority == 'low' %}
+                                        {% set priority_class = 'st-priority-low' %}
+                                    {% endif %}
+                                    <span class="{{ priority_class }}">
+                                        {{ call.priority.title() if call.priority else 'Medium' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% set status = call.status or 'open' %}
+                                    <span class="st-status-badge {{ status }}">
+                                        {% if status == 'in_progress' %}
+                                            <i class="fas fa-clock"></i>
+                                            In Progress
+                                        {% elif status == 'completed' %}
+                                            <i class="fas fa-check"></i>
+                                            Completed
+                                        {% elif status == 'on_hold' %}
+                                            <i class="fas fa-pause"></i>
+                                            On Hold
+                                        {% elif status == 'cancelled' %}
+                                            <i class="fas fa-times"></i>
+                                            Cancelled
+                                        {% else %}
+                                            <i class="fas fa-circle"></i>
+                                            Open
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td style="color: #6b7280; font-size: 0.875rem;">
+                                    {{ call.created_at.strftime('%m/%d/%Y') if call.created_at else 'Today' }}
+                                </td>
+                                <td>
+                                    <div style="display: flex; gap: 6px;">
+                                        <button class="st-btn st-btn-secondary st-btn-sm" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="st-btn st-btn-secondary st-btn-sm" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="st-btn st-btn-secondary st-btn-sm" title="Message">
+                                            <i class="fas fa-comment"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Sample Data for Demo -->
+                            <tr>
+                                <td><span style="font-weight: 600; color: #1e40af;">#KE001</span></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #00AEEF, #33C1F0); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.75rem;">A</div>
+                                        <div>
+                                            <div style="font-weight: 500;">ABC Manufacturing</div>
+                                            <div style="font-size: 0.75rem; color: #6b7280;">Panel Upgrade</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span style="background: #f3f4f6; color: #374151; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 500;">Industrial Install</span></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 24px; height: 24px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.625rem; font-weight: 600;">M</div>
+                                        <span style="font-weight: 500;">Mike Johnson</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <i class="fas fa-map-marker-alt" style="color: #6b7280; font-size: 0.75rem;"></i>
+                                        <span style="font-size: 0.875rem;">1234 Industrial Blvd...</span>
+                                    </div>
+                                </td>
+                                <td><span class="st-priority-high">Urgent</span></td>
+                                <td><span class="st-status-badge in-progress"><i class="fas fa-clock"></i> In Progress</span></td>
+                                <td style="color: #6b7280; font-size: 0.875rem;">Today</td>
+                                <td>
+                                    <div style="display: flex; gap: 6px;">
+                                        <button class="st-btn st-btn-secondary st-btn-sm" title="View Details"><i class="fas fa-eye"></i></button>
+                                        <button class="st-btn st-btn-secondary st-btn-sm" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="st-btn st-btn-secondary st-btn-sm" title="Message"><i class="fas fa-comment"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style="font-weight: 600; color: #1e40af;">#KE002</span></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #00AEEF, #33C1F0); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.75rem;">S</div>
+                                        <div>
+                                            <div style="font-weight: 500;">Smith Retail Store</div>
+                                            <div style="font-size: 0.75rem; color: #6b7280;">Lighting Installation</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span style="background: #f3f4f6; color: #374151; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 500;">Commercial</span></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 24px; height: 24px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.625rem; font-weight: 600;">S</div>
+                                        <span style="font-weight: 500;">Sarah Williams</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <i class="fas fa-map-marker-alt" style="color: #6b7280; font-size: 0.75rem;"></i>
+                                        <span style="font-size: 0.875rem;">567 Main Street...</span>
+                                    </div>
+                                </td>
+                                <td><span class="st-priority-medium">Medium</span></td>
+                                <td><span class="st-status-badge open"><i class="fas fa-circle"></i> Open</span></td>
+                                <td style="color: #6b7280; font-size: 0.875rem;">Yesterday</td>
+                                <td>
+                                    <div style="display: flex; gap: 6px;">
+                                        <button class="st-btn st-btn-secondary st-btn-sm" title="View Details"><i class="fas fa-eye"></i></button>
+                                        <button class="st-btn st-btn-secondary st-btn-sm" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="st-btn st-btn-secondary st-btn-sm" title="Message"><i class="fas fa-comment"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Toolie Chat Integration -->
+<div style="position: fixed; bottom: 24px; right: 24px; z-index: 50;">
+    <button class="toolie-bubble" id="toolieBubble" style="width: 60px; height: 60px; background: linear-gradient(135deg, #00AEEF, #33C1F0); border: none; border-radius: 50%; color: white; font-size: 24px; box-shadow: 0 8px 32px rgba(0, 174, 239, 0.3); cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-robot"></i>
+    </button>
+</div>
+
+<style>
+.toolie-bubble:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 40px rgba(0, 174, 239, 0.4);
+}
+
+.toolie-bubble.pulse {
+    animation: toolie-pulse 2s infinite;
+}
+
+@keyframes toolie-pulse {
+    0% { box-shadow: 0 8px 32px rgba(0, 174, 239, 0.3); }
+    50% { box-shadow: 0 8px 32px rgba(0, 174, 239, 0.6); }
+    100% { box-shadow: 0 8px 32px rgba(0, 174, 239, 0.3); }
+}
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/toolie.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Toolie chat
+    if (typeof ToolieChat !== 'undefined') {
+        window.toolieChat = new ToolieChat();
+        window.toolieChat.context = 'solo-operator'; // Set to operator mode for admin
+    }
+    
+    // Add pulse animation to Toolie button
+    const toolieBtn = document.getElementById('toolieBubble');
+    if (toolieBtn) {
+        toolieBtn.classList.add('pulse');
+        
+        // Remove pulse after first interaction
+        toolieBtn.addEventListener('click', function() {
+            this.classList.remove('pulse');
+        }, { once: true });
+    }
+    
+    // Real-time search functionality
+    const searchInput = document.querySelector('.st-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.st-table tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+    }
+    
+    // Status filter functionality
+    const statusFilter = document.querySelector('.st-table-tools select');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', function(e) {
+            const filter = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.st-table tbody tr');
+            
+            rows.forEach(row => {
+                if (filter === 'all status') {
+                    row.style.display = '';
+                } else {
+                    const statusBadge = row.querySelector('.st-status-badge');
+                    const status = statusBadge ? statusBadge.className : '';
+                    row.style.display = status.includes(filter.replace(' ', '-')) ? '' : 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

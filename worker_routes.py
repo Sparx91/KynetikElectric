@@ -51,7 +51,7 @@ def register_worker_routes(app):
         service_calls = firebase_service.get_service_calls()
         workers = firebase_service.get_workers()
         
-        return render_template('dashboard/adminDashboard.html', 
+        return render_template('dashboard/admin_servicetitan.html', 
                              service_calls=service_calls, 
                              workers=workers)
     
@@ -119,7 +119,10 @@ def register_worker_routes(app):
         # Get jobs assigned to current worker
         service_calls = firebase_service.get_service_calls(worker_id=current_user.id)
         
-        return render_template('dashboard/workerDashboard.html', service_calls=service_calls)
+        return render_template('dashboard/worker_servicetitan.html', 
+                             my_jobs=service_calls,
+                             today_jobs=service_calls,
+                             completed_today=[])
     
     @app.route('/job/<call_id>')
     @worker_required

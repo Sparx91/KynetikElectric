@@ -1,0 +1,484 @@
+{% extends "base.html" %}
+
+{% block title %}My Jobs - Kynetik Electric{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/servicetitan-style.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="st-layout">
+    <!-- Mobile-Optimized Sidebar -->
+    <div class="st-sidebar">
+        <div class="st-sidebar-header">
+            <div class="st-sidebar-logo">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <div>
+                <h1 class="st-sidebar-title">Kynetik</h1>
+                <p style="margin: 0; font-size: 0.75rem; color: #6b7280;">Field Tech</p>
+            </div>
+        </div>
+        
+        <nav class="st-sidebar-nav">
+            <div class="st-nav-section">
+                <h3 class="st-nav-section-title">My Work</h3>
+                <a href="#" class="st-nav-item active">
+                    <div class="st-nav-icon"><i class="fas fa-clipboard-list"></i></div>
+                    My Jobs
+                    <span class="st-nav-badge">{{ my_jobs|length if my_jobs else 0 }}</span>
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-calendar-check"></i></div>
+                    Today's Schedule
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-route"></i></div>
+                    Route Map
+                </a>
+            </div>
+            
+            <div class="st-nav-section">
+                <h3 class="st-nav-section-title">Tools</h3>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-camera"></i></div>
+                    Job Photos
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-file-signature"></i></div>
+                    Digital Forms
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-clock"></i></div>
+                    Time Tracking
+                </a>
+            </div>
+            
+            <div class="st-nav-section">
+                <h3 class="st-nav-section-title">Support</h3>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-headset"></i></div>
+                    Contact Dispatch
+                </a>
+                <a href="#" class="st-nav-item">
+                    <div class="st-nav-icon"><i class="fas fa-book"></i></div>
+                    Knowledge Base
+                </a>
+            </div>
+        </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="st-main">
+        <!-- Header -->
+        <div class="st-header">
+            <div class="st-header-left">
+                <h1 class="st-page-title">My Jobs</h1>
+                <div class="st-breadcrumb">
+                    <span>Field Tech</span>
+                    <span class="st-breadcrumb-separator">/</span>
+                    <span>Active Jobs</span>
+                </div>
+            </div>
+            
+            <div class="st-header-right">
+                <button class="st-btn st-btn-secondary">
+                    <i class="fas fa-sync-alt"></i>
+                    Sync
+                </button>
+                
+                <button class="st-btn st-btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Update Status
+                </button>
+                
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="position: relative;">
+                        <button class="st-btn st-btn-secondary">
+                            <i class="fas fa-bell"></i>
+                        </button>
+                        <span style="position: absolute; top: -4px; right: -4px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></span>
+                    </div>
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                        {{ current_user.name[0] if current_user and current_user.name else 'T' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="st-content">
+            <!-- Today's Overview -->
+            <div class="st-metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 32px;">
+                <div class="st-metric-card" style="background: linear-gradient(135deg, #1e40af, #3b82f6);">
+                    <div class="st-metric-header">
+                        <h3 class="st-metric-title">Today's Jobs</h3>
+                        <div class="st-metric-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                    </div>
+                    <h2 class="st-metric-value">{{ today_jobs|length if today_jobs else 3 }}</h2>
+                    <div class="st-metric-change">
+                        <i class="fas fa-clock"></i>
+                        {{ completed_today|length if completed_today else 1 }} completed
+                    </div>
+                </div>
+                
+                <div class="st-metric-card" style="background: linear-gradient(135deg, #059669, #10b981);">
+                    <div class="st-metric-header">
+                        <h3 class="st-metric-title">Hours Today</h3>
+                        <div class="st-metric-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <h2 class="st-metric-value">6.5</h2>
+                    <div class="st-metric-change">
+                        <i class="fas fa-dollar-sign"></i>
+                        $487.50 earned
+                    </div>
+                </div>
+                
+                <div class="st-metric-card" style="background: linear-gradient(135deg, #d97706, #f59e0b);">
+                    <div class="st-metric-header">
+                        <h3 class="st-metric-title">Next Job</h3>
+                        <div class="st-metric-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                    </div>
+                    <h2 class="st-metric-value" style="font-size: 1.5rem;">2:30 PM</h2>
+                    <div class="st-metric-change">
+                        <i class="fas fa-route"></i>
+                        15 min drive
+                    </div>
+                </div>
+                
+                <div class="st-metric-card" style="background: linear-gradient(135deg, #7c3aed, #8b5cf6);">
+                    <div class="st-metric-header">
+                        <h3 class="st-metric-title">Rating</h3>
+                        <div class="st-metric-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <h2 class="st-metric-value">4.9</h2>
+                    <div class="st-metric-change">
+                        <i class="fas fa-thumbs-up"></i>
+                        87 reviews
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Job Cards Grid -->
+            <div style="display: grid; gap: 24px;">
+                {% if my_jobs %}
+                    {% for job in my_jobs %}
+                    <div class="st-card job-card" data-job-id="{{ job.id }}">
+                        <div class="st-card-header">
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #00AEEF, #33C1F0); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <h3 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: #111827;">{{ job.title }}</h3>
+                                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 0.875rem;">{{ job.customer_name }} • Job #{{ job.id }}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    {% set status = job.status or 'open' %}
+                                    <span class="st-status-badge {{ status }}" style="margin-bottom: 8px;">
+                                        {% if status == 'in_progress' %}
+                                            <i class="fas fa-clock"></i> In Progress
+                                        {% elif status == 'completed' %}
+                                            <i class="fas fa-check"></i> Completed
+                                        {% else %}
+                                            <i class="fas fa-circle"></i> Open
+                                        {% endif %}
+                                    </span>
+                                    <div style="font-size: 0.75rem; color: #6b7280;">
+                                        {% if job.priority == 'urgent' %}
+                                            <span style="color: #dc2626; font-weight: 600;"><i class="fas fa-exclamation-triangle"></i> URGENT</span>
+                                        {% else %}
+                                            Priority: {{ job.priority.title() if job.priority else 'Medium' }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="st-card-body">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
+                                <div>
+                                    <h4 style="margin: 0 0 8px 0; font-size: 0.875rem; font-weight: 600; color: #374151;">Location</h4>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-map-marker-alt" style="color: #6b7280;"></i>
+                                        <span style="color: #111827;">{{ job.location }}</span>
+                                    </div>
+                                    <a href="#" style="color: #3b82f6; font-size: 0.875rem; text-decoration: none; margin-left: 20px;">
+                                        <i class="fas fa-directions"></i> Get Directions
+                                    </a>
+                                </div>
+                                
+                                <div>
+                                    <h4 style="margin: 0 0 8px 0; font-size: 0.875rem; font-weight: 600; color: #374151;">Schedule</h4>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-calendar" style="color: #6b7280;"></i>
+                                        <span style="color: #111827;">{{ job.created_at.strftime('%m/%d/%Y at %I:%M %p') if job.created_at else 'Today at 2:30 PM' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin: 0 0 8px 0; font-size: 0.875rem; font-weight: 600; color: #374151;">Job Description</h4>
+                                <p style="margin: 0; color: #6b7280; line-height: 1.5;">{{ job.description or 'Electrical service call - customer reports intermittent power issues in main panel. Inspect and repair as needed.' }}</p>
+                            </div>
+                            
+                            <!-- Progress Timeline -->
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin: 0 0 12px 0; font-size: 0.875rem; font-weight: 600; color: #374151;">Progress</h4>
+                                <div style="display: flex; align-items: center; gap: 16px; position: relative;">
+                                    <div style="position: absolute; top: 12px; left: 12px; right: 12px; height: 2px; background: #e5e7eb;"></div>
+                                    
+                                    <div style="display: flex; flex-direction: column; align-items: center; z-index: 1;">
+                                        <div style="width: 24px; height: 24px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem;">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <span style="font-size: 0.75rem; color: #6b7280; margin-top: 4px;">Assigned</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; align-items: center; z-index: 1;">
+                                        <div style="width: 24px; height: 24px; background: {% if status in ['in_progress', 'completed'] %}#10b981{% else %}#e5e7eb{% endif %}; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem;">
+                                            {% if status in ['in_progress', 'completed'] %}<i class="fas fa-check"></i>{% endif %}
+                                        </div>
+                                        <span style="font-size: 0.75rem; color: #6b7280; margin-top: 4px;">En Route</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; align-items: center; z-index: 1;">
+                                        <div style="width: 24px; height: 24px; background: {% if status == 'completed' %}#10b981{% elif status == 'in_progress' %}#3b82f6{% else %}#e5e7eb{% endif %}; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem;">
+                                            {% if status == 'completed' %}<i class="fas fa-check"></i>{% elif status == 'in_progress' %}<i class="fas fa-tools"></i>{% endif %}
+                                        </div>
+                                        <span style="font-size: 0.75rem; color: #6b7280; margin-top: 4px;">Working</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; align-items: center; z-index: 1;">
+                                        <div style="width: 24px; height: 24px; background: {% if status == 'completed' %}#10b981{% else %}#e5e7eb{% endif %}; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem;">
+                                            {% if status == 'completed' %}<i class="fas fa-check"></i>{% endif %}
+                                        </div>
+                                        <span style="font-size: 0.75rem; color: #6b7280; margin-top: 4px;">Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="st-card-actions">
+                            <button class="st-btn st-btn-primary st-btn-sm update-status-btn" data-job-id="{{ job.id }}">
+                                <i class="fas fa-edit"></i>
+                                Update Status
+                            </button>
+                            
+                            <button class="st-btn st-btn-secondary st-btn-sm">
+                                <i class="fas fa-camera"></i>
+                                Add Photos
+                            </button>
+                            
+                            <button class="st-btn st-btn-secondary st-btn-sm">
+                                <i class="fas fa-phone"></i>
+                                Call Customer
+                            </button>
+                            
+                            <button class="st-btn st-btn-secondary st-btn-sm">
+                                <i class="fas fa-comment"></i>
+                                Add Notes
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Sample Job for Demo -->
+                    <div class="st-card job-card">
+                        <div class="st-card-header">
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #00AEEF, #33C1F0); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <h3 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: #111827;">Panel Upgrade - ABC Manufacturing</h3>
+                                    <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 0.875rem;">ABC Manufacturing • Job #KE001</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span class="st-status-badge in-progress" style="margin-bottom: 8px;">
+                                        <i class="fas fa-clock"></i> In Progress
+                                    </span>
+                                    <div style="font-size: 0.75rem; color: #dc2626; font-weight: 600;">
+                                        <i class="fas fa-exclamation-triangle"></i> URGENT
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="st-card-body">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
+                                <div>
+                                    <h4 style="margin: 0 0 8px 0; font-size: 0.875rem; font-weight: 600; color: #374151;">Location</h4>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-map-marker-alt" style="color: #6b7280;"></i>
+                                        <span style="color: #111827;">1234 Industrial Blvd, Suite 100</span>
+                                    </div>
+                                    <a href="#" style="color: #3b82f6; font-size: 0.875rem; text-decoration: none; margin-left: 20px;">
+                                        <i class="fas fa-directions"></i> Get Directions
+                                    </a>
+                                </div>
+                                
+                                <div>
+                                    <h4 style="margin: 0 0 8px 0; font-size: 0.875rem; font-weight: 600; color: #374151;">Schedule</h4>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-calendar" style="color: #6b7280;"></i>
+                                        <span style="color: #111827;">Today at 2:30 PM</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin: 0 0 8px 0; font-size: 0.875rem; font-weight: 600; color: #374151;">Job Description</h4>
+                                <p style="margin: 0; color: #6b7280; line-height: 1.5;">Upgrade 200A main electrical panel for manufacturing facility. Customer reports frequent breaker trips during peak production hours. Install new panel and redistribute circuits for optimal load balancing.</p>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin: 0 0 12px 0; font-size: 0.875rem; font-weight: 600; color: #374151;">Progress</h4>
+                                <div style="display: flex; align-items: center; gap: 16px; position: relative;">
+                                    <div style="position: absolute; top: 12px; left: 12px; right: 12px; height: 2px; background: #e5e7eb;"></div>
+                                    
+                                    <div style="display: flex; flex-direction: column; align-items: center; z-index: 1;">
+                                        <div style="width: 24px; height: 24px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem;">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <span style="font-size: 0.75rem; color: #6b7280; margin-top: 4px;">Assigned</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; align-items: center; z-index: 1;">
+                                        <div style="width: 24px; height: 24px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem;">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <span style="font-size: 0.75rem; color: #6b7280; margin-top: 4px;">En Route</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; align-items: center; z-index: 1;">
+                                        <div style="width: 24px; height: 24px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem;">
+                                            <i class="fas fa-tools"></i>
+                                        </div>
+                                        <span style="font-size: 0.75rem; color: #6b7280; margin-top: 4px;">Working</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; flex-direction: column; align-items: center; z-index: 1;">
+                                        <div style="width: 24px; height: 24px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem;"></div>
+                                        <span style="font-size: 0.75rem; color: #6b7280; margin-top: 4px;">Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="st-card-actions">
+                            <button class="st-btn st-btn-primary st-btn-sm">
+                                <i class="fas fa-edit"></i>
+                                Update Status
+                            </button>
+                            
+                            <button class="st-btn st-btn-secondary st-btn-sm">
+                                <i class="fas fa-camera"></i>
+                                Add Photos
+                            </button>
+                            
+                            <button class="st-btn st-btn-secondary st-btn-sm">
+                                <i class="fas fa-phone"></i>
+                                Call Customer
+                            </button>
+                            
+                            <button class="st-btn st-btn-secondary st-btn-sm">
+                                <i class="fas fa-comment"></i>
+                                Add Notes
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Toolie Chat Integration -->
+<div style="position: fixed; bottom: 24px; right: 24px; z-index: 50;">
+    <button class="toolie-bubble pulse" id="toolieBubble" style="width: 60px; height: 60px; background: linear-gradient(135deg, #00AEEF, #33C1F0); border: none; border-radius: 50%; color: white; font-size: 24px; box-shadow: 0 8px 32px rgba(0, 174, 239, 0.3); cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-robot"></i>
+    </button>
+</div>
+
+<style>
+.job-card {
+    transition: all 0.3s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.toolie-bubble:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 40px rgba(0, 174, 239, 0.4);
+}
+
+.toolie-bubble.pulse {
+    animation: toolie-pulse 2s infinite;
+}
+
+@keyframes toolie-pulse {
+    0% { box-shadow: 0 8px 32px rgba(0, 174, 239, 0.3); }
+    50% { box-shadow: 0 8px 32px rgba(0, 174, 239, 0.6); }
+    100% { box-shadow: 0 8px 32px rgba(0, 174, 239, 0.3); }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .st-card-body > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+    
+    .st-card-actions {
+        flex-wrap: wrap;
+        gap: 8px !important;
+    }
+    
+    .st-card-actions .st-btn {
+        flex: 1;
+        min-width: calc(50% - 4px);
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/toolie.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Toolie chat for field workers
+    if (typeof ToolieChat !== 'undefined') {
+        window.toolieChat = new ToolieChat();
+        window.toolieChat.context = 'customer-facing'; // Workers use customer-facing mode
+    }
+    
+    // Job status update functionality
+    document.querySelectorAll('.update-status-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const jobId = this.dataset.jobId;
+            // Here you would implement the status update modal or inline editing
+            console.log('Update status for job:', jobId);
+        });
+    });
+    
+    // Auto-refresh job data every 30 seconds
+    setInterval(function() {
+        // In a real implementation, this would fetch updated job data
+        console.log('Refreshing job data...');
+    }, 30000);
+});
+</script>
+{% endblock %}
