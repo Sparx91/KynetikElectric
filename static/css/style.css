@@ -1,3 +1,20 @@
+/* Kynetik Electric Custom Fonts */
+@font-face {
+    font-family: 'KynetikFont';
+    src: url('../fonts/KynetikFont-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'KynetikFont-Bold';
+    src: url('../fonts/KynetikFont-Regular.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     /* Kynetik Electric Color Scheme - Industrial Dark Theme */
     --primary-blue: hsl(210, 80%, 50%);     /* #1a8cff - Kynetik Blue */
@@ -13,6 +30,7 @@
     --success: hsl(120, 60%, 50%);          /* #4caf50 - Success Green */
     --warning: hsl(45, 90%, 55%);           /* #ffc107 - Warning Yellow */
     --danger: hsl(0, 70%, 55%);             /* #dc3545 - Error Red */
+    --kynetik-font: 'KynetikFont', 'Orbitron', sans-serif;
 }
 
 * {
@@ -22,7 +40,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--kynetik-font);
     line-height: 1.6;
     color: var(--text-primary);
     background-color: var(--background-dark);
@@ -115,7 +133,22 @@ body {
     z-index: 2;
 }
 
+/* Kynetik Logo Styles */
+.kynetik-logo {
+    max-width: 250px;
+    height: auto;
+    margin: 0 auto 20px auto;
+    display: block;
+}
+
+/* Headers with Kynetik Font */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--kynetik-font);
+    font-weight: bold;
+}
+
 .hero-title {
+    font-family: var(--kynetik-font);
     font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 20px;
