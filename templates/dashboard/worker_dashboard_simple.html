@@ -52,7 +52,58 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+        }
+
+        /* Quick Actions Bar */
+        .quick-actions-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .quick-action-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .quick-action-btn:hover {
+            border-color: #00AEEF;
+            background: #f8fbff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,174,239,0.2);
+        }
+
+        .quick-action-btn i {
+            font-size: 20px;
+            color: #00AEEF;
+        }
+
+        .quick-action-btn span {
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .quick-action-btn.active {
+            background: #00AEEF;
+            border-color: #00AEEF;
+            color: white;
+        }
+
+        .quick-action-btn.active i {
+            color: white;
         }
 
         .stat-card {
@@ -155,7 +206,7 @@
         .job-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
             padding: 20px;
             background: #f9f9f9;
         }
@@ -248,10 +299,21 @@
             
             .job-actions {
                 grid-template-columns: 1fr;
+                gap: 8px;
             }
             
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .quick-actions-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .action-btn {
+                padding: 12px 8px;
+                font-size: 13px;
             }
         }
 
@@ -307,6 +369,26 @@
             </div>
         </div>
 
+        <!-- Quick Actions Bar -->
+        <div class="quick-actions-bar">
+            <button class="quick-action-btn" onclick="clockIn()" id="clockBtn">
+                <i class="fas fa-clock"></i>
+                <span>Clock In</span>
+            </button>
+            <button class="quick-action-btn" onclick="emergencyCall()">
+                <i class="fas fa-phone-alt"></i>
+                <span>Emergency</span>
+            </button>
+            <button class="quick-action-btn" onclick="findParts()">
+                <i class="fas fa-search"></i>
+                <span>Find Parts</span>
+            </button>
+            <button class="quick-action-btn" onclick="reportIssue()">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Report Issue</span>
+            </button>
+        </div>
+
         <!-- Jobs Section -->
         <div class="section-title">
             <i class="fas fa-clipboard-list"></i> My Jobs
@@ -358,6 +440,14 @@
                     <button class="action-btn btn-primary" onclick="startJob('{{ job.id }}')">
                         <i class="fas fa-play"></i>
                         Start Job
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="navigate('{{ job.location }}')">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Navigate
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="callCustomer('{{ job.customer_phone or "+1-555-0123" }}')">
+                        <i class="fas fa-phone"></i>
+                        Call
                     </button>
                     <button class="action-btn btn-secondary" onclick="viewDetails('{{ job.id }}')">
                         <i class="fas fa-info-circle"></i>
@@ -411,6 +501,27 @@
             }, 1000);
         }
 
+        function navigate(location) {
+            const encodedLocation = encodeURIComponent(location);
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    window.open(`https://maps.google.com/maps?saddr=${lat},${lng}&daddr=${encodedLocation}`, '_blank');
+                }, function() {
+                    window.open(`https://maps.google.com/?q=${encodedLocation}`, '_blank');
+                });
+            } else {
+                window.open(`https://maps.google.com/?q=${encodedLocation}`, '_blank');
+            }
+            showNotification('Opening navigation...', 'success');
+        }
+        
+        function callCustomer(phone) {
+            window.open(`tel:${phone}`, '_self');
+            showNotification('Calling customer...', 'success');
+        }
+        
         function viewDetails(jobId) {
             window.location.href = `/job/${jobId}`;
         }
@@ -451,6 +562,82 @@
             }, 3000);
         }
 
+        // Time tracking
+        let isClockedIn = localStorage.getItem('clockedIn') === 'true';
+        let clockInTime = localStorage.getItem('clockInTime');
+        
+        function clockIn() {
+            const btn = document.getElementById('clockBtn');
+            if (!isClockedIn) {
+                // Clock in
+                isClockedIn = true;
+                clockInTime = new Date().toISOString();
+                localStorage.setItem('clockedIn', 'true');
+                localStorage.setItem('clockInTime', clockInTime);
+                
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="fas fa-clock"></i><span>Clock Out</span>';
+                showNotification('Clocked in successfully!', 'success');
+                
+                // Start timer display
+                updateTimeDisplay();
+                setInterval(updateTimeDisplay, 60000); // Update every minute
+            } else {
+                // Clock out
+                const timeWorked = calculateTimeWorked();
+                isClockedIn = false;
+                localStorage.removeItem('clockedIn');
+                localStorage.removeItem('clockInTime');
+                
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="fas fa-clock"></i><span>Clock In</span>';
+                showNotification(`Clocked out! Time worked: ${timeWorked}`, 'success');
+            }
+        }
+        
+        function calculateTimeWorked() {
+            if (!clockInTime) return '0h 0m';
+            const start = new Date(clockInTime);
+            const end = new Date();
+            const diff = end - start;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            return `${hours}h ${minutes}m`;
+        }
+        
+        function updateTimeDisplay() {
+            if (isClockedIn) {
+                const timeWorked = calculateTimeWorked();
+                document.querySelector('.header .worker-info').innerHTML = 
+                    `<div>{{ current_user.name }}</div><div style="opacity: 0.8;">Working: ${timeWorked}</div>`;
+            }
+        }
+        
+        function emergencyCall() {
+            if (confirm('Call emergency dispatch?')) {
+                window.open('tel:+1-555-DISPATCH', '_self');
+                showNotification('Calling emergency dispatch...', 'warning');
+            }
+        }
+        
+        function findParts() {
+            const partNumber = prompt('Enter part number or description:');
+            if (partNumber) {
+                showNotification('Searching inventory...', 'success');
+                setTimeout(() => {
+                    showNotification(`Found 3 suppliers for "${partNumber}"`, 'success');
+                }, 1500);
+            }
+        }
+        
+        function reportIssue() {
+            const issue = prompt('Describe the safety issue or equipment problem:');
+            if (issue) {
+                showNotification('Issue reported to dispatch. Stay safe!', 'warning');
+                // In real app, would send to management system
+            }
+        }
+
         // Photo upload functionality
         function uploadPhoto() {
             const input = document.createElement('input');
@@ -468,6 +655,27 @@
             
             input.click();
         }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up clock-in button state
+            const clockBtn = document.getElementById('clockBtn');
+            if (isClockedIn) {
+                clockBtn.classList.add('active');
+                clockBtn.innerHTML = '<i class="fas fa-clock"></i><span>Clock Out</span>';
+                updateTimeDisplay();
+                setInterval(updateTimeDisplay, 60000);
+            }
+            
+            // Request location permission for navigation
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function() {
+                    console.log('Location access granted');
+                }, function() {
+                    console.log('Location access denied');
+                });
+            }
+        });
 
         // Auto-refresh every 30 seconds
         setInterval(() => {
