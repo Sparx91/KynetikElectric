@@ -121,6 +121,14 @@ Product Selection → Stripe Checkout → Payment Processing → Digital Deliver
 ## Recent Changes
 
 ### June 15, 2025
+- **Worker Dispatch System**: Implemented comprehensive service call management
+  - Firebase Authentication integration for worker login system
+  - Admin dashboard for creating and assigning service calls to workers
+  - Worker dashboard for viewing assigned jobs, updating status, and uploading files
+  - Twilio SMS notifications sent to workers when jobs are assigned
+  - Mobile-responsive interface for field workers to use on phones
+  - File upload system for job documentation and photos
+  - Status tracking system (Open, In Progress, Completed, On Hold, Cancelled)
 - **Brand Implementation**: Applied official Kynetik Electric brand guidelines
   - Updated color scheme to brand cyan (#00AEEF), medium grey (#777777), dark charcoal (#333333)
   - Implemented typography hierarchy with Orbitron for headings, RethinkSans for body text

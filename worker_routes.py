@@ -99,8 +99,8 @@ def register_worker_routes(app):
             if assigned_worker and assigned_worker.get('phone'):
                 sms_service.send_job_assignment_sms(
                     worker_phone=assigned_worker['phone'],
-                    job_title=form.title.data,
-                    location=form.location.data,
+                    job_title=form.title.data or "New Job",
+                    location=form.location.data or "Location TBD",
                     job_id=call_id
                 )
             
@@ -155,9 +155,9 @@ def register_worker_routes(app):
         
         if form.validate_on_submit():
             success = firebase_service.update_service_call_status(
-                call_id=form.call_id.data,
-                status=form.status.data,
-                notes=form.notes.data
+                call_id=form.call_id.data or "",
+                status=form.status.data or "open",
+                notes=form.notes.data or ""
             )
             
             if success:
@@ -192,7 +192,7 @@ def register_worker_routes(app):
                             'note': form.note.data
                         }
                         
-                        firebase_service.upload_file(form.call_id.data, upload_data)
+                        firebase_service.upload_file(form.call_id.data or "", upload_data)
                         uploaded_files.append(filename)
             
             if uploaded_files:
