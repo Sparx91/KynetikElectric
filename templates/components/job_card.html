@@ -152,13 +152,10 @@
     
     <!-- Action Buttons -->
     <div class="job-actions">
-        <form method="POST" action="{{ url_for('update_job_status') }}" style="display: contents;">
-            <input type="hidden" name="call_id" value="{{ job.id }}">
-            <button type="submit" class="action-btn primary update-status-btn" data-job-id="{{ job.id }}">
-                <i class="fas fa-edit"></i>
-                Update Status
-            </button>
-        </form>
+        <button type="button" class="action-btn primary update-status-btn" data-job-id="{{ job.id }}" onclick="openStatusModal('{{ job.id }}')">
+            <i class="fas fa-edit"></i>
+            Update Status
+        </button>
         
         <button class="action-btn photo-btn" data-job-id="{{ job.id }}" onclick="openPhotoUpload('{{ job.id }}')">
             <i class="fas fa-camera"></i>

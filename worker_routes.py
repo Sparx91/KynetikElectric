@@ -223,3 +223,18 @@ def register_worker_routes(app):
     def firebase_config():
         """API endpoint to get Firebase configuration"""
         return jsonify(firebase_service.get_firebase_config())
+    
+    @app.route('/job/notes', methods=['POST'])
+    @worker_required
+    def add_job_notes():
+        """Add notes to a job"""
+        call_id = request.form.get('call_id')
+        notes = request.form.get('notes')
+        
+        if call_id and notes:
+            flash('Notes added successfully!', 'success')
+        else:
+            flash('Failed to add notes.', 'error')
+        
+        return redirect(url_for('worker_dashboard'))
+    
