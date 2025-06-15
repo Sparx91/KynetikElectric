@@ -19,6 +19,8 @@ dependencies = [
     "opencv-python>=4.11.0.86",
     "pillow>=11.2.1",
     "reportlab>=4.4.1",
+    "twilio>=9.6.3",
+    "numpy>=2.2.6",
 ]
 
 [[tool.uv.index]]
