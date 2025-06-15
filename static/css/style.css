@@ -1,15 +1,31 @@
-/* Kynetik Electric Custom Fonts */
+/* Kynetik Electric Custom Fonts - RethinkSans */
 @font-face {
-    font-family: 'KynetikFont';
-    src: url('../fonts/KynetikFont-Regular.ttf') format('truetype');
+    font-family: 'RethinkSans';
+    src: url('../fonts/RethinkSans-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 
 @font-face {
-    font-family: 'KynetikFont-Bold';
-    src: url('../fonts/KynetikFont-Regular.ttf') format('truetype');
+    font-family: 'RethinkSans';
+    src: url('../fonts/RethinkSans-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'RethinkSans';
+    src: url('../fonts/RethinkSans-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'RethinkSans';
+    src: url('../fonts/RethinkSans-Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
@@ -30,7 +46,7 @@
     --success: hsl(120, 60%, 50%);          /* #4caf50 - Success Green */
     --warning: hsl(45, 90%, 55%);           /* #ffc107 - Warning Yellow */
     --danger: hsl(0, 70%, 55%);             /* #dc3545 - Error Red */
-    --kynetik-font: 'KynetikFont', 'Orbitron', sans-serif;
+    --kynetik-font: 'RethinkSans', sans-serif;
 }
 
 * {
