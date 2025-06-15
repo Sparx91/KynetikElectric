@@ -20,8 +20,20 @@ def register_worker_routes(app):
     def worker_login():
         """Worker login page"""
         form = WorkerLoginForm()
+        
+        # Debug logging for login attempts
+        if request.method == 'POST':
+            current_app.logger.debug(f"Login attempt - Email: {form.email.data}, Form valid: {form.validate_on_submit()}")
+            if form.errors:
+                current_app.logger.debug(f"Form errors: {form.errors}")
+        
         if form.validate_on_submit():
-            worker = authenticate_worker(form.email.data, form.password.data)
+            email = (form.email.data or "").strip().lower()
+            password = form.password.data or ""
+            
+            current_app.logger.debug(f"Attempting authentication for: {email}")
+            worker = authenticate_worker(email, password)
+            
             if worker:
                 login_user(worker, remember=True)
                 flash(f'Welcome back, {worker.name}!', 'success')
@@ -32,7 +44,8 @@ def register_worker_routes(app):
                 else:
                     return redirect(url_for('worker_dashboard'))
             else:
-                flash('Invalid email or password.', 'error')
+                current_app.logger.debug(f"Authentication failed for: {email}")
+                flash('Invalid email or password. Please check your credentials.', 'error')
         
         return render_template('worker/login.html', form=form)
     

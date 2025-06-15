@@ -66,6 +66,9 @@ def worker_required(f):
 
 def authenticate_worker(email, password):
     """Authenticate worker with email/password"""
+    # Normalize email to lowercase for consistent lookup
+    email = email.strip().lower()
+    
     # For now, use simple hardcoded authentication
     # In production, this would validate against Firebase Auth
     workers = {
@@ -98,10 +101,19 @@ def authenticate_worker(email, password):
         }
     }
     
+    print(f"[DEBUG] Authenticating user: {email}")
+    print(f"[DEBUG] Available workers: {list(workers.keys())}")
+    
     worker_data = workers.get(email)
     if worker_data and worker_data['active']:
+        print(f"[DEBUG] Found worker data for: {email}")
         if check_password_hash(worker_data['password_hash'], password):
+            print(f"[DEBUG] Password verification successful for: {email}")
             return Worker(worker_data)
+        else:
+            print(f"[DEBUG] Password verification failed for: {email}")
+    else:
+        print(f"[DEBUG] No worker data found for: {email}")
     
     return None
 
