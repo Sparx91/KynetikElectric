@@ -86,7 +86,7 @@ class FirebaseService:
             return [call for call in self.service_calls if call['assigned_to'] == worker_id]
         return self.service_calls
     
-    def update_service_call_status(self, call_id: str, status: str, notes: str = None) -> bool:
+    def update_service_call_status(self, call_id: str, status: str, notes: str = "") -> bool:
         """Update service call status"""
         for call in self.service_calls:
             if call['id'] == call_id:

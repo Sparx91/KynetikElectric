@@ -16,6 +16,10 @@ from models import Service, BidRequest, Product, TrainingVideo, Admin, ChatConve
 from forms import BidRequestForm, AdminLoginForm, ProductForm, TrainingVideoForm, ObjectDetectionForm
 from ai_assistant import ToolieAI
 from yolo_detect import ElectricalYOLODetector, toolie_summarize
+from worker_routes import register_worker_routes
+
+# Register worker dispatch routes
+register_worker_routes(app)
 
 # Initialize Stripe
 stripe.api_key = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_your_stripe_key')

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Worker Dashboard - Kynetik Electric{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Worker Dashboard</h2>
+                <div>
+                    <span class="text-muted">Welcome, {{ current_user.name }}</span>
+                    <a href="{{ url_for('worker_logout') }}" class="btn btn-outline-secondary btn-sm ms-2">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if service_calls %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">My Assigned Jobs</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Customer</th>
+                                    <th>Location</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Assigned</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in service_calls %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ job.title }}</strong>
+                                        {% if job.description %}
+                                        <br><small class="text-muted">{{ job.description[:100] }}{% if job.description|length > 100 %}...{% endif %}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ job.customer_name }}</td>
+                                    <td>{{ job.location }}</td>
+                                    <td>
+                                        <span class="badge {% if job.priority == 'urgent' %}bg-danger{% elif job.priority == 'high' %}bg-warning{% elif job.priority == 'medium' %}bg-info{% else %}bg-secondary{% endif %}">
+                                            {{ job.priority.title() }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if job.status == 'completed' %}bg-success{% elif job.status == 'in_progress' %}bg-primary{% elif job.status == 'on_hold' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                            {{ job.status.replace('_', ' ').title() }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ job.created_at[:10] }}</small>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('job_detail', call_id=job.id) }}" class="btn btn-sm btn-primary">View Details</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                    <h4>No Jobs Assigned</h4>
+                    <p class="text-muted">You don't have any jobs assigned at the moment. Check back later or contact dispatch.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Stats -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ service_calls|selectattr('status', 'equalto', 'open')|list|length }}</h4>
+                            <span>Open Jobs</span>
+                        </div>
+                        <i class="fas fa-clipboard-list fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ service_calls|selectattr('status', 'equalto', 'in_progress')|list|length }}</h4>
+                            <span>In Progress</span>
+                        </div>
+                        <i class="fas fa-cogs fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ service_calls|selectattr('status', 'equalto', 'completed')|list|length }}</h4>
+                            <span>Completed</span>
+                        </div>
+                        <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ service_calls|selectattr('priority', 'equalto', 'urgent')|list|length }}</h4>
+                            <span>Urgent Jobs</span>
+                        </div>
+                        <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

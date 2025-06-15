@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dispatch - Kynetik Electric{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Dispatch Dashboard</h2>
+                <div>
+                    <a href="{{ url_for('create_service_call') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Create New Job
+                    </a>
+                    <a href="{{ url_for('worker_logout') }}" class="btn btn-outline-secondary ms-2">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ service_calls|length }}</h4>
+                            <span>Total Jobs</span>
+                        </div>
+                        <i class="fas fa-clipboard-list fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ service_calls|selectattr('status', 'equalto', 'open')|list|length }}</h4>
+                            <span>Open Jobs</span>
+                        </div>
+                        <i class="fas fa-folder-open fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ service_calls|selectattr('status', 'equalto', 'in_progress')|list|length }}</h4>
+                            <span>In Progress</span>
+                        </div>
+                        <i class="fas fa-cogs fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4>{{ service_calls|selectattr('status', 'equalto', 'completed')|list|length }}</h4>
+                            <span>Completed</span>
+                        </div>
+                        <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Workers -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Active Workers</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for worker in workers %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card border">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ worker.name }}</h6>
+                                    <p class="card-text">
+                                        <small class="text-muted">{{ worker.email }}</small><br>
+                                        <span class="badge bg-{{ 'success' if worker.role == 'senior_technician' else 'primary' }}">
+                                            {{ worker.role.replace('_', ' ').title() }}
+                                        </span>
+                                    </p>
+                                    <small class="text-muted">
+                                        Jobs: {{ service_calls|selectattr('assigned_to', 'equalto', worker.id)|list|length }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Calls Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">All Service Calls</h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <input type="radio" class="btn-check" name="statusFilter" id="all" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="all">All</label>
+                        
+                        <input type="radio" class="btn-check" name="statusFilter" id="open" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="open">Open</label>
+                        
+                        <input type="radio" class="btn-check" name="statusFilter" id="progress" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="progress">In Progress</label>
+                        
+                        <input type="radio" class="btn-check" name="statusFilter" id="completed" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="completed">Completed</label>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if service_calls %}
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="jobsTable">
+                            <thead>
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th>Title</th>
+                                    <th>Customer</th>
+                                    <th>Location</th>
+                                    <th>Assigned Worker</th>
+                                    <th>Priority</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in service_calls %}
+                                <tr data-status="{{ job.status }}">
+                                    <td><code>{{ job.id[-8:] }}</code></td>
+                                    <td>
+                                        <strong>{{ job.title }}</strong>
+                                        {% if job.description %}
+                                        <br><small class="text-muted">{{ job.description[:80] }}{% if job.description|length > 80 %}...{% endif %}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ job.customer_name }}</td>
+                                    <td>{{ job.location }}</td>
+                                    <td>
+                                        {% set worker = workers|selectattr('id', 'equalto', job.assigned_to)|first %}
+                                        {% if worker %}
+                                            {{ worker.name }}
+                                        {% else %}
+                                            <span class="text-muted">Unassigned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if job.priority == 'urgent' %}bg-danger{% elif job.priority == 'high' %}bg-warning{% elif job.priority == 'medium' %}bg-info{% else %}bg-secondary{% endif %}">
+                                            {{ job.priority.title() }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if job.status == 'completed' %}bg-success{% elif job.status == 'in_progress' %}bg-primary{% elif job.status == 'on_hold' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                            {{ job.status.replace('_', ' ').title() }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ job.created_at[:10] }}</small>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('job_detail', call_id=job.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                        <h4>No Service Calls</h4>
+                        <p class="text-muted">No service calls have been created yet.</p>
+                        <a href="{{ url_for('create_service_call') }}" class="btn btn-primary">Create First Job</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Filter jobs by status
+document.querySelectorAll('input[name="statusFilter"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const filter = this.id;
+        const rows = document.querySelectorAll('#jobsTable tbody tr');
+        
+        rows.forEach(row => {
+            if (filter === 'all') {
+                row.style.display = '';
+            } else if (filter === 'progress') {
+                row.style.display = row.dataset.status === 'in_progress' ? '' : 'none';
+            } else {
+                row.style.display = row.dataset.status === filter ? '' : 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

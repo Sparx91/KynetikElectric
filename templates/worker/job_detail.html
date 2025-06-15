@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Job Details - Kynetik Electric{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Job Details</h2>
+                <div>
+                    {% if current_user.is_admin() %}
+                        <a href="{{ url_for('admin_dispatch') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Dispatch
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('worker_dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Job Information -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ job.title }}</h5>
+                    <div>
+                        <span class="badge {% if job.priority == 'urgent' %}bg-danger{% elif job.priority == 'high' %}bg-warning{% elif job.priority == 'medium' %}bg-info{% else %}bg-secondary{% endif %} me-2">
+                            {{ job.priority.title() }}
+                        </span>
+                        <span class="badge {% if job.status == 'completed' %}bg-success{% elif job.status == 'in_progress' %}bg-primary{% elif job.status == 'on_hold' %}bg-warning{% else %}bg-secondary{% endif %}">
+                            {{ job.status.replace('_', ' ').title() }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Customer Information</h6>
+                            <p><strong>Name:</strong> {{ job.customer_name }}</p>
+                            <p><strong>Location:</strong> {{ job.location }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Job Information</h6>
+                            <p><strong>Created:</strong> {{ job.created_at[:10] }}</p>
+                            <p><strong>Job ID:</strong> <code>{{ job.id[-8:] }}</code></p>
+                        </div>
+                    </div>
+                    
+                    <h6>Description</h6>
+                    <p>{{ job.description }}</p>
+                    
+                    {% if job.notes %}
+                    <h6>Notes</h6>
+                    <div class="bg-light p-3 rounded">
+                        {% for note in job.notes %}
+                        <div class="mb-2">
+                            <small class="text-muted">{{ note.timestamp[:16] }}</small>
+                            <p class="mb-0">{{ note.note }}</p>
+                        </div>
+                        {% if not loop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Status Update Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Update Job Status</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('update_job_status') }}">
+                        {{ status_form.hidden_tag() }}
+                        {{ status_form.call_id(value=job.id) }}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ status_form.status.label(class="form-label") }}
+                                {{ status_form.status(class="form-select", value=job.status) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">&nbsp;</label>
+                                <button type="submit" class="btn btn-primary d-block">
+                                    <i class="fas fa-save me-1"></i>Update Status
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ status_form.notes.label(class="form-label") }}
+                            {{ status_form.notes(class="form-control", rows="3", placeholder="Add notes about status change...") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- File Upload Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Upload Files</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('upload_job_files') }}" enctype="multipart/form-data">
+                        {{ upload_form.hidden_tag() }}
+                        {{ upload_form.call_id(value=job.id) }}
+                        
+                        <div class="mb-3">
+                            {{ upload_form.files.label(class="form-label") }}
+                            {{ upload_form.files(class="form-control", multiple=True) }}
+                            <div class="form-text">Upload photos, documents, or videos related to this job</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ upload_form.note.label(class="form-label") }}
+                            {{ upload_form.note(class="form-control", rows="2", placeholder="Add a note about these files...") }}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-upload me-1"></i>Upload Files
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Uploaded Files -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Uploaded Files</h6>
+                </div>
+                <div class="card-body">
+                    {% if uploads %}
+                        {% for upload in uploads %}
+                        <div class="d-flex align-items-center mb-3 p-2 bg-light rounded">
+                            <div class="me-3">
+                                {% if upload.file_type and upload.file_type.startswith('image/') %}
+                                    <i class="fas fa-image text-primary fa-lg"></i>
+                                {% elif upload.file_type and 'pdf' in upload.file_type %}
+                                    <i class="fas fa-file-pdf text-danger fa-lg"></i>
+                                {% else %}
+                                    <i class="fas fa-file text-muted fa-lg"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ upload.filename }}</h6>
+                                {% if upload.note %}
+                                <p class="mb-1 small text-muted">{{ upload.note }}</p>
+                                {% endif %}
+                                <small class="text-muted">{{ upload.timestamp[:16] }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-folder-open fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No files uploaded yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        {% if job.status == 'open' %}
+                        <button class="btn btn-primary btn-sm" onclick="updateStatus('in_progress')">
+                            <i class="fas fa-play me-1"></i>Start Job
+                        </button>
+                        {% endif %}
+                        
+                        {% if job.status == 'in_progress' %}
+                        <button class="btn btn-success btn-sm" onclick="updateStatus('completed')">
+                            <i class="fas fa-check me-1"></i>Mark Complete
+                        </button>
+                        <button class="btn btn-warning btn-sm" onclick="updateStatus('on_hold')">
+                            <i class="fas fa-pause me-1"></i>Put On Hold
+                        </button>
+                        {% endif %}
+                        
+                        {% if job.status != 'completed' %}
+                        <button class="btn btn-outline-secondary btn-sm" onclick="openCameraUpload()">
+                            <i class="fas fa-camera me-1"></i>Take Photo
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateStatus(status) {
+    document.getElementById('status').value = status;
+    document.querySelector('form[action="{{ url_for("update_job_status") }}"]').submit();
+}
+
+function openCameraUpload() {
+    // Trigger file input with camera preference
+    const fileInput = document.getElementById('files');
+    fileInput.setAttribute('capture', 'environment');
+    fileInput.click();
+}
+</script>
+{% endblock %}
