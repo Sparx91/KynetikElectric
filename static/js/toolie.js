@@ -346,8 +346,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-    }
-
-    // Export for use in other scripts
-    window.ToolieChat = ToolieChat;
+// Export for use in other scripts
+window.ToolieChat = ToolieChat;
 }
