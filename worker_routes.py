@@ -107,7 +107,7 @@ def register_worker_routes(app):
             flash(f'Service call created and assigned to {assigned_worker["name"] if assigned_worker else "worker"}!', 'success')
             return redirect(url_for('admin_dispatch'))
         
-        return render_template('components/jobForm.html', form=form)
+        return render_template('worker/create_job_modern.html', form=form)
     
     @app.route('/dashboard')
     @worker_required
@@ -119,7 +119,7 @@ def register_worker_routes(app):
         # Get jobs assigned to current worker
         service_calls = firebase_service.get_service_calls(worker_id=current_user.id)
         
-        return render_template('worker/dashboard.html', service_calls=service_calls)
+        return render_template('dashboard/workerDashboard.html', service_calls=service_calls)
     
     @app.route('/job/<call_id>')
     @worker_required

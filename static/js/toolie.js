@@ -17,13 +17,15 @@ class ToolieChat {
     }
 
     createChatWidget() {
-        // Create chat toggle button
-        const toggleButton = document.createElement('button');
-        toggleButton.className = 'chat-toggle btn btn-primary';
-        toggleButton.innerHTML = '<i class="fas fa-comments"></i>';
-        toggleButton.setAttribute('data-bs-toggle', 'tooltip');
-        toggleButton.setAttribute('title', 'Chat with Toolie AI');
-        document.body.appendChild(toggleButton);
+        // Check if modern toolie bubble exists, if not create legacy button
+        if (!document.querySelector('.toolie-bubble')) {
+            const toggleButton = document.createElement('button');
+            toggleButton.className = 'chat-toggle btn btn-primary';
+            toggleButton.innerHTML = '<i class="fas fa-comments"></i>';
+            toggleButton.setAttribute('data-bs-toggle', 'tooltip');
+            toggleButton.setAttribute('title', 'Chat with Toolie AI');
+            document.body.appendChild(toggleButton);
+        }
 
         // Create chat widget
         const chatWidget = document.createElement('div');
@@ -64,9 +66,11 @@ class ToolieChat {
     }
 
     bindEvents() {
-        // Toggle chat
-        document.querySelector('.chat-toggle').addEventListener('click', () => {
-            this.toggleChat();
+        // Toggle chat (support both legacy and modern buttons)
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.chat-toggle') || e.target.closest('.toolie-bubble')) {
+                this.toggleChat();
+            }
         });
 
         // Close chat

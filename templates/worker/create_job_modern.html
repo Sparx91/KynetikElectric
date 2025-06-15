@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}Create Service Call - Kynetik Electric{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1>Create New Service Call</h1>
+                    <p class="mb-0 opacity-75">Assign work to field technicians with automated SMS dispatch</p>
+                </div>
+                <div>
+                    <a href="{{ url_for('admin_dispatch') }}" class="btn-modern btn-outline-modern" style="color: white; border-color: rgba(255,255,255,0.3);">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dispatch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    {% include 'components/jobForm.html' %}
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- Quick Tips Card -->
+                    <div class="card-modern mb-4">
+                        <div class="card-header-modern">
+                            <h5>
+                                <i class="fas fa-lightbulb me-2 text-warning"></i>
+                                Dispatch Tips
+                            </h5>
+                        </div>
+                        <div class="card-body-modern">
+                            <div class="tips-list">
+                                <div class="tip-item">
+                                    <div class="tip-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                    <div class="tip-text">
+                                        <strong>Job Title:</strong> Be descriptive but concise
+                                    </div>
+                                </div>
+                                
+                                <div class="tip-item">
+                                    <div class="tip-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="tip-text">
+                                        <strong>Location:</strong> Include full address when possible
+                                    </div>
+                                </div>
+                                
+                                <div class="tip-item">
+                                    <div class="tip-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="tip-text">
+                                        <strong>Priority:</strong> Urgent jobs send immediate SMS alerts
+                                    </div>
+                                </div>
+                                
+                                <div class="tip-item">
+                                    <div class="tip-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="tip-text">
+                                        <strong>Worker Assignment:</strong> Consider workload and skills
+                                    </div>
+                                </div>
+                                
+                                <div class="tip-item">
+                                    <div class="tip-icon">
+                                        <i class="fas fa-paperclip"></i>
+                                    </div>
+                                    <div class="tip-text">
+                                        <strong>Attachments:</strong> Photos help workers prepare
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- SMS Preview Card -->
+                    <div class="card-modern">
+                        <div class="card-header-modern">
+                            <h5>
+                                <i class="fas fa-sms me-2 text-success"></i>
+                                SMS Notification Preview
+                            </h5>
+                        </div>
+                        <div class="card-body-modern">
+                            <div class="sms-preview">
+                                <div class="sms-bubble">
+                                    <div class="sms-header">
+                                        <i class="fas fa-mobile-alt me-2"></i>
+                                        Kynetik Electric Dispatch
+                                    </div>
+                                    <div class="sms-content">
+                                        Job titled "<span id="previewTitle">Panel Installation</span>" has been assigned to you at <span id="previewLocation">123 Main Street</span>. Job ID: <span id="previewId">#KE12345</span>. View in app.
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-muted mt-3 mb-0">
+                                <small>Workers receive this SMS immediately when the job is created.</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toolie Chat Bubble -->
+<div class="toolie-chat">
+    <button class="toolie-bubble pulse" id="toolieBubble">
+        <i class="fas fa-robot"></i>
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Live SMS preview updates
+    const titleInput = document.querySelector('input[name="title"]');
+    const locationInput = document.querySelector('input[name="location"]');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewLocation = document.getElementById('previewLocation');
+
+    if (titleInput && previewTitle) {
+        titleInput.addEventListener('input', function() {
+            previewTitle.textContent = this.value || 'Panel Installation';
+        });
+    }
+
+    if (locationInput && previewLocation) {
+        locationInput.addEventListener('input', function() {
+            previewLocation.textContent = this.value || '123 Main Street';
+        });
+    }
+});
+</script>
+
+<style>
+.tips-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.tip-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(0, 174, 239, 0.1);
+    color: var(--ke-cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.tip-text {
+    flex: 1;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.sms-preview {
+    background: #f0f2f5;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+}
+
+.sms-bubble {
+    background: white;
+    border-radius: 18px;
+    padding: 1rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    max-width: 280px;
+    margin-left: auto;
+}
+
+.sms-header {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ke-cyan);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.sms-content {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--ke-charcoal);
+}
+
+.sms-content span {
+    color: var(--ke-cyan);
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .dashboard-header .d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .sms-bubble {
+        max-width: 100%;
+        margin-left: 0;
+    }
+}
+</style>
+{% endblock %}
