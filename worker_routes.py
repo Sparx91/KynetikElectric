@@ -119,10 +119,11 @@ def register_worker_routes(app):
         # Get jobs assigned to current worker
         service_calls = firebase_service.get_service_calls(worker_id=current_user.id)
         
-        return render_template('dashboard/worker_servicetitan.html', 
+        return render_template('dashboard/worker_dashboard.html', 
                              my_jobs=service_calls,
                              today_jobs=service_calls,
-                             completed_today=[])
+                             completed_today=[],
+                             service_calls=service_calls)
     
     @app.route('/job/<call_id>')
     @worker_required

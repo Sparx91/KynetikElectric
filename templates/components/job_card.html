@@ -1,0 +1,397 @@
+<!-- Modern Job Card Component - ServiceTitan/Jobber Style -->
+{% macro render_job_card(job) %}
+<div class="job-card {% if job.priority == 'urgent' %}urgent{% elif job.status == 'completed' %}completed{% elif job.status == 'in_progress' %}in-progress{% else %}open{% endif %}" 
+     data-job-id="{{ job.id }}">
+    
+    <!-- Job Header -->
+    <div class="job-header">
+        <div class="job-title-row">
+            <div class="job-icon">
+                {% if job.priority == 'urgent' %}
+                    <i class="fas fa-exclamation-triangle"></i>
+                {% elif job.status == 'completed' %}
+                    <i class="fas fa-check-circle"></i>
+                {% elif job.status == 'in_progress' %}
+                    <i class="fas fa-tools"></i>
+                {% else %}
+                    <i class="fas fa-bolt"></i>
+                {% endif %}
+            </div>
+            
+            <div class="job-title-content">
+                <h3 class="job-title">{{ job.title or 'Service Call' }}</h3>
+                <p class="job-subtitle">
+                    <i class="fas fa-building"></i>
+                    {{ job.customer_name or 'Customer' }} • Job #{{ job.id }}
+                </p>
+            </div>
+            
+            <div class="job-status-container">
+                <span class="job-status {% if job.priority == 'urgent' %}urgent{% elif job.status == 'completed' %}completed{% elif job.status == 'in_progress' %}in-progress{% else %}open{% endif %}">
+                    {% if job.priority == 'urgent' %}
+                        <i class="fas fa-exclamation-triangle"></i>
+                        URGENT
+                    {% elif job.status == 'completed' %}
+                        <i class="fas fa-check"></i>
+                        COMPLETED
+                    {% elif job.status == 'in_progress' %}
+                        <i class="fas fa-clock"></i>
+                        IN PROGRESS
+                    {% else %}
+                        <i class="fas fa-circle"></i>
+                        OPEN
+                    {% endif %}
+                </span>
+                <div class="job-priority">
+                    Priority: {{ job.priority.title() if job.priority else 'Medium' }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Job Info Grid -->
+        <div class="job-info-grid">
+            <div class="job-info-item">
+                <div class="job-info-label">
+                    <i class="fas fa-map-marker-alt job-info-icon"></i>
+                    Location
+                </div>
+                <div class="job-info-value">
+                    {{ job.location or '123 Main Street, City, State' }}
+                </div>
+                <a href="https://maps.google.com/?q={{ job.location|urlencode if job.location else '123 Main Street' }}" 
+                   target="_blank" 
+                   style="color: var(--ke-cyan); font-size: 0.875rem; text-decoration: none; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px;">
+                    <i class="fas fa-directions"></i> Get Directions
+                </a>
+            </div>
+            
+            <div class="job-info-item">
+                <div class="job-info-label">
+                    <i class="fas fa-calendar job-info-icon"></i>
+                    Scheduled
+                </div>
+                <div class="job-info-value">
+                    {{ job.created_at.strftime('%m/%d/%Y at %I:%M %p') if job.created_at else 'Today at 2:30 PM' }}
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+                    <i class="fas fa-clock"></i> Est. Duration: 2-3 hours
+                </div>
+            </div>
+        </div>
+        
+        <!-- Job Description -->
+        {% if job.description %}
+        <div class="job-description">
+            <div class="job-info-label" style="margin-bottom: 8px;">
+                <i class="fas fa-file-text job-info-icon"></i>
+                Job Description
+            </div>
+            <p class="job-description-text">{{ job.description }}</p>
+        </div>
+        {% endif %}
+        
+        <!-- Progress Stepper -->
+        <div class="progress-stepper">
+            <div class="job-info-label" style="margin-bottom: 12px;">
+                <i class="fas fa-route job-info-icon"></i>
+                Progress
+            </div>
+            <div class="stepper-container">
+                <div class="stepper-line"></div>
+                
+                <!-- Assigned Step -->
+                <div class="stepper-step completed">
+                    <div class="stepper-icon completed">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="stepper-label">Assigned</div>
+                </div>
+                
+                <!-- En Route Step -->
+                <div class="stepper-step {% if job.status in ['in_progress', 'completed'] %}completed{% elif job.status == 'en_route' %}active{% endif %}">
+                    <div class="stepper-icon {% if job.status in ['in_progress', 'completed'] %}completed{% elif job.status == 'en_route' %}active{% endif %}">
+                        {% if job.status in ['in_progress', 'completed'] %}
+                            <i class="fas fa-check"></i>
+                        {% elif job.status == 'en_route' %}
+                            <i class="fas fa-car"></i>
+                        {% else %}
+                            <i class="fas fa-car"></i>
+                        {% endif %}
+                    </div>
+                    <div class="stepper-label">En Route</div>
+                </div>
+                
+                <!-- Working Step -->
+                <div class="stepper-step {% if job.status == 'completed' %}completed{% elif job.status == 'in_progress' %}active{% endif %}">
+                    <div class="stepper-icon {% if job.status == 'completed' %}completed{% elif job.status == 'in_progress' %}active{% endif %}">
+                        {% if job.status == 'completed' %}
+                            <i class="fas fa-check"></i>
+                        {% elif job.status == 'in_progress' %}
+                            <i class="fas fa-tools"></i>
+                        {% else %}
+                            <i class="fas fa-tools"></i>
+                        {% endif %}
+                    </div>
+                    <div class="stepper-label">Working</div>
+                </div>
+                
+                <!-- Complete Step -->
+                <div class="stepper-step {% if job.status == 'completed' %}completed active{% endif %}">
+                    <div class="stepper-icon {% if job.status == 'completed' %}completed{% endif %}">
+                        {% if job.status == 'completed' %}
+                            <i class="fas fa-check"></i>
+                        {% else %}
+                            <i class="fas fa-flag-checkered"></i>
+                        {% endif %}
+                    </div>
+                    <div class="stepper-label">Complete</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="job-actions">
+        <form method="POST" action="{{ url_for('update_job_status') }}" style="display: contents;">
+            <input type="hidden" name="call_id" value="{{ job.id }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="action-btn primary update-status-btn" data-job-id="{{ job.id }}">
+                <i class="fas fa-edit"></i>
+                Update Status
+            </button>
+        </form>
+        
+        <button class="action-btn photo-btn" data-job-id="{{ job.id }}" onclick="openPhotoUpload('{{ job.id }}')">
+            <i class="fas fa-camera"></i>
+            Add Photos
+        </button>
+        
+        <a href="tel:{{ job.customer_phone if job.customer_phone else '+1234567890' }}" class="action-btn">
+            <i class="fas fa-phone"></i>
+            Call Customer
+        </a>
+        
+        <button class="action-btn notes-btn" data-job-id="{{ job.id }}" onclick="openNotesModal('{{ job.id }}')">
+            <i class="fas fa-comment"></i>
+            Add Notes
+        </button>
+        
+        {% if job.status != 'completed' %}
+        <button class="action-btn" onclick="startNavigation('{{ job.location|urlencode if job.location else '123 Main Street' }}')">
+            <i class="fas fa-route"></i>
+            Navigate
+        </button>
+        {% endif %}
+        
+        <button class="action-btn" onclick="viewJobDetails('{{ job.id }}')">
+            <i class="fas fa-eye"></i>
+            View Details
+        </button>
+    </div>
+    
+    <!-- Photo Upload Section (Initially Hidden) -->
+    <div id="photo-upload-{{ job.id }}" class="photo-upload-section" style="display: none;">
+        <div style="padding: var(--space-6); border-top: 1px solid var(--border); background: var(--bg-tertiary);">
+            <h4 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 600; color: var(--text-primary);">
+                <i class="fas fa-camera" style="margin-right: 8px; color: var(--ke-cyan);"></i>
+                Job Photos
+            </h4>
+            
+            <form method="POST" action="{{ url_for('upload_job_files') }}" enctype="multipart/form-data" class="photo-upload-form">
+                <input type="hidden" name="call_id" value="{{ job.id }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="file-upload-area" onclick="document.getElementById('file-input-{{ job.id }}').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-muted); margin-bottom: 8px;"></i>
+                    <p style="margin: 0; color: var(--text-secondary); font-weight: 500;">Click to upload photos</p>
+                    <p style="margin: 4px 0 0 0; font-size: 0.875rem; color: var(--text-muted);">JPG, PNG up to 10MB</p>
+                </div>
+                
+                <input type="file" 
+                       id="file-input-{{ job.id }}" 
+                       name="files" 
+                       multiple 
+                       accept="image/*" 
+                       style="display: none;" 
+                       onchange="handleFileSelect(this, '{{ job.id }}')">
+                
+                <div id="file-preview-{{ job.id }}" class="file-preview-container"></div>
+                
+                <div style="margin-top: 16px; display: flex; gap: 12px;">
+                    <button type="submit" class="action-btn primary" style="flex: 1;">
+                        <i class="fas fa-upload"></i>
+                        Upload Photos
+                    </button>
+                    <button type="button" onclick="closePhotoUpload('{{ job.id }}')" class="action-btn">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Notes Section (Initially Hidden) -->
+    <div id="notes-modal-{{ job.id }}" class="notes-section" style="display: none;">
+        <div style="padding: var(--space-6); border-top: 1px solid var(--border); background: var(--bg-tertiary);">
+            <h4 style="margin: 0 0 16px 0; font-size: 1rem; font-weight: 600; color: var(--text-primary);">
+                <i class="fas fa-comment" style="margin-right: 8px; color: var(--ke-cyan);"></i>
+                Job Notes
+            </h4>
+            
+            <form method="POST" action="{{ url_for('add_job_notes') }}" class="notes-form">
+                <input type="hidden" name="call_id" value="{{ job.id }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <textarea name="notes" 
+                          placeholder="Add notes about this job..."
+                          style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); font-family: inherit; resize: vertical;"
+                          required></textarea>
+                
+                <div style="margin-top: 16px; display: flex; gap: 12px;">
+                    <button type="submit" class="action-btn primary" style="flex: 1;">
+                        <i class="fas fa-save"></i>
+                        Save Notes
+                    </button>
+                    <button type="button" onclick="closeNotesModal('{{ job.id }}')" class="action-btn">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.file-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-8);
+    text-align: center;
+    background: var(--bg-primary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.file-upload-area:hover {
+    border-color: var(--ke-cyan);
+    background: rgba(0, 174, 239, 0.05);
+}
+
+.file-preview-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.file-preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+}
+
+.file-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.file-preview-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+</style>
+
+<script>
+function openPhotoUpload(jobId) {
+    const section = document.getElementById('photo-upload-' + jobId);
+    section.style.display = section.style.display === 'none' ? 'block' : 'none';
+    
+    // Close notes if open
+    const notesSection = document.getElementById('notes-modal-' + jobId);
+    if (notesSection) notesSection.style.display = 'none';
+}
+
+function closePhotoUpload(jobId) {
+    document.getElementById('photo-upload-' + jobId).style.display = 'none';
+}
+
+function openNotesModal(jobId) {
+    const section = document.getElementById('notes-modal-' + jobId);
+    section.style.display = section.style.display === 'none' ? 'block' : 'none';
+    
+    // Close photo upload if open
+    const photoSection = document.getElementById('photo-upload-' + jobId);
+    if (photoSection) photoSection.style.display = 'none';
+}
+
+function closeNotesModal(jobId) {
+    document.getElementById('notes-modal-' + jobId).style.display = 'none';
+}
+
+function handleFileSelect(input, jobId) {
+    const preview = document.getElementById('file-preview-' + jobId);
+    preview.innerHTML = '';
+    
+    for (let i = 0; i < input.files.length; i++) {
+        const file = input.files[i];
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const item = document.createElement('div');
+                item.className = 'file-preview-item';
+                item.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview">
+                    <button type="button" class="file-preview-remove" onclick="removeFile(this, '${jobId}', ${i})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                preview.appendChild(item);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+}
+
+function removeFile(button, jobId, index) {
+    button.parentElement.remove();
+    // Note: In a real implementation, you'd update the file input
+}
+
+function startNavigation(location) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const origin = position.coords.latitude + ',' + position.coords.longitude;
+            const destination = encodeURIComponent(location);
+            window.open(`https://www.google.com/maps/dir/${origin}/${destination}`, '_blank');
+        }, function() {
+            // Fallback if geolocation fails
+            window.open(`https://www.google.com/maps/dir/?destination=${encodeURIComponent(location)}`, '_blank');
+        });
+    } else {
+        window.open(`https://www.google.com/maps/dir/?destination=${encodeURIComponent(location)}`, '_blank');
+    }
+}
+
+function viewJobDetails(jobId) {
+    window.location.href = `/job/${jobId}`;
+}
+</script>
+{% endmacro %}

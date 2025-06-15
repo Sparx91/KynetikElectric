@@ -1,0 +1,462 @@
+{% extends "base.html" %}
+{% from "components/job_card.html" import render_job_card %}
+
+{% block title %}My Jobs - Kynetik Electric Field Service{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/worker.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="worker-layout">
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--ke-cyan), var(--ke-cyan-light)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div>
+                    <h2 style="margin: 0; font-size: 1.25rem; font-weight: 700;">Kynetik Electric</h2>
+                    <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">Field Service</p>
+                </div>
+            </div>
+            <button class="mobile-nav-close" onclick="toggleMobileNav()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-nav-menu">
+            <div class="nav-section">
+                <h3 class="nav-section-title">My Work</h3>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    My Jobs
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-calendar-check"></i>
+                    Today's Schedule
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-route"></i>
+                    Route Map
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-section-title">Tools</h3>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-camera"></i>
+                    Job Photos
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-file-signature"></i>
+                    Digital Forms
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    Time Tracking
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <h3 class="nav-section-title">Support</h3>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-headset"></i>
+                    Contact Dispatch
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    Knowledge Base
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Header -->
+    <div class="worker-header">
+        <div class="worker-header-content">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <button class="mobile-nav-toggle" onclick="toggleMobileNav()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <h1 class="worker-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    My Jobs
+                </h1>
+            </div>
+            
+            <div class="worker-actions">
+                <button class="sync-btn" onclick="syncJobs()">
+                    <i class="fas fa-sync-alt"></i>
+                    Sync
+                </button>
+                
+                <div class="worker-profile">
+                    {{ current_user.name[0] if current_user and current_user.name else 'T' }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="worker-content">
+        <!-- Dashboard Summary -->
+        <div class="dashboard-summary">
+            <div class="summary-card completed">
+                <div class="summary-header">
+                    <h3 class="summary-title">Completed Today</h3>
+                    <div class="summary-icon completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <h2 class="summary-value">{{ completed_today|length if completed_today else 2 }}</h2>
+                <p class="summary-subtitle">
+                    <i class="fas fa-arrow-up"></i>
+                    Great work!
+                </p>
+            </div>
+            
+            <div class="summary-card today">
+                <div class="summary-header">
+                    <h3 class="summary-title">Today's Jobs</h3>
+                    <div class="summary-icon today">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                </div>
+                <h2 class="summary-value">{{ today_jobs|length if today_jobs else my_jobs|length if my_jobs else 4 }}</h2>
+                <p class="summary-subtitle">
+                    <i class="fas fa-clock"></i>
+                    {{ (my_jobs|length - (completed_today|length if completed_today else 0)) if my_jobs else 2 }} remaining
+                </p>
+            </div>
+            
+            <div class="summary-card hours">
+                <div class="summary-header">
+                    <h3 class="summary-title">Hours Worked</h3>
+                    <div class="summary-icon hours">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <h2 class="summary-value">6.5</h2>
+                <p class="summary-subtitle">
+                    <i class="fas fa-target"></i>
+                    Target: 8 hours
+                </p>
+            </div>
+            
+            <div class="summary-card earnings">
+                <div class="summary-header">
+                    <h3 class="summary-title">Today's Earnings</h3>
+                    <div class="summary-icon earnings">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <h2 class="summary-value">$487</h2>
+                <p class="summary-subtitle">
+                    <i class="fas fa-star"></i>
+                    Rating: 4.9/5
+                </p>
+            </div>
+        </div>
+        
+        <!-- Jobs Container -->
+        <div class="jobs-container">
+            {% if my_jobs %}
+                {% for job in my_jobs %}
+                    {{ render_job_card(job) }}
+                {% endfor %}
+            {% elif service_calls %}
+                {% for job in service_calls %}
+                    {{ render_job_card(job) }}
+                {% endfor %}
+            {% else %}
+                <!-- Sample Job for Demo -->
+                {% set sample_job = {
+                    'id': 'KE001',
+                    'title': 'Panel Upgrade - ABC Manufacturing',
+                    'customer_name': 'ABC Manufacturing',
+                    'location': '1234 Industrial Blvd, Suite 100',
+                    'description': 'Upgrade 200A main electrical panel for manufacturing facility. Customer reports frequent breaker trips during peak production hours. Install new panel and redistribute circuits for optimal load balancing.',
+                    'priority': 'urgent',
+                    'status': 'in_progress',
+                    'created_at': moment(),
+                    'customer_phone': '+1234567890'
+                } %}
+                {{ render_job_card(sample_job) }}
+                
+                {% set sample_job2 = {
+                    'id': 'KE002',
+                    'title': 'Lighting Installation - Smith Retail',
+                    'customer_name': 'Smith Retail Store',
+                    'location': '567 Main Street, Downtown',
+                    'description': 'Install new LED lighting system throughout retail space. Replace old fluorescent fixtures with energy-efficient LED panels.',
+                    'priority': 'medium',
+                    'status': 'open',
+                    'created_at': moment(),
+                    'customer_phone': '+1234567891'
+                } %}
+                {{ render_job_card(sample_job2) }}
+            {% endif %}
+        </div>
+        
+        <!-- Empty State -->
+        {% if not my_jobs and not service_calls %}
+        <div style="text-align: center; padding: 64px 24px; color: var(--text-muted);">
+            <i class="fas fa-clipboard-list" style="font-size: 4rem; margin-bottom: 24px; opacity: 0.5;"></i>
+            <h3 style="margin: 0 0 12px 0; font-size: 1.5rem; font-weight: 600;">No Jobs Assigned</h3>
+            <p style="margin: 0; font-size: 1rem;">You're all caught up! New jobs will appear here when assigned.</p>
+            <button class="sync-btn" onclick="syncJobs()" style="margin-top: 24px; padding: 12px 24px;">
+                <i class="fas fa-sync-alt"></i>
+                Check for New Jobs
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Enhanced Toolie Chat Button -->
+<div class="toolie-chat">
+    <button class="toolie-bubble active" id="toolieBubble">
+        <i class="fas fa-robot"></i>
+    </button>
+</div>
+
+<!-- Status Update Modal -->
+<div id="statusUpdateModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 60; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 32px; max-width: 400px; width: 90%; max-height: 80vh; overflow-y: auto;">
+        <h3 style="margin: 0 0 24px 0; font-size: 1.5rem; font-weight: 700; color: var(--text-primary);">Update Job Status</h3>
+        
+        <form id="statusUpdateForm" method="POST" action="{{ url_for('update_job_status') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="call_id" id="modalJobId">
+            
+            <div style="margin-bottom: 24px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">New Status</label>
+                <select name="status" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem;">
+                    <option value="open">Open</option>
+                    <option value="en_route">En Route</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="on_hold">On Hold</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 24px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Notes (Optional)</label>
+                <textarea name="notes" placeholder="Add any notes about this status update..." style="width: 100%; min-height: 80px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; resize: vertical;"></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button type="submit" class="action-btn primary" style="flex: 1;">
+                    <i class="fas fa-save"></i>
+                    Update Status
+                </button>
+                <button type="button" onclick="closeStatusModal()" class="action-btn">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/toolie.js') }}"></script>
+<script>
+// Initialize Toolie chat for workers
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof ToolieChat !== 'undefined') {
+        window.toolieChat = new ToolieChat();
+        window.toolieChat.context = 'customer-facing'; // Workers use customer-facing mode
+    }
+    
+    // Auto-sync jobs every 30 seconds
+    setInterval(syncJobs, 30000);
+});
+
+function toggleMobileNav() {
+    const nav = document.getElementById('mobileNav');
+    nav.classList.toggle('open');
+}
+
+function syncJobs() {
+    const syncBtn = document.querySelector('.sync-btn');
+    const icon = syncBtn.querySelector('i');
+    
+    // Add loading state
+    icon.className = 'fas fa-spinner fa-spin';
+    syncBtn.disabled = true;
+    
+    // Simulate sync (in real app, this would be an AJAX call)
+    setTimeout(() => {
+        icon.className = 'fas fa-sync-alt';
+        syncBtn.disabled = false;
+        
+        // Show success feedback
+        const notification = document.createElement('div');
+        notification.innerHTML = `
+            <div style="position: fixed; top: 20px; right: 20px; background: var(--status-complete); color: white; padding: 16px; border-radius: 8px; box-shadow: var(--shadow-lg); z-index: 70; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-check"></i>
+                Jobs synced successfully
+            </div>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }, 1000);
+}
+
+function openStatusModal(jobId) {
+    document.getElementById('modalJobId').value = jobId;
+    const modal = document.getElementById('statusUpdateModal');
+    modal.style.display = 'flex';
+}
+
+function closeStatusModal() {
+    document.getElementById('statusUpdateModal').style.display = 'none';
+}
+
+// Enhanced status update buttons
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.update-status-btn')) {
+        e.preventDefault();
+        const btn = e.target.closest('.update-status-btn');
+        const jobId = btn.dataset.jobId;
+        openStatusModal(jobId);
+    }
+});
+
+// Auto-close mobile nav when clicking outside
+document.addEventListener('click', function(e) {
+    const nav = document.getElementById('mobileNav');
+    const toggle = document.querySelector('.mobile-nav-toggle');
+    
+    if (nav.classList.contains('open') && !nav.contains(e.target) && !toggle.contains(e.target)) {
+        nav.classList.remove('open');
+    }
+});
+
+// Handle form submissions with loading states
+document.addEventListener('submit', function(e) {
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    if (submitBtn) {
+        submitBtn.classList.add('btn-loading');
+        submitBtn.disabled = true;
+    }
+});
+
+// Real-time status updates (WebSocket simulation)
+function simulateRealTimeUpdates() {
+    // In a real app, this would use WebSockets or Server-Sent Events
+    setInterval(() => {
+        // Check for status updates from dispatch
+        console.log('Checking for real-time updates...');
+    }, 15000);
+}
+
+simulateRealTimeUpdates();
+
+// Enhanced photo upload with progress
+function enhancedFileUpload(input, jobId) {
+    const files = Array.from(input.files);
+    const preview = document.getElementById('file-preview-' + jobId);
+    
+    files.forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const item = document.createElement('div');
+                item.className = 'file-preview-item';
+                item.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview">
+                    <div class="upload-progress">
+                        <div class="progress-bar" style="width: 0%"></div>
+                    </div>
+                    <button type="button" class="file-preview-remove" onclick="removeFile(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                preview.appendChild(item);
+                
+                // Simulate upload progress
+                simulateUploadProgress(item.querySelector('.progress-bar'));
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+function simulateUploadProgress(progressBar) {
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            progressBar.parentElement.style.display = 'none';
+        }
+        progressBar.style.width = progress + '%';
+    }, 200);
+}
+</script>
+
+<style>
+.modal {
+    display: none;
+}
+
+.modal.show {
+    display: flex !important;
+}
+
+.upload-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 0 0 var(--radius) var(--radius);
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ke-cyan), var(--ke-cyan-light));
+    transition: width 0.3s ease;
+}
+
+/* Notification animations */
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.notification {
+    animation: slideInRight 0.3s ease;
+}
+
+/* Enhanced mobile responsiveness */
+@media (max-width: 640px) {
+    .jobs-container {
+        gap: var(--space-4);
+    }
+    
+    .job-card {
+        margin: 0 -8px;
+        border-radius: var(--radius);
+    }
+    
+    .worker-content {
+        padding: var(--space-3);
+    }
+}
+</style>
+{% endblock %}

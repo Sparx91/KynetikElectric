@@ -1,0 +1,60 @@
+🔧 Project: Kynetik Electric
+🎯 Goal: Keep all current backend logic, buttons, and functionality — but redesign the worker dashboard UI to look sharp, modern, and professional like ServiceTitan or Jobber.
+
+⸻
+
+✅ Key Design Changes to Make:
+
+🎨 General Style Overhaul
+	•	Switch to cleaner layout structure using CSS Grid or Bootstrap 5
+	•	Use modern fonts like “Inter”, “Poppins”, or “Outfit” (Google Fonts)
+	•	Apply drop shadows and card elevation for key sections
+	•	Use soft gradients and icon overlays for status bars (like Jobber’s color blocks)
+
+⸻
+
+📱 Job Card Redesign
+	•	Make each job card its own floating glassmorphic or frosted panel
+	•	Use clean status badges (e.g. In Progress, Urgent) with icons
+	•	Add:
+	•	Clear job title at top (bold)
+	•	Subtext for location + client
+	•	Divider line
+	•	Schedule info with icons (📍, 📅, ⏰)
+	•	Job notes with read more/expand toggle
+	•	Show job progress as a horizontal stepper bar with icons:
+	•	Assigned ✅ → En Route 🚚 → Working 🔧 → Complete ✅
+
+⸻
+
+🧰 Action Buttons (Keep Logic, Style Visually)
+	•	Update buttons to:
+	•	Use rounded corners and slight hover animation
+	•	Add icons (📝 Update, 📷 Add Photo, ☎️ Call, 💬 Notes)
+	•	Use a 2x2 layout grid with spacing for mobile
+	•	Keep Toolie button floating, but animate it with a glow or idle bounce
+	•	Add subtle button loading states (spinner inside button when clicked)
+
+⸻
+
+📊 Top Dashboard Summary (optional)
+	•	Top of page shows:
+	•	✅ Completed: X jobs
+	•	💼 Today’s Jobs: X
+	•	⏱ Hours Worked: X
+	•	💵 Earnings: $X.XX
+	•	Use color blocks or gradient stripes with icons and smooth counters
+
+⸻
+
+🧭 Navigation
+	•	Add slide-in sidebar (hamburger menu) with section links:
+	•	My Jobs, Schedule, Route Map, Digital Forms, Job Photos, Time Log
+	•	Optional: Show worker name, profile pic initial, and status badge (Available/On Break)
+
+⸻
+
+📁 Attachments & Notes
+	•	Photos and notes show inline with expandable section per job
+	•	Upload area should have drop zone or upload button
+	•	Allow quick preview and delete (thumbnail gallery-style)

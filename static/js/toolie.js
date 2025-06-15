@@ -1,6 +1,8 @@
 // Toolie AI Assistant - Chat Widget
 
-class ToolieChat {
+// Prevent duplicate class definition
+if (typeof ToolieChat === 'undefined') {
+    class ToolieChat {
     constructor() {
         this.isOpen = false;
         this.context = 'customer-facing'; // or 'solo-operator'
@@ -344,5 +346,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Export for use in other scripts
-window.ToolieChat = ToolieChat;
+    }
+
+    // Export for use in other scripts
+    window.ToolieChat = ToolieChat;
+}
