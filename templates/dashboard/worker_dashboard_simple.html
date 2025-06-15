@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Jobs - Kynetik Electric</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        /* Header */
+        .header {
+            background: #00AEEF;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .worker-info {
+            text-align: right;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #00AEEF;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Jobs Section */
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Job Card - Completely Redesigned */
+        .job-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .job-header {
+            padding: 20px;
+            border-left: 5px solid #00AEEF;
+        }
+
+        .job-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .job-customer {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .job-id {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 10px 0;
+        }
+
+        .status-open { background: #e3f2fd; color: #1976d2; }
+        .status-urgent { background: #fff3e0; color: #f57c00; }
+        .status-in_progress { background: #f3e5f5; color: #7b1fa2; }
+        .status-completed { background: #e8f5e8; color: #388e3c; }
+
+        /* Job Details */
+        .job-details {
+            padding: 0 20px 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .detail-row i {
+            width: 20px;
+            color: #00AEEF;
+            margin-right: 10px;
+        }
+
+        /* Action Buttons */
+        .job-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #00AEEF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0099d4;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-1px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            text-decoration: none;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .nav-item.active {
+            color: #00AEEF;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .job-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #00AEEF;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-bolt"></i> Kynetik Electric
+        </div>
+        <div class="worker-info">
+            <div>{{ current_user.get_name() }}</div>
+            <div style="opacity: 0.8;">Field Technician</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Stats Section -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">{{ jobs_completed }}</span>
+                <div class="stat-label">Jobs Done</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">{{ active_jobs|length }}</span>
+                <div class="stat-label">Active Jobs</div>
+            </div>
+        </div>
+
+        <!-- Jobs Section -->
+        <div class="section-title">
+            <i class="fas fa-clipboard-list"></i> My Jobs
+        </div>
+
+        {% if active_jobs %}
+            {% for job in active_jobs %}
+            <div class="job-card">
+                <!-- Job Header -->
+                <div class="job-header">
+                    <div class="job-title">{{ job.title }}</div>
+                    <div class="job-customer">{{ job.customer_name }}</div>
+                    <div class="job-id">Job #{{ job.id }}</div>
+                    <div class="status-badge status-{{ job.status }}">
+                        {% if job.status == 'open' %}
+                            <i class="fas fa-circle"></i> NEW
+                        {% elif job.status == 'urgent' %}
+                            <i class="fas fa-exclamation-triangle"></i> URGENT
+                        {% elif job.status == 'in_progress' %}
+                            <i class="fas fa-cog fa-spin"></i> WORKING
+                        {% elif job.status == 'completed' %}
+                            <i class="fas fa-check-circle"></i> DONE
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Job Details -->
+                <div class="job-details">
+                    <div class="detail-row">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ job.location }}</span>
+                    </div>
+                    
+                    {% if job.priority %}
+                    <div class="detail-row">
+                        <i class="fas fa-flag"></i>
+                        <span>Priority: {{ job.priority.title() }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="detail-row">
+                        <i class="fas fa-clock"></i>
+                        <span>Scheduled Today</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="job-actions">
+                    <button class="action-btn btn-primary" onclick="startJob('{{ job.id }}')">
+                        <i class="fas fa-play"></i>
+                        Start Job
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="viewDetails('{{ job.id }}')">
+                        <i class="fas fa-info-circle"></i>
+                        Details
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-clipboard-check"></i>
+                <h3>All caught up!</h3>
+                <p>No active jobs right now. Great work!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="/dashboard" class="nav-item active">
+            <i class="fas fa-home"></i>
+            Home
+        </a>
+        <a href="/jobs" class="nav-item">
+            <i class="fas fa-clipboard-list"></i>
+            Jobs
+        </a>
+        <a href="/photos" class="nav-item">
+            <i class="fas fa-camera"></i>
+            Photos
+        </a>
+        <a href="/profile" class="nav-item">
+            <i class="fas fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function startJob(jobId) {
+            const button = event.target;
+            button.classList.add('loading');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting...';
+            
+            // Simulate API call
+            setTimeout(() => {
+                updateJobStatus(jobId, 'in_progress');
+                showNotification('Job started successfully!', 'success');
+                button.classList.remove('loading');
+                button.innerHTML = '<i class="fas fa-cog fa-spin"></i> Working';
+            }, 1000);
+        }
+
+        function viewDetails(jobId) {
+            window.location.href = `/job/${jobId}`;
+        }
+
+        function updateJobStatus(jobId, status) {
+            // Update UI immediately for better UX
+            const jobCard = document.querySelector(`[data-job-id="${jobId}"]`);
+            if (jobCard) {
+                const statusBadge = jobCard.querySelector('.status-badge');
+                statusBadge.className = `status-badge status-${status}`;
+                
+                if (status === 'in_progress') {
+                    statusBadge.innerHTML = '<i class="fas fa-cog fa-spin"></i> WORKING';
+                }
+            }
+        }
+
+        function showNotification(message, type) {
+            // Simple notification system
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4caf50' : '#f44336'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-weight: bold;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            console.log('Checking for updates...');
+            // In real app, this would check for new jobs
+        }, 30000);
+    </script>
+</body>
+</html>

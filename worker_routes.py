@@ -132,11 +132,17 @@ def register_worker_routes(app):
         # Get jobs assigned to current worker
         service_calls = firebase_service.get_service_calls(worker_id=current_user.id)
         
-        return render_template('dashboard/worker_dashboard.html', 
-                             my_jobs=service_calls,
-                             today_jobs=service_calls,
-                             completed_today=[],
-                             service_calls=service_calls)
+        # Separate active and completed jobs
+        active_jobs = [job for job in service_calls if job.get('status', 'open') not in ['completed', 'cancelled']]
+        completed_jobs = [job for job in service_calls if job.get('status', 'open') in ['completed']]
+        
+        # Calculate stats
+        jobs_completed = len(completed_jobs)
+        
+        return render_template('dashboard/worker_dashboard_simple.html',
+                             active_jobs=active_jobs,
+                             completed_jobs=completed_jobs,
+                             jobs_completed=jobs_completed)
     
     @app.route('/job/<call_id>')
     @worker_required
@@ -158,7 +164,7 @@ def register_worker_routes(app):
         status_form = JobStatusUpdateForm()
         upload_form = FileUploadForm()
         
-        return render_template('worker/job_detail.html', 
+        return render_template('worker/job_detail_simple.html', 
                              job=job, 
                              uploads=uploads,
                              status_form=status_form,
