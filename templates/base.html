@@ -24,7 +24,10 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/kynetik-logo.png') }}" 
+                     alt="Kynetik Electric Logo" 
+                     height="40" class="me-2">
                 Kynetik Electric
             </a>
             
