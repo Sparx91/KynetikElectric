@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Jobs - Kynetik Electric</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -381,17 +381,17 @@
             <i class="fas fa-home"></i>
             Home
         </a>
-        <a href="/jobs" class="nav-item">
+        <a href="/dashboard" class="nav-item">
             <i class="fas fa-clipboard-list"></i>
             Jobs
         </a>
-        <a href="/photos" class="nav-item">
+        <a href="#" class="nav-item" onclick="uploadPhoto()">
             <i class="fas fa-camera"></i>
             Photos
         </a>
-        <a href="/profile" class="nav-item">
-            <i class="fas fa-user"></i>
-            Profile
+        <a href="/worker/logout" class="nav-item">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
         </a>
     </div>
 
@@ -449,6 +449,24 @@
             setTimeout(() => {
                 notification.remove();
             }, 3000);
+        }
+
+        // Photo upload functionality
+        function uploadPhoto() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.capture = 'environment';
+            input.multiple = true;
+            
+            input.onchange = function(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    showNotification(`${files.length} photo(s) selected for upload.`, 'success');
+                }
+            };
+            
+            input.click();
         }
 
         // Auto-refresh every 30 seconds
