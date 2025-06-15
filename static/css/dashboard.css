@@ -1,0 +1,575 @@
+/* Modern Field Service Dashboard Styles for Kynetik Electric */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --ke-cyan: #00AEEF;
+    --ke-cyan-light: #33C1F0;
+    --ke-cyan-dark: #0096D6;
+    --ke-gray: #777777;
+    --ke-charcoal: #333333;
+    --ke-light-gray: #F8F9FA;
+    --ke-border: #E9ECEF;
+    --ke-success: #28A745;
+    --ke-warning: #FFC107;
+    --ke-danger: #DC3545;
+    --ke-info: #17A2B8;
+    
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+    --border-radius-lg: 16px;
+    
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: #F5F7FA;
+    color: var(--ke-charcoal);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-header {
+    background: linear-gradient(135deg, var(--ke-cyan) 0%, var(--ke-cyan-dark) 100%);
+    color: white;
+    padding: 1.5rem 0;
+    box-shadow: var(--shadow-md);
+}
+
+.dashboard-header h1 {
+    font-weight: 700;
+    font-size: 1.75rem;
+    margin: 0;
+}
+
+.dashboard-content {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+/* Modern Cards */
+.card-modern {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--ke-border);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.card-modern:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.card-header-modern {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--ke-border);
+    background: linear-gradient(to right, #fafbfc, #ffffff);
+}
+
+.card-header-modern h5 {
+    margin: 0;
+    font-weight: 600;
+    color: var(--ke-charcoal);
+    font-size: 1.125rem;
+}
+
+.card-body-modern {
+    padding: 1.5rem;
+}
+
+/* Job Cards */
+.job-card {
+    background: white;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--ke-border);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.job-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.job-card-header {
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-bottom: 1px solid var(--ke-border);
+}
+
+.job-title {
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: var(--ke-charcoal);
+    margin: 0 0 0.5rem 0;
+}
+
+.job-customer {
+    color: var(--ke-gray);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.job-card-body {
+    padding: 1.25rem;
+}
+
+.job-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.job-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.job-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.job-info-icon.location {
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--ke-danger);
+}
+
+.job-info-icon.clock {
+    background: rgba(255, 193, 7, 0.1);
+    color: var(--ke-warning);
+}
+
+.job-info-icon.wrench {
+    background: rgba(0, 174, 239, 0.1);
+    color: var(--ke-cyan);
+}
+
+.job-info-text {
+    flex: 1;
+}
+
+.job-info-label {
+    font-size: 0.75rem;
+    color: var(--ke-gray);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.job-info-value {
+    font-size: 0.875rem;
+    color: var(--ke-charcoal);
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.open {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+}
+
+.status-badge.in-progress {
+    background: rgba(0, 174, 239, 0.1);
+    color: var(--ke-cyan);
+}
+
+.status-badge.completed {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--ke-success);
+}
+
+.status-badge.urgent {
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--ke-danger);
+    animation: pulse 2s infinite;
+}
+
+.status-badge.high {
+    background: rgba(255, 193, 7, 0.1);
+    color: #856404;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Progress Timeline */
+.progress-timeline {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    padding: 0 1rem;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+.progress-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 60%;
+    right: -40%;
+    height: 2px;
+    background: var(--ke-border);
+    z-index: 1;
+}
+
+.progress-step.active:not(:last-child)::after {
+    background: var(--ke-cyan);
+}
+
+.progress-step-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--ke-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: var(--ke-gray);
+    position: relative;
+    z-index: 2;
+    transition: var(--transition);
+}
+
+.progress-step.active .progress-step-icon {
+    background: var(--ke-cyan);
+    color: white;
+}
+
+.progress-step.completed .progress-step-icon {
+    background: var(--ke-success);
+    color: white;
+}
+
+.progress-step-label {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--ke-gray);
+    font-weight: 500;
+    text-align: center;
+}
+
+.progress-step.active .progress-step-label {
+    color: var(--ke-cyan);
+    font-weight: 600;
+}
+
+/* Action Buttons */
+.btn-modern {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: var(--transition);
+    cursor: pointer;
+    font-family: var(--font-primary);
+}
+
+.btn-modern:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary-modern {
+    background: linear-gradient(135deg, var(--ke-cyan) 0%, var(--ke-cyan-dark) 100%);
+    color: white;
+}
+
+.btn-primary-modern:hover {
+    background: linear-gradient(135deg, var(--ke-cyan-dark) 0%, #0080C7 100%);
+}
+
+.btn-success-modern {
+    background: linear-gradient(135deg, var(--ke-success) 0%, #218838 100%);
+    color: white;
+}
+
+.btn-outline-modern {
+    background: transparent;
+    color: var(--ke-cyan);
+    border: 2px solid var(--ke-cyan);
+}
+
+.btn-outline-modern:hover {
+    background: var(--ke-cyan);
+    color: white;
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--ke-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--ke-cyan), var(--ke-cyan-light));
+}
+
+.stat-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-info h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--ke-charcoal);
+}
+
+.stat-info p {
+    margin: 0.25rem 0 0 0;
+    color: var(--ke-gray);
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+/* File Upload */
+.upload-area {
+    border: 2px dashed var(--ke-border);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    transition: var(--transition);
+    background: #fafbfc;
+}
+
+.upload-area:hover {
+    border-color: var(--ke-cyan);
+    background: rgba(0, 174, 239, 0.02);
+}
+
+.upload-area.dragover {
+    border-color: var(--ke-cyan);
+    background: rgba(0, 174, 239, 0.05);
+}
+
+/* Sidebar Navigation */
+.sidebar {
+    width: 280px;
+    background: white;
+    box-shadow: var(--shadow-md);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    transition: var(--transition);
+    z-index: 1000;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Toolie Chat Bubble */
+.toolie-chat {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.toolie-bubble {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ke-cyan) 0%, var(--ke-cyan-dark) 100%);
+    color: white;
+    border: none;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.toolie-bubble:hover {
+    transform: scale(1.1);
+    box-shadow: 0 15px 35px rgba(0, 174, 239, 0.3);
+}
+
+.toolie-bubble.pulse {
+    animation: bubble-pulse 2s infinite;
+}
+
+@keyframes bubble-pulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 10px 25px rgba(0, 174, 239, 0.2);
+    }
+    50% { 
+        transform: scale(1.05);
+        box-shadow: 0 15px 35px rgba(0, 174, 239, 0.4);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 1rem;
+    }
+    
+    .job-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .progress-timeline {
+        padding: 0 0.5rem;
+    }
+    
+    .progress-step-label {
+        font-size: 0.625rem;
+    }
+    
+    .card-modern {
+        border-radius: var(--border-radius-sm);
+    }
+    
+    .job-card {
+        border-radius: var(--border-radius-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-header {
+        padding: 1rem 0;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-info h3 {
+        font-size: 1.5rem;
+    }
+    
+    .toolie-bubble {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+}

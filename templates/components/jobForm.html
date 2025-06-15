@@ -1,0 +1,409 @@
+<!-- Modern Job Creation Form Component -->
+<div class="card-modern">
+    <div class="card-header-modern">
+        <h5>Create New Service Call</h5>
+    </div>
+    <div class="card-body-modern">
+        <form method="POST" enctype="multipart/form-data" id="jobForm">
+            {{ form.hidden_tag() }}
+            
+            <!-- Customer Information Section -->
+            <div class="form-section mb-4">
+                <h6 class="section-title">Customer Information</h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="form-group-modern">
+                            {{ form.customer_name.label(class="form-label-modern") }}
+                            {{ form.customer_name(class="form-control-modern", placeholder="Enter customer name") }}
+                            {% if form.customer_name.errors %}
+                                <div class="form-error">
+                                    {% for error in form.customer_name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group-modern">
+                            {{ form.title.label(class="form-label-modern") }}
+                            {{ form.title(class="form-control-modern", placeholder="e.g., Panel Installation") }}
+                            {% if form.title.errors %}
+                                <div class="form-error">
+                                    {% for error in form.title.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group-modern">
+                    {{ form.location.label(class="form-label-modern") }}
+                    <div class="input-group-modern">
+                        <span class="input-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </span>
+                        {{ form.location(class="form-control-modern", placeholder="Enter full address") }}
+                    </div>
+                    {% if form.location.errors %}
+                        <div class="form-error">
+                            {% for error in form.location.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Job Details Section -->
+            <div class="form-section mb-4">
+                <h6 class="section-title">Job Details</h6>
+                
+                <div class="form-group-modern">
+                    {{ form.description.label(class="form-label-modern") }}
+                    {{ form.description(class="form-control-modern", rows="4", placeholder="Describe the work to be performed...") }}
+                    {% if form.description.errors %}
+                        <div class="form-error">
+                            {% for error in form.description.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="form-group-modern">
+                            {{ form.priority.label(class="form-label-modern") }}
+                            {{ form.priority(class="form-select-modern") }}
+                            {% if form.priority.errors %}
+                                <div class="form-error">
+                                    {% for error in form.priority.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group-modern">
+                            {{ form.assigned_to.label(class="form-label-modern") }}
+                            {{ form.assigned_to(class="form-select-modern") }}
+                            {% if form.assigned_to.errors %}
+                                <div class="form-error">
+                                    {% for error in form.assigned_to.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="form-section mb-4">
+                <h6 class="section-title">Attachments</h6>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                        <h6>Drag & drop files here</h6>
+                        <p class="text-muted mb-3">or click to browse</p>
+                        {{ form.attachments(class="form-control-modern d-none", id="fileInput", multiple=True) }}
+                        <button type="button" class="btn-modern btn-outline-modern" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-plus"></i>
+                            Choose Files
+                        </button>
+                    </div>
+                </div>
+                <div id="filePreview" class="file-preview mt-3"></div>
+                {% if form.attachments.errors %}
+                    <div class="form-error mt-2">
+                        {% for error in form.attachments.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button type="submit" class="btn-modern btn-primary-modern" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    Create & Send Dispatch
+                </button>
+                <a href="{{ url_for('admin_dispatch') }}" class="btn-modern btn-outline-modern">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.form-section {
+    border-bottom: 1px solid var(--ke-border);
+    padding-bottom: 1.5rem;
+}
+
+.form-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.section-title {
+    color: var(--ke-charcoal);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-group-modern {
+    margin-bottom: 1.5rem;
+}
+
+.form-label-modern {
+    font-weight: 500;
+    color: var(--ke-charcoal);
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.form-control-modern, .form-select-modern {
+    border: 2px solid var(--ke-border);
+    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    transition: var(--transition);
+    width: 100%;
+    font-family: var(--font-primary);
+}
+
+.form-control-modern:focus, .form-select-modern:focus {
+    border-color: var(--ke-cyan);
+    box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.1);
+    outline: none;
+}
+
+.input-group-modern {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ke-gray);
+    z-index: 2;
+}
+
+.input-group-modern .form-control-modern {
+    padding-left: 3rem;
+}
+
+.form-error {
+    color: var(--ke-danger);
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.upload-content {
+    padding: 2rem;
+    text-align: center;
+}
+
+.file-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: white;
+    border: 1px solid var(--ke-border);
+    border-radius: var(--border-radius-sm);
+    position: relative;
+}
+
+.file-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 174, 239, 0.1);
+    color: var(--ke-cyan);
+    flex-shrink: 0;
+}
+
+.file-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-name {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--ke-charcoal);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-size {
+    font-size: 0.75rem;
+    color: var(--ke-gray);
+    margin: 0;
+}
+
+.file-remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--ke-danger);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.file-remove:hover {
+    background: #c82333;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--ke-border);
+}
+
+@media (max-width: 768px) {
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .file-preview {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const filePreview = document.getElementById('filePreview');
+    let selectedFiles = [];
+
+    // Drag and drop functionality
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = Array.from(e.dataTransfer.files);
+        handleFiles(files);
+    });
+
+    fileInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        handleFiles(files);
+    });
+
+    function handleFiles(files) {
+        files.forEach(file => {
+            if (!selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
+                selectedFiles.push(file);
+            }
+        });
+        updateFilePreview();
+        updateFileInput();
+    }
+
+    function removeFile(index) {
+        selectedFiles.splice(index, 1);
+        updateFilePreview();
+        updateFileInput();
+    }
+
+    function updateFilePreview() {
+        filePreview.innerHTML = '';
+        selectedFiles.forEach((file, index) => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            let iconClass = 'fas fa-file';
+            
+            if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+                iconClass = 'fas fa-image';
+            } else if (fileExtension === 'pdf') {
+                iconClass = 'fas fa-file-pdf';
+            } else if (['doc', 'docx'].includes(fileExtension)) {
+                iconClass = 'fas fa-file-word';
+            }
+            
+            fileItem.innerHTML = `
+                <div class="file-icon">
+                    <i class="${iconClass}"></i>
+                </div>
+                <div class="file-info">
+                    <p class="file-name">${file.name}</p>
+                    <p class="file-size">${formatFileSize(file.size)}</p>
+                </div>
+                <button type="button" class="file-remove" onclick="removeFile(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            filePreview.appendChild(fileItem);
+        });
+    }
+
+    function updateFileInput() {
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
+        fileInput.files = dataTransfer.files;
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Make removeFile function global
+    window.removeFile = removeFile;
+});
+</script>

@@ -1,0 +1,189 @@
+<!-- Modern Job Card Component -->
+<div class="job-card" data-job-id="{{ job.id }}" data-status="{{ job.status }}">
+    <div class="job-card-header">
+        <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+                <h4 class="job-title">{{ job.title }}</h4>
+                <p class="job-customer">
+                    <i class="fas fa-user me-2"></i>{{ job.customer_name }}
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                <span class="status-badge {{ job.status.replace('_', '-') }}">
+                    {% if job.status == 'open' %}
+                        <i class="fas fa-clock"></i>
+                    {% elif job.status == 'in_progress' %}
+                        <i class="fas fa-cog fa-spin"></i>
+                    {% elif job.status == 'completed' %}
+                        <i class="fas fa-check"></i>
+                    {% elif job.status == 'on_hold' %}
+                        <i class="fas fa-pause"></i>
+                    {% endif %}
+                    {{ job.status.replace('_', ' ').title() }}
+                </span>
+                <span class="status-badge {{ job.priority }}">
+                    {% if job.priority == 'urgent' %}
+                        <i class="fas fa-exclamation-triangle"></i>
+                    {% elif job.priority == 'high' %}
+                        <i class="fas fa-arrow-up"></i>
+                    {% elif job.priority == 'medium' %}
+                        <i class="fas fa-minus"></i>
+                    {% else %}
+                        <i class="fas fa-arrow-down"></i>
+                    {% endif %}
+                    {{ job.priority.title() }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="job-card-body">
+        <!-- Job Information Grid -->
+        <div class="job-info-grid">
+            <div class="job-info-item">
+                <div class="job-info-icon location">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="job-info-text">
+                    <p class="job-info-label">Location</p>
+                    <p class="job-info-value">{{ job.location }}</p>
+                </div>
+            </div>
+            
+            <div class="job-info-item">
+                <div class="job-info-icon clock">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="job-info-text">
+                    <p class="job-info-label">Created</p>
+                    <p class="job-info-value">{{ job.created_at[:16].replace('T', ' ') }}</p>
+                </div>
+            </div>
+            
+            <div class="job-info-item">
+                <div class="job-info-icon wrench">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="job-info-text">
+                    <p class="job-info-label">Job ID</p>
+                    <p class="job-info-value">#{{ job.id[-8:].upper() }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Timeline -->
+        <div class="progress-timeline">
+            <div class="progress-step {{ 'completed' if job.status != 'open' else 'active' if job.status == 'open' else '' }}">
+                <div class="progress-step-icon">
+                    <i class="fas fa-play"></i>
+                </div>
+                <div class="progress-step-label">Open</div>
+            </div>
+            <div class="progress-step {{ 'completed' if job.status == 'completed' else 'active' if job.status == 'in_progress' else '' }}">
+                <div class="progress-step-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="progress-step-label">In Progress</div>
+            </div>
+            <div class="progress-step {{ 'completed' if job.status == 'completed' else '' }}">
+                <div class="progress-step-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="progress-step-label">Complete</div>
+            </div>
+        </div>
+
+        <!-- Job Description -->
+        {% if job.description %}
+        <div class="job-description mb-3">
+            <h6 class="text-muted mb-2">Description</h6>
+            <p class="mb-0">{{ job.description }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Uploaded Files Preview -->
+        {% if job.attachments and job.attachments|length > 0 %}
+        <div class="job-attachments mb-3">
+            <h6 class="text-muted mb-2">
+                <i class="fas fa-paperclip me-2"></i>Attachments ({{ job.attachments|length }})
+            </h6>
+            <div class="d-flex gap-2 flex-wrap">
+                {% for attachment in job.attachments[:3] %}
+                <div class="attachment-preview">
+                    <i class="fas fa-file text-primary"></i>
+                    <small>File {{ loop.index }}</small>
+                </div>
+                {% endfor %}
+                {% if job.attachments|length > 3 %}
+                <div class="attachment-preview">
+                    <small class="text-muted">+{{ job.attachments|length - 3 }} more</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Job Notes -->
+        {% if job.notes and job.notes|length > 0 %}
+        <div class="job-notes mb-3">
+            <h6 class="text-muted mb-2">
+                <i class="fas fa-sticky-note me-2"></i>Recent Notes
+            </h6>
+            <div class="bg-light p-3 rounded">
+                {% for note in job.notes[-2:] %}
+                <div class="note-item {{ 'mb-2' if not loop.last }}">
+                    <small class="text-muted">{{ note.timestamp[:16].replace('T', ' ') }}</small>
+                    <p class="mb-0 small">{{ note.note }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-2 flex-wrap">
+            {% if job.status == 'open' and (not current_user.is_admin() or current_user.is_admin()) %}
+            <button class="btn-modern btn-primary-modern start-job-btn" data-job-id="{{ job.id }}">
+                <i class="fas fa-play"></i>
+                Start Job
+            </button>
+            {% endif %}
+            
+            {% if job.status == 'in_progress' and (not current_user.is_admin() or current_user.is_admin()) %}
+            <button class="btn-modern btn-success-modern complete-job-btn" data-job-id="{{ job.id }}">
+                <i class="fas fa-check"></i>
+                Mark Complete
+            </button>
+            {% endif %}
+            
+            <a href="{{ url_for('job_detail', call_id=job.id) }}" class="btn-modern btn-outline-modern">
+                <i class="fas fa-eye"></i>
+                View Details
+            </a>
+            
+            {% if job.status != 'completed' %}
+            <button class="btn-modern btn-outline-modern upload-btn" data-job-id="{{ job.id }}">
+                <i class="fas fa-camera"></i>
+                Add Files
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.attachment-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-width: 60px;
+}
+
+.note-item:not(:last-child) {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.5rem;
+}
+</style>

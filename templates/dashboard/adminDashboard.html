@@ -1,0 +1,475 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dispatch - Kynetik Electric{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1>Dispatch Control Center</h1>
+                    <p class="mb-0 opacity-75">Manage service calls and coordinate field operations</p>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ url_for('create_service_call') }}" class="btn-modern btn-primary-modern">
+                        <i class="fas fa-plus"></i>
+                        New Service Call
+                    </a>
+                    <a href="{{ url_for('worker_logout') }}" class="btn-modern btn-outline-modern" style="color: white; border-color: rgba(255,255,255,0.3);">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+        <div class="container">
+            <!-- Overview Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-info">
+                            <h3>{{ service_calls|length }}</h3>
+                            <p>Total Jobs</p>
+                        </div>
+                        <div class="stat-icon" style="background: rgba(0, 174, 239, 0.1); color: var(--ke-cyan);">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-info">
+                            <h3>{{ service_calls|selectattr('status', 'equalto', 'open')|list|length }}</h3>
+                            <p>Open Jobs</p>
+                        </div>
+                        <div class="stat-icon" style="background: rgba(255, 193, 7, 0.1); color: var(--ke-warning);">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-info">
+                            <h3>{{ service_calls|selectattr('status', 'equalto', 'in_progress')|list|length }}</h3>
+                            <p>In Progress</p>
+                        </div>
+                        <div class="stat-icon" style="background: rgba(0, 174, 239, 0.1); color: var(--ke-cyan);">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-info">
+                            <h3>{{ service_calls|selectattr('status', 'equalto', 'completed')|list|length }}</h3>
+                            <p>Completed</p>
+                        </div>
+                        <div class="stat-icon" style="background: rgba(40, 167, 69, 0.1); color: var(--ke-success);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Workers Section -->
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h5>Active Field Workers</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="row g-3">
+                        {% for worker in workers %}
+                        <div class="col-md-4">
+                            <div class="worker-card">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="worker-avatar">
+                                        <i class="fas fa-hard-hat"></i>
+                                    </div>
+                                    <div class="worker-info">
+                                        <h6 class="worker-name">{{ worker.name }}</h6>
+                                        <p class="worker-role">{{ worker.role.replace('_', ' ').title() }}</p>
+                                        <div class="worker-stats">
+                                            <span class="badge bg-primary">
+                                                {{ service_calls|selectattr('assigned_to', 'equalto', worker.id)|list|length }} jobs
+                                            </span>
+                                            <span class="badge bg-success">
+                                                {{ service_calls|selectattr('assigned_to', 'equalto', worker.id)|selectattr('status', 'equalto', 'completed')|list|length }} done
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Calls Management -->
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5>Service Calls Management</h5>
+                        <div class="d-flex gap-2">
+                            <!-- Status Filter -->
+                            <div class="btn-group btn-group-sm" role="group">
+                                <input type="radio" class="btn-check" name="adminFilter" id="adminAll" autocomplete="off" checked>
+                                <label class="btn btn-outline-primary" for="adminAll">All</label>
+                                
+                                <input type="radio" class="btn-check" name="adminFilter" id="adminOpen" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="adminOpen">Open</label>
+                                
+                                <input type="radio" class="btn-check" name="adminFilter" id="adminProgress" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="adminProgress">Active</label>
+                                
+                                <input type="radio" class="btn-check" name="adminFilter" id="adminCompleted" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="adminCompleted">Done</label>
+                            </div>
+                            
+                            <!-- View Toggle -->
+                            <div class="btn-group btn-group-sm" role="group">
+                                <input type="radio" class="btn-check" name="viewMode" id="cardView" autocomplete="off" checked>
+                                <label class="btn btn-outline-secondary" for="cardView">
+                                    <i class="fas fa-th-large"></i>
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="viewMode" id="tableView" autocomplete="off">
+                                <label class="btn btn-outline-secondary" for="tableView">
+                                    <i class="fas fa-list"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body-modern">
+                    {% if service_calls %}
+                        <!-- Card View -->
+                        <div id="cardsContainer" class="job-cards-container">
+                            {% for job in service_calls %}
+                                {% include 'components/jobCard.html' %}
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Table View -->
+                        <div id="tableContainer" style="display: none;">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Title</th>
+                                            <th>Customer</th>
+                                            <th>Worker</th>
+                                            <th>Priority</th>
+                                            <th>Status</th>
+                                            <th>Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for job in service_calls %}
+                                        <tr data-status="{{ job.status }}" class="admin-job-row">
+                                            <td><code>#{{ job.id[-8:].upper() }}</code></td>
+                                            <td>
+                                                <strong>{{ job.title }}</strong>
+                                                {% if job.description %}
+                                                <br><small class="text-muted">{{ job.description[:60] }}{% if job.description|length > 60 %}...{% endif %}</small>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ job.customer_name }}</td>
+                                            <td>
+                                                {% set worker = workers|selectattr('id', 'equalto', job.assigned_to)|first %}
+                                                {% if worker %}
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="fas fa-hard-hat text-primary"></i>
+                                                        {{ worker.name }}
+                                                    </div>
+                                                {% else %}
+                                                    <span class="text-muted">Unassigned</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="status-badge {{ job.priority }}">
+                                                    {{ job.priority.title() }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="status-badge {{ job.status.replace('_', '-') }}">
+                                                    {{ job.status.replace('_', ' ').title() }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <small>{{ job.created_at[:10] }}</small>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex gap-1">
+                                                    <a href="{{ url_for('job_detail', call_id=job.id) }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    {% if job.status != 'completed' %}
+                                                    <button class="btn btn-sm btn-outline-secondary reassign-btn" data-job-id="{{ job.id }}">
+                                                        <i class="fas fa-user-edit"></i>
+                                                    </button>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- No Jobs State -->
+                        <div class="text-center py-5">
+                            <i class="fas fa-clipboard-list fa-4x text-muted mb-4"></i>
+                            <h4 class="mb-3">No Service Calls</h4>
+                            <p class="text-muted mb-4">No service calls have been created yet. Get started by creating your first job.</p>
+                            <a href="{{ url_for('create_service_call') }}" class="btn-modern btn-primary-modern">
+                                <i class="fas fa-plus"></i>
+                                Create First Service Call
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toolie Chat Bubble -->
+<div class="toolie-chat">
+    <button class="toolie-bubble pulse" id="toolieBubble">
+        <i class="fas fa-robot"></i>
+    </button>
+</div>
+
+<!-- Reassign Modal -->
+<div class="modal fade" id="reassignModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reassign Job</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reassignForm">
+                    <input type="hidden" id="reassignJobId" name="job_id">
+                    <div class="mb-3">
+                        <label class="form-label">Select Worker</label>
+                        <select class="form-select" id="reassignWorker" name="assigned_to">
+                            {% for worker in workers %}
+                            <option value="{{ worker.id }}">{{ worker.name }} ({{ worker.role.replace('_', ' ').title() }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reason for Reassignment</label>
+                        <textarea class="form-control" id="reassignReason" name="reason" rows="3" placeholder="Optional: Explain why this job is being reassigned..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitReassign">Reassign Job</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter functionality
+    const adminFilterInputs = document.querySelectorAll('input[name="adminFilter"]');
+    const jobCards = document.querySelectorAll('.job-card');
+    const jobRows = document.querySelectorAll('.admin-job-row');
+
+    adminFilterInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const filter = this.id.replace('admin', '').toLowerCase();
+            
+            filterJobs(filter);
+        });
+    });
+
+    function filterJobs(filter) {
+        const elements = [...jobCards, ...jobRows];
+        
+        elements.forEach(element => {
+            const elementStatus = element.dataset.status;
+            
+            if (filter === 'all') {
+                element.style.display = '';
+            } else if (filter === 'progress' && elementStatus === 'in_progress') {
+                element.style.display = '';
+            } else if (filter === elementStatus) {
+                element.style.display = '';
+            } else {
+                element.style.display = 'none';
+            }
+        });
+    }
+
+    // View mode toggle
+    const viewModeInputs = document.querySelectorAll('input[name="viewMode"]');
+    const cardsContainer = document.getElementById('cardsContainer');
+    const tableContainer = document.getElementById('tableContainer');
+
+    viewModeInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.id === 'cardView') {
+                cardsContainer.style.display = '';
+                tableContainer.style.display = 'none';
+            } else {
+                cardsContainer.style.display = 'none';
+                tableContainer.style.display = '';
+            }
+        });
+    });
+
+    // Reassign functionality
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('.reassign-btn') || e.target.closest('.reassign-btn')) {
+            const btn = e.target.matches('.reassign-btn') ? e.target : e.target.closest('.reassign-btn');
+            const jobId = btn.dataset.jobId;
+            
+            document.getElementById('reassignJobId').value = jobId;
+            new bootstrap.Modal(document.getElementById('reassignModal')).show();
+        }
+    });
+
+    // Quick actions
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('.start-job-btn')) {
+            updateJobStatus(e.target.dataset.jobId, 'in_progress');
+        } else if (e.target.matches('.complete-job-btn')) {
+            updateJobStatus(e.target.dataset.jobId, 'completed');
+        }
+    });
+
+    function updateJobStatus(jobId, status) {
+        const formData = new FormData();
+        formData.append('call_id', jobId);
+        formData.append('status', status);
+        formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+
+        fetch('{{ url_for("update_job_status") }}', {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            }
+        });
+    }
+
+    // Toolie chat integration
+    document.getElementById('toolieBubble').addEventListener('click', function() {
+        // Toggle Toolie chat - integrate with existing chat system
+        const chatWidget = document.getElementById('chat-widget');
+        if (chatWidget) {
+            chatWidget.style.display = chatWidget.style.display === 'none' ? 'block' : 'none';
+        }
+    });
+});
+</script>
+
+<style>
+.worker-card {
+    background: #f8f9fa;
+    border-radius: var(--border-radius-sm);
+    padding: 1rem;
+    border: 1px solid var(--ke-border);
+    transition: var(--transition);
+}
+
+.worker-card:hover {
+    background: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.worker-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ke-cyan) 0%, var(--ke-cyan-dark) 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.worker-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.worker-name {
+    font-weight: 600;
+    color: var(--ke-charcoal);
+    margin: 0 0 0.25rem 0;
+    font-size: 0.875rem;
+}
+
+.worker-role {
+    color: var(--ke-gray);
+    font-size: 0.75rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.worker-stats {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.worker-stats .badge {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.job-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .dashboard-header .d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .job-cards-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .btn-group {
+        flex-wrap: wrap;
+    }
+    
+    .btn-group .btn {
+        font-size: 0.75rem;
+        padding: 0.375rem 0.75rem;
+    }
+}
+</style>
+{% endblock %}
