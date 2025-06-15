@@ -154,7 +154,6 @@
     <div class="job-actions">
         <form method="POST" action="{{ url_for('update_job_status') }}" style="display: contents;">
             <input type="hidden" name="call_id" value="{{ job.id }}">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="action-btn primary update-status-btn" data-job-id="{{ job.id }}">
                 <i class="fas fa-edit"></i>
                 Update Status
@@ -199,7 +198,6 @@
             
             <form method="POST" action="{{ url_for('upload_job_files') }}" enctype="multipart/form-data" class="photo-upload-form">
                 <input type="hidden" name="call_id" value="{{ job.id }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 
                 <div class="file-upload-area" onclick="document.getElementById('file-input-{{ job.id }}').click()">
                     <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-muted); margin-bottom: 8px;"></i>
@@ -241,7 +239,6 @@
             
             <form method="POST" action="{{ url_for('add_job_notes') }}" class="notes-form">
                 <input type="hidden" name="call_id" value="{{ job.id }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 
                 <textarea name="notes" 
                           placeholder="Add notes about this job..."
