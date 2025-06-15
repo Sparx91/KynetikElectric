@@ -32,21 +32,30 @@
 }
 
 :root {
-    /* Kynetik Electric Color Scheme - Industrial Dark Theme */
-    --primary-blue: hsl(210, 80%, 50%);     /* #1a8cff - Kynetik Blue */
-    --secondary-blue: hsl(210, 60%, 40%);   /* #3385cc */
-    --accent-orange: hsl(25, 90%, 55%);     /* #ff7733 - Industrial Orange */
-    --background-dark: hsl(220, 15%, 8%);   /* #1a1d23 - Very Dark Blue-Gray */
-    --surface-dark: hsl(220, 15%, 12%);     /* #252830 - Dark Surface */
-    --surface-light: hsl(220, 10%, 18%);    /* #343742 - Lighter Surface */
-    --text-primary: hsl(0, 0%, 95%);        /* #f2f2f2 - Light Text */
-    --text-secondary: hsl(0, 0%, 75%);      /* #bfbfbf - Secondary Text */
-    --text-muted: hsl(0, 0%, 60%);          /* #999999 - Muted Text */
-    --border-color: hsl(220, 10%, 25%);     /* #454952 - Border Color */
-    --success: hsl(120, 60%, 50%);          /* #4caf50 - Success Green */
-    --warning: hsl(45, 90%, 55%);           /* #ffc107 - Warning Yellow */
-    --danger: hsl(0, 70%, 55%);             /* #dc3545 - Error Red */
-    --kynetik-font: 'RethinkSans', sans-serif;
+    /* Kynetik Electric Brand Colors - Official Brand Guidelines */
+    --brand-cyan: #00AEEF;           /* Bright Cyan - Primary Brand Color */
+    --brand-medium-grey: #777777;    /* Medium Grey */
+    --brand-dark-charcoal: #333333;  /* Dark Charcoal */
+    --brand-white: #FFFFFF;          /* White */
+    --brand-black: #000000;          /* Black */
+    
+    /* Applied Color Variables */
+    --primary-color: var(--brand-cyan);
+    --secondary-color: var(--brand-medium-grey);
+    --background-dark: var(--brand-dark-charcoal);
+    --surface-dark: #2a2a2a;         /* Slightly lighter than charcoal */
+    --surface-light: #444444;        /* Lighter surface */
+    --text-primary: var(--brand-white);
+    --text-secondary: var(--brand-medium-grey);
+    --text-muted: #999999;
+    --border-color: #555555;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    
+    /* Typography */
+    --primary-font: 'Orbitron', 'RethinkSans', sans-serif;  /* For headings */
+    --secondary-font: 'RethinkSans', sans-serif;            /* For body text */
 }
 
 * {
@@ -56,7 +65,7 @@
 }
 
 body {
-    font-family: var(--kynetik-font);
+    font-family: var(--secondary-font);
     line-height: 1.6;
     color: var(--text-primary);
     background-color: var(--background-dark);
@@ -114,7 +123,7 @@ body {
     left: 50%;
     width: 0;
     height: 2px;
-    background: var(--primary-blue);
+    background: var(--brand-cyan);
     transition: all 0.3s ease;
     transform: translateX(-50%);
 }
@@ -140,8 +149,8 @@ body {
     right: 0;
     bottom: 0;
     background: 
-        radial-gradient(circle at 20% 50%, rgba(26, 140, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 119, 51, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, rgba(0, 174, 239, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(119, 119, 119, 0.05) 0%, transparent 50%);
 }
 
 .hero-content {
@@ -157,21 +166,44 @@ body {
     display: block;
 }
 
-/* Headers with Kynetik Font */
+/* Brand Typography Hierarchy - Following Brand Guidelines */
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--kynetik-font);
+    font-family: var(--primary-font);
     font-weight: bold;
+    color: var(--text-primary);
 }
 
-.hero-title {
-    font-family: var(--kynetik-font);
-    font-size: 3.5rem;
+/* Main Heading - Orbitron Bold 75px */
+h1, .hero-title {
+    font-family: var(--primary-font);
+    font-size: 4.7rem; /* 75px */
     font-weight: 700;
     margin-bottom: 20px;
-    background: linear-gradient(45deg, var(--primary-blue), var(--accent-orange));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--brand-cyan);
+}
+
+/* Heading Two - Orbitron Semibold 46px */
+h2 {
+    font-family: var(--primary-font);
+    font-size: 2.9rem; /* 46px */
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Subheading - RethinkSans Medium 28px */
+h3, .hero-subtitle {
+    font-family: var(--secondary-font);
+    font-size: 1.75rem; /* 28px */
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* Paragraph - RethinkSans Regular 18px */
+p, .lead {
+    font-family: var(--secondary-font);
+    font-size: 1.125rem; /* 18px */
+    font-weight: 400;
+    line-height: 1.6;
 }
 
 .hero-subtitle {
@@ -217,7 +249,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn, .btn-primary, .btn-secondary, .btn-warning, .btn-success, .btn-danger {
-    font-family: var(--kynetik-font);
+    font-family: var(--primary-font);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background-color: var(--brand-cyan);
+    border-color: var(--brand-cyan);
+    color: var(--brand-white);
+}
+
+.btn-primary:hover {
+    background-color: #0099d4;
+    border-color: #0099d4;
+    color: var(--brand-white);
 }
 
 .btn-warning {
