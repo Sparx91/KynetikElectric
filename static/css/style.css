@@ -200,6 +200,10 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 4px 15px rgba(26, 140, 255, 0.3);
 }
 
+.btn, .btn-primary, .btn-secondary, .btn-warning, .btn-success, .btn-danger {
+    font-family: var(--kynetik-font);
+}
+
 .btn-warning {
     background: linear-gradient(45deg, var(--accent-orange), #ff8533);
     border: none;
