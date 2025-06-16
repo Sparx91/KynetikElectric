@@ -133,6 +133,30 @@
             font-weight: bold;
             margin-bottom: 20px;
             color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: #00AEEF;
+            background: #f8fbff;
+        }
+
+        .filter-btn.active {
+            background: #00AEEF;
+            color: white;
+            border-color: #00AEEF;
         }
 
         /* Job Card - Completely Redesigned */
@@ -392,6 +416,11 @@
         <!-- Jobs Section -->
         <div class="section-title">
             <i class="fas fa-clipboard-list"></i> My Jobs
+            <div class="job-filters" style="margin-left: auto; display: flex; gap: 10px;">
+                <button class="filter-btn active" onclick="filterJobs('all')" data-filter="all">All</button>
+                <button class="filter-btn" onclick="filterJobs('urgent')" data-filter="urgent">Urgent</button>
+                <button class="filter-btn" onclick="filterJobs('today')" data-filter="today">Today</button>
+            </div>
         </div>
 
         {% if active_jobs %}
@@ -471,7 +500,7 @@
             <i class="fas fa-home"></i>
             Home
         </a>
-        <a href="/dashboard" class="nav-item">
+        <a href="#" class="nav-item" onclick="showJobsView()">
             <i class="fas fa-clipboard-list"></i>
             Jobs
         </a>
@@ -654,6 +683,75 @@
             };
             
             input.click();
+        }
+
+        // Jobs view functionality
+        function showJobsView() {
+            // Toggle active state in navigation
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Scroll to jobs section
+            document.querySelector('.section-title').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Highlight jobs section temporarily
+            const jobsSection = document.querySelector('.section-title');
+            jobsSection.style.background = '#e3f2fd';
+            jobsSection.style.padding = '10px';
+            jobsSection.style.borderRadius = '8px';
+            jobsSection.style.transition = 'all 0.3s ease';
+            
+            setTimeout(() => {
+                jobsSection.style.background = 'transparent';
+                jobsSection.style.padding = '0';
+            }, 2000);
+            
+            showNotification('Showing all active jobs', 'success');
+        }
+
+        // Job filtering functionality
+        function filterJobs(filterType) {
+            // Update filter button states
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-filter="${filterType}"]`).classList.add('active');
+
+            const jobCards = document.querySelectorAll('.job-card');
+            let visibleCount = 0;
+
+            jobCards.forEach(card => {
+                const statusBadge = card.querySelector('.status-badge');
+                const isUrgent = statusBadge.textContent.includes('URGENT');
+                let shouldShow = false;
+
+                switch(filterType) {
+                    case 'all':
+                        shouldShow = true;
+                        break;
+                    case 'urgent':
+                        shouldShow = isUrgent;
+                        break;
+                    case 'today':
+                        shouldShow = true; // All jobs are scheduled for today in this demo
+                        break;
+                }
+
+                if (shouldShow) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.3s ease';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show notification with filter results
+            const filterText = filterType === 'all' ? 'all jobs' : 
+                              filterType === 'urgent' ? 'urgent jobs only' : 
+                              'today\'s jobs';
+            showNotification(`Showing ${visibleCount} ${filterText}`, 'success');
         }
 
         // Initialize on page load
