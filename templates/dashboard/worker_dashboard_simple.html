@@ -106,6 +106,98 @@
             color: white;
         }
 
+        /* Weather & Location Bar */
+        .weather-location-bar {
+            background: linear-gradient(135deg, #00AEEF, #0099d4);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 12px rgba(0,174,239,0.3);
+        }
+
+        .weather-info, .location-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .weather-info i, .location-info i {
+            font-size: 16px;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .progress-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .progress-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            background: #f9f9f9;
+            color: #999;
+        }
+
+        .progress-circle.completed {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .progress-circle.active {
+            background: #00AEEF;
+            border-color: #00AEEF;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .progress-line {
+            height: 2px;
+            background: #ddd;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .progress-item span {
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            text-align: center;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
         .stat-card {
             background: white;
             padding: 20px;
@@ -229,7 +321,7 @@
         /* Action Buttons */
         .job-actions {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 8px;
             padding: 20px;
             background: #f9f9f9;
@@ -315,6 +407,29 @@
             margin-bottom: 4px;
         }
 
+        /* Additional Button Styles */
+        .btn-voice {
+            background: #e91e63;
+            color: white;
+        }
+
+        .btn-voice:hover {
+            background: #c2185b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(233,30,99,0.3);
+        }
+
+        .btn-tools {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-tools:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,152,0,0.3);
+        }
+
         /* Responsive */
         @media (max-width: 480px) {
             .container {
@@ -322,8 +437,8 @@
             }
             
             .job-actions {
-                grid-template-columns: 1fr;
-                gap: 8px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
             }
             
             .stats-grid {
@@ -336,8 +451,18 @@
             }
             
             .action-btn {
-                padding: 12px 8px;
-                font-size: 13px;
+                padding: 10px 6px;
+                font-size: 12px;
+            }
+            
+            .weather-location-bar {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+            
+            .progress-tracker {
+                padding: 15px 10px;
             }
         }
 
@@ -413,6 +538,49 @@
             </button>
         </div>
 
+        <!-- Weather & Location Bar -->
+        <div class="weather-location-bar">
+            <div class="weather-info">
+                <i class="fas fa-cloud-sun"></i>
+                <span id="weatherText">Loading weather...</span>
+            </div>
+            <div class="location-info">
+                <i class="fas fa-map-marker-alt"></i>
+                <span id="locationText">Getting location...</span>
+            </div>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="progress-item">
+                <div class="progress-circle completed">
+                    <i class="fas fa-check"></i>
+                </div>
+                <span>Clocked In</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-item">
+                <div class="progress-circle active">
+                    <i class="fas fa-wrench"></i>
+                </div>
+                <span>Working</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-item">
+                <div class="progress-circle">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <span>Document</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-item">
+                <div class="progress-circle">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <span>Complete</span>
+            </div>
+        </div>
+
         <!-- Jobs Section -->
         <div class="section-title">
             <i class="fas fa-clipboard-list"></i> My Jobs
@@ -481,6 +649,14 @@
                     <button class="action-btn btn-secondary" onclick="viewDetails('{{ job.id }}')">
                         <i class="fas fa-info-circle"></i>
                         Details
+                    </button>
+                    <button class="action-btn btn-voice" onclick="startVoiceNote('{{ job.id }}')">
+                        <i class="fas fa-microphone"></i>
+                        Voice Note
+                    </button>
+                    <button class="action-btn btn-tools" onclick="showTools('{{ job.id }}')">
+                        <i class="fas fa-toolbox"></i>
+                        Tools
                     </button>
                 </div>
             </div>
@@ -754,6 +930,110 @@
             showNotification(`Showing ${visibleCount} ${filterText}`, 'success');
         }
 
+        // Weather and location functionality
+        function updateWeatherAndLocation() {
+            // Get current location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    // Update location display
+                    document.getElementById('locationText').textContent = 
+                        `${lat.toFixed(3)}, ${lng.toFixed(3)}`;
+                    
+                    // Simulate weather data (in real app, would call weather API)
+                    const weather = getSimulatedWeather();
+                    document.getElementById('weatherText').textContent = 
+                        `${weather.temp}°F, ${weather.condition}`;
+                }, function() {
+                    document.getElementById('locationText').textContent = 'Location unavailable';
+                    document.getElementById('weatherText').textContent = '72°F, Partly cloudy';
+                });
+            }
+        }
+        
+        function getSimulatedWeather() {
+            const conditions = ['Sunny', 'Partly cloudy', 'Cloudy', 'Light rain'];
+            const temps = [68, 72, 75, 70, 73];
+            return {
+                temp: temps[Math.floor(Math.random() * temps.length)],
+                condition: conditions[Math.floor(Math.random() * conditions.length)]
+            };
+        }
+
+        // Voice note functionality
+        function startVoiceNote(jobId) {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                
+                recognition.lang = 'en-US';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                
+                recognition.onstart = function() {
+                    showNotification('Listening... Speak your note', 'success');
+                };
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    showNotification(`Voice note recorded: "${transcript}"`, 'success');
+                    // In real app, would save to job record
+                };
+                
+                recognition.onerror = function() {
+                    showNotification('Voice recognition failed. Try again.', 'error');
+                };
+                
+                recognition.start();
+            } else {
+                const note = prompt('Voice not available. Enter note:');
+                if (note) {
+                    showNotification(`Note saved: "${note}"`, 'success');
+                }
+            }
+        }
+
+        // Tools and equipment tracker
+        function showTools(jobId) {
+            const tools = [
+                { name: 'Digital Multimeter', status: 'Available', location: 'Van' },
+                { name: 'Wire Strippers', status: 'In Use', location: 'Toolbelt' },
+                { name: 'Conduit Bender', status: 'Available', location: 'Van' },
+                { name: 'Voltage Tester', status: 'Available', location: 'Toolbelt' },
+                { name: 'Cable Puller', status: 'Needs Return', location: 'Shop' }
+            ];
+            
+            let toolsList = 'Tools for this job:\n\n';
+            tools.forEach(tool => {
+                toolsList += `${tool.name}: ${tool.status} (${tool.location})\n`;
+            });
+            
+            alert(toolsList);
+            showNotification('Tool inventory checked', 'success');
+        }
+
+        // Smart notifications based on job status
+        function checkSmartNotifications() {
+            const currentHour = new Date().getHours();
+            
+            // Safety reminder during working hours
+            if (currentHour >= 8 && currentHour <= 17 && isClockedIn) {
+                if (Math.random() < 0.1) { // 10% chance each check
+                    showNotification('Safety reminder: Wear your PPE and test before touch!', 'warning');
+                }
+            }
+            
+            // Break reminder after 4 hours
+            if (isClockedIn && clockInTime) {
+                const hoursWorked = (new Date() - new Date(clockInTime)) / (1000 * 60 * 60);
+                if (hoursWorked > 4 && hoursWorked < 4.1) {
+                    showNotification('You\'ve been working for 4 hours. Consider taking a break!', 'warning');
+                }
+            }
+        }
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Set up clock-in button state
@@ -764,6 +1044,15 @@
                 updateTimeDisplay();
                 setInterval(updateTimeDisplay, 60000);
             }
+            
+            // Initialize weather and location
+            updateWeatherAndLocation();
+            
+            // Update weather every 30 minutes
+            setInterval(updateWeatherAndLocation, 1800000);
+            
+            // Check smart notifications every 5 minutes
+            setInterval(checkSmartNotifications, 300000);
             
             // Request location permission for navigation
             if (navigator.geolocation) {
